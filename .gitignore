@@ -1,0 +1,88 @@
+# =============================================================================
+# SECRETS AND SIGNING MATERIAL
+#
+# This repository is public. A published signing keystore cannot be revoked —
+# only rotated, which for Play Store means an upload-key reset — and a published
+# API key has to be assumed compromised the moment it lands. Nothing in this
+# section may ever be committed, including "just for a moment".
+# =============================================================================
+*.jks
+*.keystore
+*.p12
+*.pfx
+*.pem
+*.key
+key.properties
+key.properties.txt
+**/key.properties
+**/key.properties.txt
+.env
+.env.*
+!.env.example
+service-account*.json
+secrets.json
+
+# Firebase config. It ships inside the APK, so it is not a secret in the strict
+# sense — but in a public repo it hands over project identifiers for free, and
+# nothing here needs it to build.
+google-services.json
+GoogleService-Info.plist
+
+# =============================================================================
+# ANOTHER PROJECT'S SOURCE CODE
+#
+# The Probahini chatbot from the Ananya app was copied into this folder as a
+# reference implementation while Bharosha was being built. It is not WaterAid's
+# code to publish, and Probahini.ipynb contains a live-looking Groq API key in
+# plain text in cell 10. Bharosha does not import any of it.
+# =============================================================================
+/stop_gender_violence_fresh_ui/Probahini.ipynb
+/stop_gender_violence_fresh_ui/app/
+/stop_gender_violence_fresh_ui/Dockerfile.api
+
+# =============================================================================
+# Python
+# =============================================================================
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+
+# Model weights and caches. fastembed downloads ~120 MB on first run; the
+# service re-fetches it rather than carrying it in git.
+.cache/
+fastembed_cache/
+vectordb/
+.chroma/
+
+# =============================================================================
+# Flutter / Dart / Android build output
+# =============================================================================
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+**/local.properties
+.gradle/
+**/.gradle/
+**/.cxx/
+*.iml
+*.ipr
+*.iws
+.idea/
+android/app/debug/
+android/app/profile/
+android/app/release/
+app.*.symbols
+app.*.map.json
+
+# =============================================================================
+# Editors and OS
+# =============================================================================
+.DS_Store
+Thumbs.db
+*.swp
+*.log

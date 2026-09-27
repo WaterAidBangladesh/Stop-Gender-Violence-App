@@ -1,0 +1,27 @@
+# Runtime only. No torch, no sentence-transformers, no transformers, and no
+# vector database.
+#
+# Why no chromadb: Probahini fits a 512 MB instance because its only model is
+# Chroma's default embedder — one onnxruntime, one English model. Pairing Chroma
+# with a multilingual embedder means two ONNX runtimes and two models, measured
+# at 533 MB before serving a request. For 37 chunks, a dot product over a numpy
+# matrix is exhaustive, exact, and costs nothing.
+#
+# fastembed is quantized ONNX, which is what keeps this small and why the
+# trust_remote_code failure that broke the local reranker cannot recur here.
+#
+# The corpus is chunked on a developer machine (build_corpus.py writes
+# corpus/chunks.json, text only) and embedded at startup, so the chunking and
+# PDF libraries are dev-only — see requirements-dev.txt.
+#
+# PIN EXACTLY (==) BEFORE THE FIRST PRODUCTION DEPLOY, fastembed especially: a
+# rebuild that changes the embedding model changes retrieval behaviour under a
+# live service, and the measured relevance floor stops meaning what it says.
+
+fastembed>=0.8.0
+numpy>=1.26.0
+langchain-core>=0.3.0
+langchain-groq>=0.2.0
+python-dotenv>=1.0.0
+fastapi>=0.110.0
+uvicorn>=0.27.0

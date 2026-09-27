@@ -1,0 +1,7 @@
+-r requirements.txt
+
+# Index building only — not installed in the container.
+langchain-text-splitters>=0.3.0
+pypdf>=5.0.0
+
+pytest>=8.0.0

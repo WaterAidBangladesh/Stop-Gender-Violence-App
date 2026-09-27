@@ -1,0 +1,70 @@
+import java.util.Properties
+import java.io.File
+
+plugins {
+    id("com.android.application")
+    id("kotlin-android")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")
+}
+
+android {
+    namespace = "com.example.stop_gender_violence_ui"
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+
+    defaultConfig {
+        applicationId = "com.wateraidbangladesh.shomotashurokkha"
+        minSdk = flutter.minSdkVersion
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+    }
+
+    // ---------------------------
+    // Signing Configuration
+    // ---------------------------
+    signingConfigs {
+    create("release") {
+        val keyProperties = Properties()
+        val file = rootProject.file("key.properties")
+        if (file.exists()) {
+            keyProperties.load(file.inputStream())
+        }
+
+        keyAlias = keyProperties["keyAlias"] as String
+        keyPassword = keyProperties["keyPassword"] as String
+        storeFile = File(keyProperties["storeFile"] as String)
+        storePassword = keyProperties["storePassword"] as String
+    }
+}
+
+
+    buildTypes {
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false // Set true if using ProGuard/R8
+        }
+        getByName("debug") {
+            signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:34.2.0"))
+}

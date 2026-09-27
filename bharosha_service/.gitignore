@@ -1,0 +1,28 @@
+# Secrets. The reference project shipped a Groq key inside a committed
+# notebook; that key had to be revoked. Nothing here repeats it.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.jks
+key.properties
+service-account*.json
+google-services.json
+
+# No vector store any more: the corpus is embedded into memory at startup, so
+# nothing binary and nothing precomputed belongs in the repo. corpus/chunks.json
+# IS committed — it is text, reviewable in a diff, and the source of truth.
+vectordb/
+.chroma/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# Models cached by sentence-transformers
+.cache/
