@@ -46,6 +46,26 @@ REFUSAL_CATEGORIES = (
     "legal_advice",
 )
 
+# Someone describing what is happening to her, rather than asking a question
+# about it. Not an immediate emergency — no threat to life, no violence in
+# progress — but not a query for the corpus either.
+#
+# WHY THIS EXISTS, measured rather than assumed: every situational phrasing
+# scored beyond the relevance floor, and further from the corpus than off-topic
+# trivia did.
+#
+#   "my husband shouts at me every day" .... 0.874
+#   "my boss touches me at work" ........... 0.807
+#   "what if my boss try to touch me" ...... 0.771
+#   "How do I cook rice?" .................. 0.800
+#
+# The corpus is written as explanation ("Psychological violence refers to verbal
+# abuse, intimidation...") and she is writing a story about her life, so no
+# threshold separates the two — lowering the floor to admit her admits the
+# cooking question as well. Retrieval is the wrong tool for this input, and the
+# right answer was never a passage: it is to name the harm and hand her a human.
+DISCLOSURE_CATEGORIES = ("personal_disclosure",)
+
 # Not a safety category — a courtesy one. "hi" is not a safeguarding question,
 # and sending it to retrieval and a model costs a round trip, a little quota, and
 # on a sleeping free instance a "could not reach the service" reply to someone
@@ -56,7 +76,14 @@ GREETING_CATEGORIES = ("greeting",)
 # outcome for a given message never depends on dict ordering or regex speed.
 # Emergencies are checked before refusals: "he will kill me if I leave" is an
 # emergency, not a question about leaving.
-_PRIORITY = EMERGENCY_CATEGORIES + REFUSAL_CATEGORIES + GREETING_CATEGORIES
+_PRIORITY = (
+    EMERGENCY_CATEGORIES
+    + REFUSAL_CATEGORIES
+    # After refusals on purpose: "my husband hits me, should I leave?" is a
+    # leaving question first, because that is the one with a timing risk.
+    + DISCLOSURE_CATEGORIES
+    + GREETING_CATEGORIES
+)
 
 # Zero-width joiners and marks that break naive matching on Bangla text.
 _INVISIBLE = re.compile(r"[​‌‍﻿]")
@@ -316,6 +343,28 @@ _HARM_WORDS = (
 
 _NEAR_RULES: tuple[NearRule, ...] = (
     NearRule(
+        category="personal_disclosure",
+        # Someone with power over her, in the places this app is about.
+        first=(
+            "husband", "wife", "partner", "boss", "manager", "supervisor",
+            "teacher", "sir", "madam", "colleague", "landlord", "neighbour",
+            "neighbor", "in-law", "inlaws", "in-laws", "father-in-law",
+            "mother-in-law", "brother-in-law", "uncle", "cousin", "stepfather",
+            "স্বামী", "বস", "ম্যানেজার", "শিক্ষক", "স্যার", "সহকর্মী", "বাড়িওয়ালা",
+            "প্রতিবেশী", "শ্বশুর", "শাশুড়ি", "দেবর", "চাচা", "মামা",
+        ),
+        # What she is describing. Deliberately not the crisis words — those are
+        # already emergencies and are checked first.
+        second=(
+            "touch", "grope", "grab", "harass", "hit", "hits", "beat", "slap",
+            "shout", "insult", "abuse", "threaten", "stare", "comment",
+            "dowry", "force", "pressur",
+            "স্পর্শ", "ছোঁ", "মারে", "মারধর", "চড়", "গালি", "অপমান", "হুমকি",
+            "উত্যক্ত", "যৌতুক", "জোর", "চাপ", "হয়রানি",
+        ),
+        note="a first-person account of harm by a named person — refer, do not retrieve",
+    ),
+    NearRule(
         category="immediate_danger",
         first=("now", "currently", "এখন", "এখনই"),
         second=("danger", "unsafe", "afraid", "scared", "terrified", "hiding",
@@ -410,7 +459,7 @@ class Decision:
         nothing downstream needs to distinguish "answered locally because it was
         urgent" from "answered locally because it was a hello".
         """
-        return self.kind in ("emergency", "refuse", "greeting")
+        return self.kind in ("emergency", "refuse", "disclosure", "greeting")
 
 
 def classify(message: str) -> Decision:
@@ -436,6 +485,8 @@ def classify(message: str) -> Decision:
                 kind = "emergency"
             elif category in REFUSAL_CATEGORIES:
                 kind = "refuse"
+            elif category in DISCLOSURE_CATEGORIES:
+                kind = "disclosure"
             else:
                 kind = "greeting"
             return Decision(kind=kind, category=category, language=language, matched=matched)

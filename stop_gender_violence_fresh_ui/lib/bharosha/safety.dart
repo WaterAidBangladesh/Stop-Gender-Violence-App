@@ -37,7 +37,7 @@ class SafetyDecision {
     required this.matched,
   });
 
-  /// `emergency`, `refuse`, `greeting`, or `proceed`.
+  /// `emergency`, `refuse`, `disclosure`, `greeting`, or `proceed`.
   final String kind;
 
   /// The winning category, or null when proceeding.
@@ -54,7 +54,10 @@ class SafetyDecision {
   /// Greetings included: they are answered from the same bundled table, so a
   /// "hi" costs no round trip and works with the radio off.
   bool get stopsTurn =>
-      kind == 'emergency' || kind == 'refuse' || kind == 'greeting';
+      kind == 'emergency' ||
+      kind == 'refuse' ||
+      kind == 'disclosure' ||
+      kind == 'greeting';
 }
 
 class _NearRule {
@@ -77,6 +80,7 @@ class SafetyRules {
     required this.priority,
     required this.emergencyCategories,
     required this.refusalCategories,
+    required this.disclosureCategories,
     required this.greetingCategories,
     required Map<String, List<RegExp>> patterns,
     required List<_NearRule> nearRules,
@@ -88,6 +92,7 @@ class SafetyRules {
   final List<String> priority;
   final List<String> emergencyCategories;
   final List<String> refusalCategories;
+  final List<String> disclosureCategories;
   final List<String> greetingCategories;
   final Map<String, List<RegExp>> _patterns;
   final List<_NearRule> _nearRules;
@@ -116,6 +121,8 @@ class SafetyRules {
       emergencyCategories:
           (data['emergency_categories'] as List).cast<String>(),
       refusalCategories: (data['refusal_categories'] as List).cast<String>(),
+      disclosureCategories:
+          ((data['disclosure_categories'] as List?) ?? const []).cast<String>(),
       greetingCategories:
           ((data['greeting_categories'] as List?) ?? const []).cast<String>(),
       patterns: patterns,
@@ -205,7 +212,9 @@ class SafetyRules {
             ? 'emergency'
             : refusalCategories.contains(category)
                 ? 'refuse'
-                : 'greeting',
+                : disclosureCategories.contains(category)
+                    ? 'disclosure'
+                    : 'greeting',
         category: category,
         language: language,
         matched: matched,

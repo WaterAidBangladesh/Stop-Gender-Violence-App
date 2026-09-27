@@ -192,7 +192,10 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
       setState(() {
         _messages.add(_Message.bot(
           rules.referrals.responseFor(decision.category!, decision.language),
-          decision.kind == 'emergency'
+          // A disclosure is styled like an emergency, not like a refusal: she
+          // has told the app something difficult, and the reply should look like
+          // it was taken seriously rather than like a decline.
+          decision.kind == 'emergency' || decision.kind == 'disclosure'
               ? 'emergency'
               : decision.kind == 'greeting'
                   ? 'greeting'

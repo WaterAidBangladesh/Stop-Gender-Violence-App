@@ -344,6 +344,43 @@ NO_CONTEXT_BN = f"""এ বিষয়ে আমার কাছে নির�
 
 আপনি {SAFEGUARDING_EMAIL} ঠিকানায় ইমেইল করতে পারেন, অথবা এই অ্যাপের "Important Numbers"-এ দেওয়া সেফগার্ডিং যোগাযোগ ব্যবহার করতে পারেন।"""
 
+# DRAFT WORDING — awaiting sign-off.
+#
+# For someone describing what is being done to her. Three things it has to do and
+# one it must not:
+#
+#   name it — "this has a name and it is recognised as violence" is the single
+#     most useful sentence the app can offer, and it is WaterAid's own position;
+#   believe her — no "if this is true", no asking for detail, no suggestion that
+#     she needs proof before anyone will help;
+#   hand over a human — 109 takes exactly these complaints.
+#
+# What it must not do is advise. Not on leaving, not on confronting him, not on
+# what to do at work tomorrow. It names the harm and steps back.
+DISCLOSURE_EN = f"""Thank you for telling me. What you are describing is recognised as gender-based violence — it is not a private matter you have to manage alone, and you do not need proof before anyone will listen to you.
+
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. They take complaints of exactly this kind, including harassment at work, and can tell you what your options are.
+
+**{EMERGENCY.number}** — if you are ever in immediate danger.
+
+If this involves a WaterAid programme, workplace, staff member or partner, you can also contact a safeguarding focal point — listed under Important Numbers in this app — or email {SAFEGUARDING_EMAIL}.
+
+If the person being harmed is under 18, {CHILD.number} is the Child Helpline.
+
+I am not able to advise you on what to do next; the people on those numbers are trained for that, and they will take you seriously."""
+
+DISCLOSURE_BN = f"""আপনি বলেছেন, সেজন্য ধন্যবাদ। আপনি যা বর্ণনা করছেন তা জেন্ডারভিত্তিক সহিংসতা হিসেবে স্বীকৃত — এটি আপনার একার সামলানোর মতো ব্যক্তিগত বিষয় নয়, এবং কেউ আপনার কথা শোনার আগে আপনাকে প্রমাণ দিতে হবে না।
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। কর্মক্ষেত্রে হয়রানিসহ ঠিক এ ধরনের অভিযোগই তাঁরা নেন এবং আপনার কী কী উপায় আছে তা বলতে পারেন।
+
+**{EMERGENCY.number}** — আপনি যদি কখনো তাৎক্ষণিক বিপদে পড়েন।
+
+এটি যদি ওয়াটারএইডের কোনো কার্যক্রম, কর্মক্ষেত্র, কর্মী বা সহযোগী সংস্থার সঙ্গে সম্পর্কিত হয়, তাহলে সেফগার্ডিং ফোকাল পয়েন্টের সঙ্গেও যোগাযোগ করতে পারেন — তালিকা এই অ্যাপের "Important Numbers"-এ আছে — অথবা ইমেইল করুন {SAFEGUARDING_EMAIL}।
+
+ক্ষতিগ্রস্ত ব্যক্তির বয়স ১৮ বছরের কম হলে {CHILD.number} শিশু হেল্পলাইন।
+
+এরপর কী করবেন সে বিষয়ে আমি পরামর্শ দিতে পারি না; উপরের নম্বরগুলোর মানুষ সেজন্য প্রশিক্ষিত, এবং তাঁরা আপনার কথা গুরুত্ব দিয়ে নেবেন।"""
+
 # Short on purpose. Someone who typed "hi" has not asked a question yet, and the
 # no-context text — which is written to rescue a real question the corpus cannot
 # answer — reads as a wall in response to a greeting.
@@ -449,6 +486,7 @@ RESPONSES: dict[str, dict[str, str]] = {
     "legal_advice": {"en": REFUSE_LEGAL_EN, "bn": REFUSE_LEGAL_BN},
     "confront_or_evidence": {"en": REFUSE_CONFRONT_EN, "bn": REFUSE_CONFRONT_BN},
     "no_context": {"en": NO_CONTEXT_EN, "bn": NO_CONTEXT_BN},
+    "personal_disclosure": {"en": DISCLOSURE_EN, "bn": DISCLOSURE_BN},
     "greeting": {"en": GREETING_EN, "bn": GREETING_BN},
     "unreachable": {"en": UNREACHABLE_EN, "bn": UNREACHABLE_BN},
     "starting": {"en": STARTING_EN, "bn": STARTING_BN},

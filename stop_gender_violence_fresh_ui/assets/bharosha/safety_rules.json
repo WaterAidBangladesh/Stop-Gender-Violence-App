@@ -14,6 +14,9 @@
     "economic_rights",
     "legal_advice"
   ],
+  "disclosure_categories": [
+    "personal_disclosure"
+  ],
   "greeting_categories": [
     "greeting"
   ],
@@ -28,6 +31,7 @@
     "confront_or_evidence",
     "economic_rights",
     "legal_advice",
+    "personal_disclosure",
     "greeting"
   ],
   "invisible_characters": [
@@ -182,6 +186,80 @@
     ]
   },
   "near_rules": [
+    {
+      "category": "personal_disclosure",
+      "first": [
+        "husband",
+        "wife",
+        "partner",
+        "boss",
+        "manager",
+        "supervisor",
+        "teacher",
+        "sir",
+        "madam",
+        "colleague",
+        "landlord",
+        "neighbour",
+        "neighbor",
+        "in-law",
+        "inlaws",
+        "in-laws",
+        "father-in-law",
+        "mother-in-law",
+        "brother-in-law",
+        "uncle",
+        "cousin",
+        "stepfather",
+        "স্বামী",
+        "বস",
+        "ম্যানেজার",
+        "শিক্ষক",
+        "স্যার",
+        "সহকর্মী",
+        "বাড়িওয়ালা",
+        "প্রতিবেশী",
+        "শ্বশুর",
+        "শাশুড়ি",
+        "দেবর",
+        "চাচা",
+        "মামা"
+      ],
+      "second": [
+        "touch",
+        "grope",
+        "grab",
+        "harass",
+        "hit",
+        "hits",
+        "beat",
+        "slap",
+        "shout",
+        "insult",
+        "abuse",
+        "threaten",
+        "stare",
+        "comment",
+        "dowry",
+        "force",
+        "pressur",
+        "স্পর্শ",
+        "ছোঁ",
+        "মারে",
+        "মারধর",
+        "চড়",
+        "গালি",
+        "অপমান",
+        "হুমকি",
+        "উত্যক্ত",
+        "যৌতুক",
+        "জোর",
+        "চাপ",
+        "হয়রানি"
+      ],
+      "window": 8,
+      "note": "a first-person account of harm by a named person — refer, do not retrieve"
+    },
     {
       "category": "immediate_danger",
       "first": [

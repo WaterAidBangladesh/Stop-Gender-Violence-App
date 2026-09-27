@@ -95,7 +95,17 @@ def test_shared_cases_cover_both_languages_and_all_outcomes() -> None:
     languages = {case["language"] for case in cases}
     assert languages == {"en", "bn"}
     kinds = {case["kind"] for case in cases}
-    assert kinds == {"emergency", "refuse", "greeting", "proceed"}
+    assert kinds == {"emergency", "refuse", "disclosure", "greeting", "proceed"}
+
+
+def test_situational_phrasings_are_covered() -> None:
+    """The corpus-facing tests were all definitional, and that blind spot cost a
+    real failure: a woman describing her boss touching her got "I don't have
+    reliable information about that". First-person accounts must stay covered."""
+    cases = export_shared.test_cases()["cases"]
+    disclosures = [c for c in cases if c["kind"] == "disclosure"]
+    assert len(disclosures) >= 10, "too few situational phrasings to trust"
+    assert {c["language"] for c in disclosures} == {"en", "bn"}
     # Every emergency category should appear at least once in the shared corpus:
     # an untested emergency category is the one that fails in the field.
     covered = {case["category"] for case in cases}

@@ -91,6 +91,12 @@ def chat(request: ChatRequest, http: Request) -> dict[str, str]:
     if decision.kind == "refuse":
         return _reply(decision.category, decision.language, "refusal")
 
+    # Someone describing what is happening to her. Retrieval is the wrong tool —
+    # measured, her words sit further from the corpus than a cooking question —
+    # and the right answer was never a passage. Named and referred, locally.
+    if decision.kind == "disclosure":
+        return _reply(decision.category, decision.language, "disclosure")
+
     # A greeting costs nothing to answer and needs no corpus. Before the rate
     # limiter for the same reason emergencies are: it never reaches the model.
     if decision.kind == "greeting":
