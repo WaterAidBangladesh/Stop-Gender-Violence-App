@@ -1,0 +1,447 @@
+{
+  "_status": "MACHINE TRANSLATED, PENDING HUMAN REVIEW. Produced by tools/translate_corpus.py. To correct an entry: edit its bn text and set review to \"human\". Rebuild with build_corpus.py to apply.",
+  "_review_states": {
+    "machine_pending_review": "translated by the model, not yet checked",
+    "human": "written or corrected by a person — never overwritten"
+  },
+  "translations": {
+    "ext-bbs2024-about-0": {
+      "bn": "About the 2024 Violence Against Women Survey in Bangladesh\n\n২০২৪ সালের নারী-বিরোধী সহিংসতা (VAW) সমীক্ষা বাংলাদেশ পরিসংখ্যান ব্যুরো দ্বারা পরিচালিত একটি জাতীয় প্রতিনিধিত্বমূলক সমীক্ষা, যা নারী ও শিশু বিষয়ক মন্ত্রণালয়ের সাথে এবং UNFPA বাংলাদেশ থেকে প্রযুক্তিগত সহায়তায় সম্পন্ন হয়েছে। ২৭,৪৭৬ জন উত্তরদাতা সহ, এটি বাংলাদেশে এবং বিশ্বব্যাপী এই ধরনের সমীক্ষার মধ্যে সর্ববৃহৎ। এটি ২০১১ ও ২০১৫ সালের আগের রাউন্ডগুলিকে অনুসরণ করে, গ্রামীণ, শহুরে ও শহর কর্পোরেশন এলাকাসহ সমস্ত আটটি প্রশাসনিক বিভাগকে আচ্ছাদিত করে, এবং গৃহপালিত এলাকা ও দুর্যোগপ্রবণ এলাকা, এবং প্রতিবন্ধিতা সহ নারীদের জন্য পৃথক অনুমান অন্তর্ভুক্ত করে।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024 (with the Ministry of Women and Children Affairs and UNFPA Bangladesh)"
+    },
+    "ext-bbs2024-adolescents-0": {
+      "bn": "কোন্ নারীরা বাংলাদেশে সবচেয়ে বেশি ঝুঁকিতে আছেন?\n\nবিবাহিত কিশোরী মেয়েরা যাদের বয়স ১৫ থেকে ১৯, তারা ঘনিষ্ঠ সঙ্গীর সহিংসতার সর্বোচ্চ হার বহন করে, যা গত ১২ মাসে এমন সহিংসতার সমস্ত ভুক্তভোগীর ৬২%। ১৫ থেকে ১৯ বছর বয়সী কিশোরীরা স্বামী ছাড়া অন্য ব্যক্তিদের থেকে সহিংসতার সর্বোচ্চ ঝুঁকির মুখোমুখি হন; ৫৫ বছর এবং তার বেশি বয়সী নারীদের এই সহিংসতা অভিজ্ঞতা করার সম্ভাবনা কিশোরী মেয়েদের তুলনায় ৯১% কম।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-awareness-0": {
+      "bn": "Do women know where to report violence in Bangladesh?\n\nMost do not. Only 12% of women knew about the national helpline for violence against women and children, and 45% knew about the national emergency number. Fewer than half — 48.5% — said they know where to report violence at all. Among women who are aware of reporting mechanisms, the police or thana is by far the most recognised (91%), followed by local governance structures (32%) and village leaders or mediators (26%). Specialised services such as One Stop Crisis Centres are known to only 2% of women.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-costs-0": {
+      "bn": "What does violence cost survivors in Bangladesh?\n\nMedical treatment costs an average of BDT 2,512 per survivor, slightly higher in rural areas (BDT 2,672) than urban (BDT 2,394). Legal proceedings cost considerably more, averaging BDT 4,104, and more in urban areas (BDT 4,341) than rural (BDT 3,780). Combined out-of-pocket costs average BDT 2,674, with rural survivors paying more.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-decline-0": {
+      "bn": "Is violence against women in Bangladesh getting better or worse?\n\nViolence against women is preventable, and it is declining. Since 2015 most forms of intimate partner violence have fallen, with total prevalence in the past 12 months dropping from around 66% to 49% — a decrease of nearly 17 percentage points. Violence by non-partners has also declined: physical violence in the past 12 months fell from nearly 6% in 2015 to around 4% in 2024, and sexual violence from 2.5% to 0.5%.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-education-0": {
+      "bn": "Does education make a difference to violence?\n\nYes. Women whose husbands completed secondary education face 17% lower odds of facing violence, and those whose husbands hold a bachelor's degree or higher face 32% lower odds. Education protects against violence by non-partners as well: women with primary education have 26% lower odds than women with no or pre-primary education, secondary education reduces the odds by 58%, and a bachelor's degree or higher by 59%.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-health-seeking-0": {
+      "bn": "Do survivors get medical help?\n\nRarely. Only 14.5% of women sought any treatment following violence in the last 12 months. Of those who did, 93% sought it for physical injuries, 15.5% for emotional violence and just 1.5% for sexual violence. Pharmacies were the most used source (61%), followed by government hospitals (18%) and private doctors' chambers (17%). Among those who did not seek treatment, most felt it was unnecessary (75%), while fear, stigma and concerns about social prestige accounted for about 10% and financial constraints 4%.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-inlaws-0": {
+      "bn": "Violence from in-laws\n\nIn-depth research alongside the survey found economic, emotional and controlling abuse frequently perpetrated by in-laws, intensified where a woman lives with her husband's family. Mothers-in-law and sisters-in-law were reported restricting women's finances, education and even access to food. One respondent described it this way: her mother-in-law began giving her not enough food, and would eat with her own sons and daughters without allowing her at the same table.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-ipv-forms-0": {
+      "bn": "Which forms of violence by husbands are most common in Bangladesh?\n\nControlling behaviour is the most common form, affecting 68% of women in their lifetime, followed by physical violence at 47%, emotional violence at 37%, sexual violence at 29% and economic violence at 20%. For violence in the last 12 months the order is similar: controlling behaviour 44%, emotional violence 18%, economic violence 11%, physical violence 11% and sexual violence 9%.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-ipv-prevalence-0": {
+      "bn": "How common is violence by husbands in Bangladesh?\n\nThree in four women have faced violence in their lifetime: 76% of women have experienced one or more forms of intimate partner violence — physical, sexual, emotional or economic violence, or controlling behaviour — at some point in their lives. Nearly half, 49%, experienced such violence in the last 12 months. More than half, 54%, have experienced physical or sexual violence or both from a husband during their lifetime, and 16% of those in the last 12 months.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-legal-action-0": {
+      "bn": "How many survivors take formal action?\n\nFew. Only 7% of survivors of violence by a husband pursued legal action in the last 12 months, and 13% at some point in their lifetime. Local leaders are the most common authority approached, accounting for 41% of legal actions and contacted by 58% of survivors, followed by the police at 25% of actions. Far fewer turn to courts or government facilities.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-norms-0": {
+      "bn": "What drives violence against women in Bangladesh?",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-norms-1": {
+      "bn": "The survey's in-depth research found violence is often triggered by conflicts around gendered household and caregiving duties, by women's attempts to seek help, and by wider family tensions. Men's attitudes — framing violence as a private matter — shape the daily reality of it. The research concluded that intimate partner violence is rooted in harmful social and gender norms and unequal power, and that its effects extend to children. Attitudes recorded during the research included the belief that controlling a wife is part of a husband's duty, and that forced sex within marriage is not violence. Both beliefs are contradicted by the evidence and by law.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-npv-0": {
+      "bn": "Violence from people other than a husband\n\nNearly 16% of women in Bangladesh experienced physical or sexual violence from someone who was not a husband in their lifetime, and around 4% in the past year. Most of it comes from family or acquaintances rather than strangers: mothers-in-law (35%), other male family members (34%), brothers or sisters-in-law (29%) and mothers (20.5%) are the most frequently reported perpetrators of physical violence. Nearly half of survivors of non-partner physical violence reported more than one perpetrator.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-partner-vs-nonpartner-0": {
+      "bn": "Are women more at risk from a husband or from others?\n\nFrom a husband. Women in Bangladesh are three times more likely to experience physical violence from an intimate partner (47%) than from a non-partner (15%), and over 13 times more likely to face sexual violence from a partner (29%) than from a non-partner (2.2%).",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-pregnancy-0": {
+      "bn": "Does violence continue during pregnancy?\n\nYes. More than 7% of women experienced physical or sexual violence during pregnancy in their lifetime, and 4% in the past 12 months. In-depth research accompanying the survey found that violence often escalates during pregnancy rather than pausing.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-recommendations-0": {
+      "bn": "২০২৪ সালের জরিপটি নারীদের বিরুদ্ধে সহিংসতা শেষ করতে কী সুপারিশ করে?",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-recommendations-1": {
+      "bn": "দুটি দিক। প্রতিক্রিয়া শক্তিশালী করা: স্বাস্থ্য, আইনগত, সামাজিক ও বিচারিক সেবায় সর্বজনীন প্রবেশাধিকার, বহুবিভাগীয় সমন্বয়, সুপ্রশিক্ষিত কর্মী, স্বাস্থ্য ব্যবস্থায় সংহত সুরক্ষা সেবা, মানসিক স্বাস্থ্য ও মনোসামাজিক সহায়তা সম্প্রসারণ, এবং নিরাপদ অর্থনৈতিক সহায়তা ও আশ্রয় — কিশোরী মেয়ে, স্লাম এলাকার নারী ও প্রতিবন্ধী নারীদের পৌঁছানোর জন্য উপযোগী।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-recommendations-2": {
+      "bn": ". Invest in prevention: address the drivers, including harmful social and gender norms, substance abuse, dowry practices and child marriage, through positive parenting, healthy couple relationships, gender-equitable attitudes among adolescents, engaging men and boys, quality education, and economic empowerment combined with shifting unequal power relations.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-repetition-0": {
+      "bn": "Is violence usually a one-off incident?\n\nNo. Among women who experienced physical violence in the last 12 months, one in two faced it several times. Among those who experienced sexual violence in the same period, three in five went through it several times. Violence by a husband is typically repeated rather than isolated.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-risk-factors-0": {
+      "bn": "What raises a woman's risk of violence in Bangladesh?\n\nDowry increases a woman's risk of violence by 76%. A husband's extramarital relationships increase the risk 2.3-fold and drug addiction 1.7-fold. Where a woman lives matters too: women in urban slums face a 47% higher risk of intimate partner violence than those in non-slum areas, and women in city corporation areas face a 35% higher risk than those elsewhere. Women with disabilities face higher risk of violence from non-partners — 54% higher odds for those with some functional difficulty.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-silence-0": {
+      "bn": "কেন নারীরা কোনোকে সহিংসতা সম্পর্কে জানায় না?\n\nপ্রায় তিনজন নারীর মধ্যে দুইজন — ৬৪% — কখনও তাদের অভিজ্ঞতা কারো সাথে শেয়ার করেননি। যাঁরা শেয়ার করেছেন, তাঁদের মধ্যে বেশিরভাগই পিতামাতার কাছে, তারপর অন্যান্য পরিবার সদস্যদের কাছে গোপনীয়তা প্রকাশ করেছেন। প্রকাশ না করার সবচেয়ে সাধারণ কারণ ছিল যে এটি অপ্রয়োজনীয় বলে বিবেচিত হয়েছিল (৩৯%); ১৪% এর বেশি পরিবারিক সম্মান হারানোর ভয় পেয়েছিলেন এবং ১৩% জনসমক্ষে লজ্জা পাওয়ার বিষয়ে উদ্বিগ্ন ছিলেন। অপরাধীর ভয়, তালাকের ভয়, সহিংসতার বৃদ্ধি, এবং পরিবারিক প্রতিশোধের ভয়ও বাধা হিসেবে চিহ্নিত হয়েছিল।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-tfgbv-0": {
+      "bn": "অনলাইন এবং প্রযুক্তি-সহায়তায় সংঘটিত সহিংসতা বাংলাদেশে",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-bbs2024-tfgbv-1": {
+      "bn": "Over 8% of women with access to technology experienced unwanted sexual communications, sexual blackmail, image-based abuse or technology-facilitated controlling behaviour in their lifetime, and over 5% in the past year. It is most common in city corporation areas, where lifetime prevalence reaches nearly 12%, and among younger women: 16% of those aged 20 to 24, compared with 1.4% of women aged 60 and above. Unlike other forms of violence, strangers are the main perpetrators, accounting for 46% of cases of technology-facilitated harassment and blackmail. Within marriages, image-based sexual abuse was the most commonly reported form, often alongside physical and sexual violence.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024"
+    },
+    "ext-unwomen-femicide-trafficking-0": {
+      "bn": "ফেমিসাইড এবং মানব পাচার কী?\n\nফেমিসাইড হল একটি নারী বা মেয়েকে ইচ্ছাকৃতভাবে হত্যা করা কারণ তিনি নারী বা মেয়ে। এতে পরিবার সদস্যদের দ্বারা যৌন পবিত্রতার ধারণাগত লঙ্ঘনের কারণে তথাকথিত সম্মান হত্যাকাণ্ড অন্তর্ভুক্ত। মানব পাচার হল একটি বৈশ্বিক অপরাধ যা মানুষকে বাণিজ্য করে এবং লাভের জন্য তাদের শোষণ করে; নারীরা প্রধান লক্ষ্য, এবং মেয়েদের প্রধানত যৌন শোষণের জন্য পাচার করা হয়।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "UN Women, Types of violence against women and girls"
+    },
+    "ext-unwomen-harmful-practices-0": {
+      "bn": "What are harmful practices, child marriage and forced marriage?\n\nHarmful practices are violations of human rights that affect sexual and reproductive health. Child marriage is any marriage where at least one party is under 18. Forced marriage is marriage entered into without the full and free consent of one or both parties. Both are recognised internationally as forms of violence, whatever the local custom around them.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "UN Women, Types of violence against women and girls"
+    },
+    "ext-unwomen-ipv-types-0": {
+      "bn": "কোন কোন রূপে ঘনিষ্ঠ সঙ্গীর সহিংসতা ঘটে?\n\nশারীরিক সহিংসতা, যেমন চড় মারা, গলা চেপে ধরা বা পোড়ানো। যৌন সহিংসতা, যার মধ্যে জোরপূর্বক কাজ এবং স্বামী/স্ত্রীর দ্বারা ধর্ষণ অন্তর্ভুক্ত। মানসিক সহিংসতা, যার মধ্যে হুমকি এবং জোরপূর্বক বিচ্ছিন্নতা অন্তর্ভুক্ত। অর্থনৈতিক সহিংসতা, যেমন গৃহস্থালির অর্থ নিয়ন্ত্রণ করা, টাকা আটকে রাখা, অথবা একজন মহিলাকে পড়াশোনা বা কাজ করতে নিষেধ করা। এই চারটি রূপই স্বীকৃত সহিংসতার ধরন, ব্যক্তিগত বিষয় নয়।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "UN Women, Types of violence against women and girls"
+    },
+    "ext-unwomen-online-violence-0": {
+      "bn": "What is online or technology-facilitated violence?\n\nAny harmful act committed, assisted, aggravated or amplified by digital tools or information and communication technologies. Examples include cyberbullying — intimidating or threatening messages; non-consensual sharing of explicit messages or photographs; and doxing, the public release of someone's private identifying information. It is violence, not a lesser category of harm, and it commonly accompanies offline abuse.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "UN Women, Types of violence against women and girls"
+    },
+    "ext-unwomen-sexual-violence-0": {
+      "bn": "What counts as sexual violence and sexual harassment?",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "UN Women, Types of violence against women and girls"
+    },
+    "ext-unwomen-sexual-violence-1": {
+      "bn": "সেক্সুয়াল সহিংসতা হল যেকোনো অনাকাঙ্ক্ষিত বা ক্ষতিকর যৌন আচরণ যা কারো উপর আরোপিত হয়: অপব্যবহারমূলক যৌন সংস্পর্শ, যৌন কার্যকলাপে জোরপূর্বক অংশগ্রহণ, সম্মতি ছাড়া চেষ্টা করা বা সম্পন্ন করা যৌন কার্যকলাপ, যৌন হয়রানি, মৌখিক অপব্যবহার, হুমকি, প্রকাশ এবং অনাকাঙ্ক্ষিত স্পর্শ। যৌন হয়রানি হল মৌখিক, অ-মৌখিক বা শারীরিক আচরণ যা যৌন প্রকৃতির — অনাকাঙ্ক্ষিত স্পর্শ, বারবার ডেটের অনুরোধ, বা কারো চেহারা সম্পর্কে যৌন মন্তব্য। ধর্ষণ হল সম্মতি ছাড়া যৌন প্রবেশ, যা জোর, বাধ্যবাধকতা বা ক্ষমতার অপব্যবহার দ্বারা অর্জিত হয়। যৌন শোষণ হল কারো দুর্বলতা বা ক্ষমতার অবস্থানকে যৌন উদ্দেশ্য বা লাভের জন্য অপব্যবহার।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "UN Women, Types of violence against women and girls"
+    },
+    "ext-who-children-0": {
+      "bn": "কিভাবে ঘরে সহিংসতা শিশুদের প্রভাবিত করে?\n\nযেসব শিশু এমন পরিবারে বড় হয় যেখানে সহিংসতা বিদ্যমান, তারা আচরণগত ও আবেগীয় ব্যাধিতে ভুগতে পারে, এবং শিশু ও নবজাতকের মৃত্যুহার ও অসুস্থতার উচ্চ হারের সম্মুখীন হয়। শৈশবে সহিংসতা প্রত্যক্ষ করা পরবর্তীতে সহিংসতা অভিজ্ঞতা করা বা সংঘটিত করার উচ্চতর ঝুঁকির সাথে যুক্ত, যা সহিংসতা এক প্রজন্ম থেকে অন্য প্রজন্মে সঞ্চারিত হওয়ার উপায়গুলির একটি।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "World Health Organization, Violence against women fact sheet"
+    },
+    "ext-who-definition-0": {
+      "bn": "**How do the UN and WHO define violence against women?**\n\nThe United Nations defines violence against women as any act of **জেন্ডারভিত্তিক সহিংসতা** that results in, or is likely to result in, physical, sexual or mental harm or suffering to women, including threats of such acts, coercion or arbitrary deprivation of liberty, whether it occurs in public or in private life. Intimate partner violence is behaviour by a current or former partner that causes physical, sexual or psychological harm, including physical aggression, sexual coercion, psychological abuse and **নিয়ন্ত্রণমূলক আচরণ**.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "World Health Organization, Violence against women fact sheet"
+    },
+    "ext-who-global-prevalence-0": {
+      "bn": "কতটা সাধারণ বিশ্বব্যাপী নারীদের বিরুদ্ধে সহিংসতা?\n\nপ্রায় এক তৃতীয়াংশ নারী — ৩১.৬%, বা ৮৪০ মিলিয়ন — জীবনের অন্তত একবার ঘনিষ্ঠ সঙ্গীর কাছ থেকে শারীরিক বা যৌন সহিংসতা, অথবা অ-সঙ্গীর কাছ থেকে যৌন সহিংসতা অভিজ্ঞতা করেছেন। ১৫ থেকে ৪৯ বছর বয়সী যেসব নারী সম্পর্কের মধ্যে ছিলেন, তাদের মধ্যে প্রায় এক চতুর্থাংশ শারীরিক বা যৌন সহিংসতা অভিজ্ঞতা করেছেন। ১৫ থেকে ১৯ বছর বয়সী মেয়েদের মধ্যে একের বেশি পাঁচজনের বেশি সঙ্গীর সহিংসতা অভিজ্ঞতা করেছেন। প্রাদুর্ভাব সর্বোচ্চ ওশেনিয়া (৩৭%), সাব-সাহারান আফ্রিকা (৩২%) এবং দক্ষিণ এশিয়া (৩১%) তে, যেখানে বাংলাদেশ অন্তর্ভুক্ত।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "World Health Organization, Violence against women fact sheet"
+    },
+    "ext-who-health-consequences-0": {
+      "bn": "What does violence do to a woman's health?\n\nThe consequences reach far beyond immediate injury. They include physical injuries, headaches, chronic pain and gastrointestinal problems; reproductive harm including unintended pregnancy, sexually transmitted infections including HIV, miscarriage and low birth weight; and mental health effects including depression, post-traumatic stress disorder, anxiety, sleep difficulties and suicide attempts. Violence is also linked to increased smoking, substance use and risky sexual behaviour. In 2023, 140 women and girls were killed by partners or family members every day worldwide.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "World Health Organization, Violence against women fact sheet"
+    },
+    "ext-who-risk-factors-0": {
+      "bn": "What increases the risk of violence against women?\n\nAt the individual and relationship level: lower levels of education, a history of exposure to child maltreatment, witnessing family violence, mental health problems, harmful use of alcohol, attitudes that accept violence, and controlling behaviour by a partner. At the community and societal level: harmful gender norms, poverty, high prevalence of child marriage, community violence, weak or unenforced laws, and gender discrimination in institutions.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "World Health Organization, Violence against women fact sheet"
+    },
+    "ext-who-services-0": {
+      "bn": "What does WHO say survivors need?\n\nWHO recommends comprehensive, survivor‑centred health services, with protocols and trained staff; integration of protection services into the health system; coordination between health, justice and social services; data and research on prevalence; advocacy for gender‑equal norms; and enacting and enforcing laws that protect women.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "World Health Organization, Violence against women fact sheet"
+    },
+    "hub-1-Core Principles of Safeg-0": {
+      "bn": "What is Safeguarding? — Core Principles of Safeguarding\n\n1. **সুরক্ষা** – Ensuring people are safe from harm, abuse, and exploitation.\n2. **প্রতিরোধ** – Taking proactive steps to stop safeguarding incidents before they occur.\n3. **ক্ষমতায়ন** – Supporting individuals to understand their rights and to speak up safely.\n4. **অংশীদারিত্ব** – Working collaboratively with communities and partners to uphold shared safeguarding standards.\n5. **জবাবদিহিতা** – Ensuring leaders, staff, and partners are responsible for promoting and maintaining a safe culture.\n6. **ভুক্তভোগী-কেন্দ্রিক পদ্ধতি** – Responding to concerns with dignity, respect, and care for those affected.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "What is Safeguarding? (WaterAid Shomota Shurokkha Knowledge Hub)"
+    },
+    "hub-1-Everyday Examples of Saf-0": {
+      "bn": "What is Safeguarding? — Everyday Examples of Safeguarding\n\n- A community member safely reporting a সেফগার্ডিং concern.\n- A teacher identifying and escalating signs of abuse.\n- Partners implementing safer recruitment and child সুরক্ষা policies.\n- Creating safe spaces for women, children, and marginalised groups.\n- Staff completing সেফগার্ডিং training and modelling respectful behaviour.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "What is Safeguarding? — WaterAid Global Safeguarding Policy"
+    },
+    "hub-1-What is Safeguarding?-0": {
+      "bn": "What is Safeguarding? — What is Safeguarding?\n\nSafeguarding means protecting people's health, wellbeing, and human rights so that everyone can live free from harm, abuse, neglect, and exploitation. It applies to children and adults alike, especially those who may be more vulnerable due to power imbalances or inequality.\n\nWaterAid adopts a zero-tolerance approach to all forms of abuse, and we are committed to creating a culture of safety, trust, and accountability across all areas of our work.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "What is Safeguarding? (WaterAid Shomota Shurokkha Knowledge Hub)"
+    },
+    "hub-1-Why Safeguarding Matters-0": {
+      "bn": "What is Safeguarding? — Why Safeguarding Matters\n\nসেফগার্ডিং ব্যক্তিবর্গ ও সম্প্রদায়কে ক্ষতি থেকে রক্ষা করে এবং যেসব প্রতিষ্ঠান তাদের সেবা দেয় তাদের প্রতি আস্থা গড়ে তোলে। এটি নিশ্চিত করে যে WaterAid-এর কাজের সাথে জড়িত সবাই—কর্মচারী, অংশীদার, স্বেচ্ছাসেবক, এবং সম্প্রদায়ের সদস্য—সম্মানের সাথে আচরণ পায় এবং ভয় ছাড়াই উদ্বেগ প্রকাশ করতে পারে। একটি শক্তিশালী সেফগার্ডিং সংস্কৃতি WaterAid-এর মিশন অর্জন এবং এর অখণ্ডতা, অন্তর্ভুক্তি ও জবাবদিহিতার মূল্যবোধ বজায় রাখার জন্য অপরিহার্য।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "What is Safeguarding? (WaterAid Shomota Shurokkha Knowledge Hub)"
+    },
+    "hub-2-Everyday Examples of GBV-0": {
+      "bn": "What is Gender-Based Violence? — Everyday Examples of GBV\n\n- সেফগার্ডিং এবং বাল্যবিবাহ\n- ঘনিষ্ঠ সঙ্গীর সহিংসতা\n- যৌন হয়রানি জনসাধারণ বা কর্মস্থলে\n- মেয়েদের শিক্ষার বা স্বাস্থ্যসেবার অস্বীকৃতি\n- পরিবারে আবেগীয় সহিংসতা বা হুমকি\n- বেতন, চলাচল বা সিদ্ধান্ত গ্রহণে বৈষম্য",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "What is Gender-Based Violence? — Manusher Jonno Foundation (MJF)"
+    },
+    "hub-2-Forms of GBV-0": {
+      "bn": "What is Gender-Based Violence? — Forms of GBV\n\n1. Physical violence – beating, slapping, and physical assault.  \n2. Sexual violence – rape, harassment, exploitation, and coercion.  \n3. Psychological or emotional abuse – humiliation, threats, and intimidation.  \n4. Economic violence – denial of financial rights, dowry-related abuse, and economic dependency.  \n5. Harmful practices – early or forced marriage, and social exclusion based on gender.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "What is Gender-Based Violence? (WaterAid Shomota Shurokkha Knowledge Hub)"
+    },
+    "hub-2-What is Gender-Based Vio-0": {
+      "bn": "What is Gender-Based Violence? — What is Gender-Based Violence?\n\nGender-Based Violence (GBV) refers to any act of physical, sexual, psychological, or economic harm directed against a person because of their gender. It is rooted in unequal power relations, social norms, and patriarchal structures that sustain gender discrimination. In the context of Bangladesh, GBV remains one of the most prevalent human rights violations, affecting women and girls disproportionately — through domestic abuse, early marriage, sexual harassment, and workplace exploitation. GBV is not confined to private spaces; it occurs at home, in public areas, and within institutions, reflecting the deep intersection between gender inequality, poverty, and social injustice.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "What is Gender-Based Violence? (WaterAid Shomota Shurokkha Knowledge Hub)"
+    },
+    "hub-2-Why Addressing GBV Matte-0": {
+      "bn": "What is Gender-Based Violence? — Why Addressing GBV Matters\n\nGBV violates fundamental human rights and undermines equality, dignity, and security. The MJF baseline survey revealed that violence not only causes physical and emotional suffering but also limits women’s mobility, economic participation, and social empowerment. It weakens community cohesion, perpetuates intergenerational cycles of abuse, and impedes national progress towards gender justice and sustainable development.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "What is Gender-Based Violence? (WaterAid Shomota Shurokkha Knowledge Hub)"
+    },
+    "hub-3-Types of Gender-Based Vi-0": {
+      "bn": "প্রকারভেদ জেন্ডারভিত্তিক সহিংসতা — জেন্ডারভিত্তিক সহিংসতার প্রকারভেদ\n\nজেন্ডারভিত্তিক সহিংসতা বহু আন্তঃসংযুক্ত রূপে প্রকাশ পায় যা প্রায়শই নারীদের জীবনে ওভারল্যাপ করে। এই প্রকারভেদগুলো চিহ্নিত করা কার্যকর প্রতিরোধ ও প্রতিক্রিয়া প্রক্রিয়া বিকাশের জন্য অত্যন্ত গুরুত্বপূর্ণ:\n\n1. শারীরিক সহিংসতা: মারধর, চড় মারা, বা অন্যান্য শারীরিক ক্ষতির রূপ অন্তর্ভুক্ত।\n\n2. যৌন সহিংসতা: ধর্ষণ, হয়রানি, এবং অনাকাঙ্ক্ষিত যৌন অগ্রগতি অন্তর্ভুক্ত।\n\n3. মানসিক বা আবেগীয় সহিংসতা: মৌখিক অপব্যবহার, ভীতি প্রদর্শন, অপমান, এবং নিয়ন্ত্রণমূলক আচরণকে নির্দেশ করে।\n\n4. অর্থনৈতিক সহিংসতা: আয়ের প্রবেশাধিকার সীমিত করা, সম্পত্তি বা উত্তরাধিকার অধিকার অস্বীকার করা, এবং আর্থিক নির্ভরতা আরোপ করা অন্তর্ভুক্ত।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Types of Gender Based Violence — Manusher Jonno Foundation (MJF)"
+    },
+    "hub-3-Types of Gender-Based Vi-1": {
+      "bn": "Types of Gender Based Violence — Types of Gender-Based Violence\n\n5. Harmful Traditional Practices: Includes early and forced marriage, dowry-related abuse, and other culturally sanctioned practices.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Types of Gender Based Violence — Manusher Jonno Foundation (MJF)"
+    },
+    "hub-4-Roles & Responsibilities-0": {
+      "bn": "Roles & Responsibilities in Safeguarding — Roles & Responsibilities in Safeguarding\n\nSafeguarding is a collective responsibility that requires active participation from all levels of society. Key roles include:",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Roles & Responsibilities in Safeguarding — WaterAid Global Safeguarding Framework 2023-2028"
+    },
+    "hub-4-Roles & Responsibilities-1": {
+      "bn": "Roles & Responsibilities in সেফগার্ডিং — Roles & Responsibilities in সেফগার্ডিং\n\n- **Individuals:** Be vigilant and report any concerns or incidents of harm. Respect personal boundaries and contribute to creating safe environments.\n- **Community Leaders:** Raise awareness about সেফগার্ডিং, model safe practices, and support community members in accessing help and protection.\n- **Organisations & Partners:** Develop and enforce সেফগার্ডিং policies, provide regular training for staff and volunteers, ensure safe recruitment practices, and create mechanisms to report and respond to concerns effectively.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Roles & Responsibilities in Safeguarding — WaterAid Global Safeguarding Framework 2023-2028"
+    },
+    "hub-4-Roles & Responsibilities-2": {
+      "bn": "Roles & Responsibilities in Safeguarding — Roles & Responsibilities in Safeguarding\n\n- **Government & Authorities:** Establish and enforce laws and regulations that protect vulnerable people, fund services such as shelters, hotlines, and counselling, and monitor compliance with safeguarding standards.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Roles & Responsibilities in Safeguarding — WaterAid Global Safeguarding Framework 2023-2028"
+    },
+    "hub-4-Roles & Responsibilities-3": {
+      "bn": "Roles & Responsibilities in Safeguarding — Roles & Responsibilities in Safeguarding\n\nBy fulfilling these responsibilities, everyone contributes to a culture of safety, trust, and accountability, ensuring that vulnerable people are protected and can thrive.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Roles & Responsibilities in Safeguarding — WaterAid Global Safeguarding Framework 2023-2028"
+    },
+    "hub-6-Prevention of Gender-Bas-0": {
+      "bn": "Prevention of Gender Based Violence — Prevention of Gender-Based Violence\n\nPrevention must go beyond awareness—it requires transforming social norms, strengthening institutions, and empowering individuals and communities.\n\nKey prevention strategies include education, women’s empowerment, community engagement, legal strengthening, workplace/public space safety, bystander action, and media advocacy.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Prevention of Gender Based Violence — Manusher Jonno Foundation (MJF)"
+    },
+    "hub-7-Myths vs. Facts about Ge-0": {
+      "bn": "Myths vs. Facts about Gender Based Violence — Myths vs. Facts about Gender-Based Violence\n\nPersistent myths and misconceptions continue to normalize and excuse GBV. Dispelling these myths is key to building awareness, empathy, and accountability.\n\nMyth: Gender-Based Violence only happens to women.  \nFact: While women and girls are disproportionately affected, GBV can impact anyone—including men, boys, and gender-diverse individuals.\n\nMyth: GBV is a private issue that should stay within the family.  \nFact: GBV is a violation of human rights and a criminal offense.\n\nMyth: Survivors provoke or deserve the violence.  \nFact: Responsibility always lies with the perpetrator.\n\nMyth: Only physical assault qualifies as GBV.  \nFact: GBV includes emotional, psychological, economic, and sexual abuse.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Myths vs. Facts about Gender Based Violence — Manusher Jonno Foundation (MJF)"
+    },
+    "hub-7-Myths vs. Facts about Ge-1": {
+      "bn": "Myths vs. Facts about Gender Based Violence — Myths vs. Facts about Gender-Based Violence\n\nMyth: Only physical assault qualifies as GBV.  \nFact: GBV includes emotional, psychological, economic, and sexual abuse.\n\nMyth: Reporting GBV ruins family reputation.  \nFact: Silence perpetuates harm.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Myths vs. Facts about Gender Based Violence — Manusher Jonno Foundation (MJF)"
+    },
+    "hub-8-Safeguarding Principles-0": {
+      "bn": "Safeguarding Principles — Safeguarding Principles\n\n1. Do No Harm: Protect individuals at all times.\n2. Confidentiality: Keep personal information private.\n3. Survivor-Centered Approach: Respect choices, ensure dignity.\n4. Accountability: Be transparent and responsible.\n5. Non-Discrimination: Treat everyone equally and fairly.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "Safeguarding Principles — WaterAid Global Safeguarding Policy"
+    },
+    "wateraid-global-safeguarding-framework-p1-0": {
+      "bn": "Global Safeguarding Strategy 2023-2028                                                                                     এপ্রিল ২০২৩ \n1 \n \n \nGlobal Safeguarding Framework 2023-2028 \n \nDocument control \nDocument title: Global Safeguarding Framework 2023-2028 \nScope: All WaterAid members \nVersion: 1.0 \nAuthor(s): Leigh Heale, Global Head of \nSafeguarding, Janna Kay Interim Head of Global \nSafeguarding \nDate approved: এপ্রিল ২০২২ Document status: Final \nEffective date: এপ্রিল ২০২২ Approved by: Rachel Wescott, Global Lead for \nPeople  \nSuperseded version: New Date of next review: এপ্রিল ২০২৮ \n \nIntroduction",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 1)"
+    },
+    "wateraid-global-safeguarding-framework-p1-1": {
+      "bn": "People  \nSuperseded version: New Date of next review: April 2028 \n \nIntroduction  \nWaterAid’s vision is to transform lives through sustainable and safe water, sanitation and hygiene. Wherever we work in the world, we adopt a zero-tolerance approach to abuse of any kind.  \nWe recognise that safeguarding issues have the potential to derail our good work. Our values define our culture and unite us across the many countries in which we work. Alongside these we have a clear Global Code of Conduct, Global Safeguarding Policy, and Global Safeguarding Standards. Our commitment to gender equality, social inclusion and addressing unhelpful",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 1)"
+    },
+    "wateraid-global-safeguarding-framework-p1-2": {
+      "bn": "Standards. Our commitment to gender equality, social inclusion and addressing unhelpful \npower dynamics internally strengthens our safeguarding approaches.  \n\nWaterAid has strict safeguarding oversight and governance in place. At a high level all \nsafeguarding activity is reported to all member boards, allowing for scrutiny and \ntransparency. Each member board has a safeguarding lead board member. Boards are \nactively responsible for ensuring WaterAid rightly discharges its safeguarding duties, and \nthat senior leaders are held accountable for creating a culture which promotes and \nchampions safeguarding.  \n\nSafeguarding Strategic Priorities 2023-2028",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 1)"
+    },
+    "wateraid-global-safeguarding-framework-p1-3": {
+      "bn": "champions সেফগার্ডিং.  \n\n**Safeguarding Strategic Priorities 2023-2028**  \nThe Global Safeguarding Framework captures the renewed direction of সেফগার্ডিং within both WaterAid’s Global Strategy (2022-2032) and the Global People and Culture Strategy. It identifies the following key strategic সেফগার্ডিং priorities:",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 1)"
+    },
+    "wateraid-global-safeguarding-framework-p2-0": {
+      "bn": "Global Safeguarding Strategy 2023-2028                                                                                     April 2023 \n2 \n \n \n❖ Individuals and communities are protected and able to safely raise concerns  \n❖ Partners prioritise and contextualise safeguarding  \n❖ WaterAid staff and representatives confidently uphold safeguarding standards  \n❖ WaterAid contributes to strengthening safeguarding in the sector. \n \n   \n \n \nSafeguarding Strategic priority 1: Communities and individuals with whom we work are \nprotected and able to safely raise concerns  \n \nCommunities and individuals are at the centre of WaterAid’s work. Whether directly, or through our",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 2)"
+    },
+    "wateraid-global-safeguarding-framework-p2-1": {
+      "bn": "Communities and individuals are at the centre of WaterAid’s work. Whether directly, or through our \npartners, WaterAid has a responsibility to ensure that everyone, reached or engaged with through \nour work, is protected from harm. If harm should occur, individuals must feel confident and able to \nraise concerns without fear. Across the sector, ensuring there are effective reporting mechanisms in \nplace, remains a challenge. WaterAid and its representatives are committed to finding ways to \nimprove this. Ensuring WaterAid and its representatives are considered trustworthy and reliable is \ncritical to our safeguarding work, our legitimacy and our mission. Individuals in communities and",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 2)"
+    },
+    "wateraid-global-safeguarding-framework-p2-2": {
+      "bn": "critical to our safeguarding work, our legitimacy and our mission. Individuals in communities and \nsettings where we work, must feel able to report safeguarding concerns and incidents freely and \nsafely, with the belief that culturally appropriate, and survivor centred actions are taken in response.    \n \nWe will achieve this by:  \nX Making sure that existing community reporting mechanisms are consistently promoted",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 2)"
+    },
+    "wateraid-global-safeguarding-framework-p3-0": {
+      "bn": "Global Safeguarding Strategy 2023-2028                                                                                     এপ্রিল ২০২৩ \n3 \n \nX সেফগার্ডিং সম্পর্কিত প্রশ্নগুলোকে WaterAid-এর বিস্তৃত প্রক্রিয়ায় সংযুক্ত করা, যাতে সম্প্রদায় ও ব্যক্তিদের থেকে WaterAid-এর কাজ সম্পর্কে প্রতিক্রিয়া সংগ্রহ করা যায় \nX WaterAid-এর স্বাধীন রিপোর্টিং দুর্ব্যবহার সেবা প্রচার করা \nX সেফগার্ডিং সম্পর্কিত প্রশ্নগুলোকে WaterAid-এর বিস্তৃত প্রক্রিয়ায় সংযুক্ত করা, যাতে সম্প্রদায় ও ব্যক্তিদের থেকে WaterAid-এর কাজ সম্পর্কে প্রতিক্রিয়া সংগ্রহ করা যায় \nX প্রাথমিক প্রকাশ ও উদ্বেগগুলিতে ভুক্তভোগী কেন্দ্রিক পদ্ধতি প্রয়োগে কর্মীদের সমর্থন করা \n  \nসেফগার্ডিং কৌশলগত অগ্রাধিকার ২: অংশীদাররা সেফগার্ডিংকে অগ্রাধিকার দেয় এবং প্রেক্ষাপট অনুযায়ী তা নির্ধারণ করে",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 3)"
+    },
+    "wateraid-global-safeguarding-framework-p3-1": {
+      "bn": "Safeguarding Strategic priority 2: Partners prioritise and contextualise safeguarding  \n\nBuilding partnerships and alliances are an integral part of WaterAid’s strategy for achieving universal \naccess. Within these partnerships safeguarding is central and must be prioritised by all partners \nregardless of type, size, or influence. WaterAid is committed to strengthening the safeguarding \ncapacity of partners and collaborators where needed and to learning from our partners’ safeguarding \nsuccesses. Contextualisation of safeguarding is fundamental, and therefore partners should be able \nto demonstrate that their safeguarding mechanisms are adapted to their staff and the communities,",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 3)"
+    },
+    "wateraid-global-safeguarding-framework-p3-2": {
+      "bn": "to demonstrate that their safeguarding mechanisms are adapted to their staff and the communities, \nsetting, or contexts in which they work.   \n \nWe will achieve this by:  \nX Embedding the Partnership Toolkit including risk framework and associated risk assessments \nX Exploring how best to support partners to receive and cascade Safeguarding Awareness and \nTraining  \nX Incentivising partners to report safeguarding concerns to WaterAid by adopting collaborative \nresponses. \nX Supporting partners to ensure there are accessible and safe mechanisms for feedback from \ntheir staff, and people reached through their work so that safeguarding issues can be \nidentified.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 3)"
+    },
+    "wateraid-global-safeguarding-framework-p3-3": {
+      "bn": "তাদের কর্মী, এবং তাদের কাজের মাধ্যমে পৌঁছানো মানুষদের সেফগার্ডিং সমস্যা চিহ্নিত করা যায়।  \nX সেফগার্ডিং স্ট্যান্ডার্ডস আমাদের অংশীদার সংগঠনের সংস্কৃতিতে মূলধারায় আনা হয়েছে।  \n\nসেফগার্ডিং স্ট্র্যাটেজিক প্রায়োরিটি ৩: WaterAid কর্মী ও প্রতিনিধিরা আত্মবিশ্বাসের সাথে সেফগার্ডিং স্ট্যান্ডার্ডস বজায় রাখেন  \n\nWaterAid কর্মী ও প্রতিনিধি (স্বেচ্ছাসেবক, পরামর্শদাতা, বোর্ড সদস্য, অংশীদার কর্মী, ঠিকাদারসহ) WaterAid-এ যোগদানের সময় গ্লোবাল কোড অফ কন্ডাক্ট স্বাক্ষর করেন এবং আচরণ সংক্রান্ত প্রত্যাশিত স্ট্যান্ডার্ডস ও সেগুলো মেনে চলার ব্যাপারে অবগত হন।  \nসকল কর্মী ও প্রতিনিধি সেফগার্ডিং পান",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 3)"
+    },
+    "wateraid-global-safeguarding-framework-p3-4": {
+      "bn": "standards around behaviour and adhering to these. All staff and representatives receive safeguarding \ntraining which is relative to their role and required safeguarding competencies. We want to ensure \nwe have a workforce that is confident and committed to upholding safeguarding standards and \ncontributes to ensuring a positive safeguarding culture.  \n\nWe will achieve this by:  \nX Taking targeted action to assimilate safer programming practices \nX Embedding and further strengthening consistent safer recruitment practices including with \nour volunteers \nX Expanding safeguarding awareness training to include prevention and capacity building that",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 3)"
+    },
+    "wateraid-global-safeguarding-framework-p3-5": {
+      "bn": "আমাদের স্বেচ্ছাসেবকরা  \nX সেফগার্ডিং সচেতনতা প্রশিক্ষণকে প্রতিরোধ ও ক্ষমতায়ন অন্তর্ভুক্ত করে প্রসারিত করছে, যা জটিল গতিবিধি উন্মোচন করে যা সেফগার্ডিং সমস্যাগুলি উদ্ভব ঘটাতে পারে।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 3)"
+    },
+    "wateraid-global-safeguarding-framework-p4-0": {
+      "bn": "Global Safeguarding Strategy 2023-2028                                                                                     এপ্রিল ২০২৩ \n4 \n \nX Addressing the barriers to staff understanding of the safeguarding process \nX Leaders who confidently steer and champion a strong safeguarding culture \n \n \nSafeguarding Strategic priority 4: Contribute to strengthening Safeguarding in the \nsector   \n \nWaterAid recognises that for everyone to be safe, the International Development sector must \ncontinue to do better and improve and strengthen its safeguarding approaches and practices. \nWaterAid is therefore committed to contributing to local, national and international, sector-wide",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 4)"
+    },
+    "wateraid-global-safeguarding-framework-p4-1": {
+      "bn": "WaterAid is therefore committed to contributing to local, national and international, sector-wide \n**সেফগার্ডিং** initiatives, to share and learn from our challenges and successes, to be accountable, \nand to lead by example.   \n \nWe will achieve this by:  \nX Ensuring WaterAid is represented on key **সেফগার্ডিং** committees, networks and working \ngroups globally.  \nX Sharing WaterAid’s good **সেফগার্ডিং** practice by contributing to the evidence base as to what \nworks, particularly in partnerships and alliances.  \nX Identifying innovative opportunities for joint solutions on shared issues within the sector, with \na focus on community awareness, reporting and strengthening.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 4)"
+    },
+    "wateraid-global-safeguarding-framework-p4-2": {
+      "bn": "একটি ফোকাস কমিউনিটি সচেতনতা, রিপোর্টিং এবং শক্তিশালীকরণে।  \n\nচলমান সেফগার্ডিং অগ্রাধিকার এবং সহযোগিতা: WaterAid এর সেফগার্ডিং সংস্কৃতি এবং অবকাঠামো শক্তিশালীকরণ  \n\nউপরের চারটি অগ্রাধিকার আমাদের সেফগার্ডিং সংস্কৃতি এবং অবকাঠামোকে শক্তিশালী রাখার মৌলিক চলমান কাজের উপর ভিত্তি করে গড়ে উঠেছে। পরিকল্পনা, করা, পর্যালোচনা হিসাবে ধারাবাহিক চক্রের পদ্ধতি সমস্ত সেফগার্ডিং কাজের ক্ষেত্রে প্রয়োগ করা হয় যা কখনও সরলরেখা নয়। সুতরাং, WaterAid তার সেফগার্ডিং নীতি, পদ্ধতি এবং অনুশীলনকে শক্তিশালী রাখবে, একটি ‘সpeak up’ সংস্কৃতি প্রচার অব্যাহত রাখবে, ভুক্তভোগী কেন্দ্রিক প্রতিক্রিয়াগুলিকে অগ্রাধিকার দেবে, এবং কেস ম্যানেজমেন্ট সিস্টেমকে কার্যকর রাখবে।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 4)"
+    },
+    "wateraid-global-safeguarding-framework-p4-3": {
+      "bn": "promoted, that survivor centred responses are prioritised, and case management systems effective.  \n\nWe will achieve this by:  \n\nX Supporting each member to manage their overall সেফগার্ডিং risk registers  \nX Strengthening audit and feedback mechanisms to ensure there is a good understanding of what  \nis working and what may need improvement  \nX Using feedback to improve experiences and effectiveness of সেফগার্ডিং procedures and  \nreporting mechanisms  \nX Developing case management and data reporting capabilities that enable better trend analysis  \nand identify areas of required focus  \nX Developing an annual সেফগার্ডিং work plan which outlines each priority’s activity alongside",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 4)"
+    },
+    "wateraid-global-safeguarding-framework-p4-4": {
+      "bn": "X Developing an annual সেফগার্ডিং work plan which outlines each priority’s activity alongside measures of success. This will be published annually in support of the Global সেফগার্ডিং Framework.",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 4)"
+    },
+    "wateraid-global-safeguarding-framework-p5-0": {
+      "bn": "Global সেফগার্ডিং Strategy 2023-2028  \nApril 2023  \n5  \n\nX ফেডারেশনের সর্বত্র সিনিয়র ম্যানেজারদের উপযুক্ত সেফগার্ডিং KPI’s নিশ্চিত করা যাতে তারা জবাবদিহি করতে পারে।",
+      "review": "machine_pending_review",
+      "model": "openai/gpt-oss-20b",
+      "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 5)"
+    }
+  }
+}

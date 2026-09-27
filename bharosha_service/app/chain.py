@@ -85,6 +85,28 @@ N_RESULTS = int(os.getenv("BHAROSHA_N_RESULTS", "4"))
 
 MODEL = os.getenv("BHAROSHA_MODEL", "openai/gpt-oss-20b")
 
+# gpt-oss-20b is a REASONING model: it writes a chain of thought into a separate
+# channel before answering. Measured on this corpus with default settings, that
+# reasoning ran to 5,800–7,400 characters and consumed the entire completion
+# budget, which produced either empty content or — worse — an answer truncated
+# mid-sentence, with finish_reason "length".
+#
+#   default ................ 1,768–2,048 completion tokens, empty or truncated
+#   reasoning_effort=low ...   102–164 completion tokens, complete every time
+#
+# For translation and for answering from supplied passages there is nothing to
+# deliberate about, so the reasoning was pure cost and pure risk. Keep it low and
+# give the output room; treat "length" as a failure rather than a short answer.
+REASONING_EFFORT = os.getenv("BHAROSHA_REASONING_EFFORT", "low")
+ANSWER_MAX_TOKENS = int(os.getenv("BHAROSHA_ANSWER_MAX_TOKENS", "1600"))
+
+# The translation step is a separate, simpler job than answering, so it gets its
+# own settings. If gpt-oss ever regresses here, llama-3.1-8b-instant is a
+# non-reasoning model that cannot fail this way — a config change, not a
+# redesign.
+TRANSLATION_MODEL = os.getenv("BHAROSHA_TRANSLATION_MODEL", MODEL)
+TRANSLATION_MAX_TOKENS = int(os.getenv("BHAROSHA_TRANSLATION_MAX_TOKENS", "3000"))
+
 # Translate a Bangla question to English before embedding it, so the retrieval
 # key and the corpus share a language. The answer is still written in the user's
 # language either way; only the retrieval key changes.
@@ -152,6 +174,31 @@ TRANSLATE_PROMPT = (
 
 class Unavailable(RuntimeError):
     """No answer could be produced. The caller falls back to referral text."""
+
+
+def reject_if_unusable(text: str, finish_reason: str | None, what: str) -> str:
+    """Raise unless the model returned something complete.
+
+    Two failures, one cause. gpt-oss-20b writes a chain of thought into a
+    separate channel first; when that consumes the completion budget the reply
+    comes back either EMPTY or CUT OFF MID-SENTENCE, both with finish_reason
+    "length". Measured on this corpus: 7,400 characters of reasoning, zero
+    characters of content — and on another attempt, 551 characters of a
+    750-character translation, which a length check alone would have accepted.
+
+    A truncated answer about safeguarding is worse than no answer, because the
+    reader cannot tell it was cut off. Raising here sends the hardcoded referral
+    instead, which is complete by construction.
+    """
+    cleaned = (text or "").strip()
+    if not cleaned:
+        raise Unavailable(f"{what}: empty (finish_reason={finish_reason!r})")
+    if finish_reason == "length":
+        raise Unavailable(
+            f"{what}: truncated at {len(cleaned)} chars "
+            f"(finish_reason={finish_reason!r})"
+        )
+    return cleaned
 
 
 @dataclass(frozen=True)
@@ -293,14 +340,22 @@ def to_english(question: str) -> str:
         raise Unavailable("GROQ_API_KEY is not set")
     try:
         chain = PromptTemplate.from_template(TRANSLATE_PROMPT) | ChatGroq(
-            temperature=0, model=MODEL, api_key=os.environ["GROQ_API_KEY"]
+            temperature=0,
+            model=TRANSLATION_MODEL,
+            api_key=os.environ["GROQ_API_KEY"],
+            max_tokens=TRANSLATION_MAX_TOKENS,
+            reasoning_effort=REASONING_EFFORT,
         )
-        text = (chain.invoke({"question": question}).content or "").strip()
+        response = chain.invoke({"question": question})
+        text = (response.content or "").strip()
+        finish = (response.response_metadata or {}).get("finish_reason")
     except Exception as exc:  # noqa: BLE001
         raise Unavailable(f"translation failed: {exc}") from exc
-    if not text:
-        raise Unavailable("translation returned nothing")
-    return text
+
+    # A truncated translation is a wrong retrieval key, which quietly produces an
+    # answer to a question nobody asked. Refuse it, and let the caller send the
+    # referral — the same fate as any other translation failure.
+    return reject_if_unusable(text, finish, "translation")
 
 
 def search(query: str, n_results: int = N_RESULTS) -> list[Passage]:
@@ -387,7 +442,11 @@ def answer(
     )
 
     chain = PromptTemplate.from_template(PROMPT) | ChatGroq(
-        temperature=0, model=MODEL, api_key=os.environ["GROQ_API_KEY"]
+        temperature=0,
+        model=MODEL,
+        api_key=os.environ["GROQ_API_KEY"],
+        max_tokens=ANSWER_MAX_TOKENS,
+        reasoning_effort=REASONING_EFFORT,
     )
     try:
         response = chain.invoke(
@@ -404,7 +463,8 @@ def answer(
     except Exception as exc:  # noqa: BLE001 - auth, network, rate limit, anything
         raise Unavailable(str(exc)) from exc
 
-    text = (response.content or "").strip()
-    if not text:
-        raise Unavailable("empty response")
-    return text
+    return reject_if_unusable(
+        response.content,
+        (response.response_metadata or {}).get("finish_reason"),
+        "answer",
+    )

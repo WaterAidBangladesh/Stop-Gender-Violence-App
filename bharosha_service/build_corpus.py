@@ -162,8 +162,37 @@ def external_chunks() -> list[dict]:
     return chunks
 
 
+def apply_translations(chunks: list[dict]) -> list[dict]:
+    """Fill the bn side from corpus/translations_bn.json, keyed by chunk id.
+
+    Kept apart from the English sources so a rebuild never discards translation
+    work, and so a human correction to one line survives everything else.
+    """
+    path = CORPUS_DIR / "translations_bn.json"
+    if not path.exists():
+        return chunks
+
+    data = json.loads(path.read_text(encoding="utf-8")).get("translations", {})
+    applied = human = 0
+    for chunk in chunks:
+        entry = data.get(chunk["id"])
+        if not entry or not entry.get("bn"):
+            continue
+        chunk["bn"] = entry["bn"]
+        chunk["bn_review"] = entry.get("review", "machine_pending_review")
+        applied += 1
+        human += entry.get("review") == "human"
+
+    missing = len(chunks) - applied
+    print(f"  translations: {applied}/{len(chunks)} chunks have Bangla "
+          f"({human} human-reviewed, {applied - human} machine, {missing} missing)")
+    return chunks
+
+
 def main() -> int:
-    chunks = knowledge_hub_chunks() + pdf_chunks() + external_chunks()
+    chunks = apply_translations(
+        knowledge_hub_chunks() + pdf_chunks() + external_chunks()
+    )
     if not chunks:
         print("No chunks produced.")
         return 1

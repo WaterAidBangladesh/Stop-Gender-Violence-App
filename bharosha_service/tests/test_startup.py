@@ -113,10 +113,25 @@ def test_forwarded_for_parsing() -> None:
 
 def test_health_does_not_touch_the_model() -> None:
     """Render restarts a service whose health check fails, so it must answer
-    without opening the index or loading the embedder."""
-    result = api.health()
-    assert result["status"] == "ok"
-    assert "chain" not in sys.modules, "/health pulled the retrieval chain in"
+    without opening the index or loading the embedder.
+
+    Checked in a subprocess: asserting on sys.modules in-process only proves
+    that no OTHER test imported chain first, which is a property of the test
+    suite rather than of /health.
+    """
+    code = (
+        "import sys; sys.path.insert(0, 'app'); import api; "
+        "r = api.health(); assert r['status'] == 'ok'; "
+        "print('chain' in sys.modules or 'fastembed' in sys.modules)"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", code],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    assert result.stdout.strip() == "False", "/health pulled the retrieval chain in"
 
 
 def test_nothing_is_logged_or_counted() -> None:
