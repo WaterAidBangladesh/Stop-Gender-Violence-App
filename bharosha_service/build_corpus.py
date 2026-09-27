@@ -127,8 +127,43 @@ def pdf_chunks() -> list[dict]:
     return chunks
 
 
+def external_chunks() -> list[dict]:
+    """Entries from named external sources, each carrying its attribution.
+
+    Added on the app owner's instruction to broaden the corpus beyond WaterAid's
+    own material. Kept in a separate file, and flagged PENDING WATERAID REVIEW,
+    so the whole set can be reviewed as a unit or dropped by deleting one file —
+    the owner has said the decision may be revisited.
+
+    Every entry names its organisation, document and URL, so an answer drawn from
+    one is attributable and checkable rather than appearing under WaterAid's name.
+    """
+    path = CORPUS_DIR / "external_sources.json"
+    if not path.exists():
+        print("  (no external_sources.json — WaterAid material only)")
+        return []
+
+    data = json.loads(path.read_text(encoding="utf-8"))
+    split = splitter()
+    chunks: list[dict] = []
+    for entry in data["entries"]:
+        for i, piece in enumerate(split.split_text(entry["en"])):
+            chunks.append(
+                {
+                    "id": f"ext-{entry['id']}-{i}",
+                    "en": piece,
+                    "bn": entry.get("bn"),
+                    "source": entry["source"],
+                    "url": entry.get("url"),
+                    "origin": "external_pending_review",
+                }
+            )
+    print(f"  external sources: {len(data['entries'])} entries -> {len(chunks)} chunks")
+    return chunks
+
+
 def main() -> int:
-    chunks = knowledge_hub_chunks() + pdf_chunks()
+    chunks = knowledge_hub_chunks() + pdf_chunks() + external_chunks()
     if not chunks:
         print("No chunks produced.")
         return 1

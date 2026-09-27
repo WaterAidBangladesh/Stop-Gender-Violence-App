@@ -257,5 +257,293 @@
     "bn": null,
     "source": "WaterAid Global Safeguarding Framework 2023-2028 (p. 5)",
     "origin": "pdf"
+  },
+  {
+    "id": "ext-bbs2024-about-0",
+    "en": "About the 2024 Violence Against Women Survey in Bangladesh\n\nThe 2024 Violence Against Women (VAW) Survey is a nationally representative survey led by the Bangladesh Bureau of Statistics with the Ministry of Women and Children Affairs and technical support from UNFPA Bangladesh. With 27,476 respondents it is the largest survey of its kind in Bangladesh and globally. It follows earlier rounds in 2011 and 2015, covers all eight administrative divisions across rural, urban and city corporation areas, and includes separate estimates for slum areas and disaster-prone areas, and for women with disabilities.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024 (with the Ministry of Women and Children Affairs and UNFPA Bangladesh)",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-ipv-prevalence-0",
+    "en": "How common is violence by husbands in Bangladesh?\n\nThree in four women have faced violence in their lifetime: 76% of women have experienced one or more forms of intimate partner violence — physical, sexual, emotional or economic violence, or controlling behaviour — at some point in their lives. Nearly half, 49%, experienced such violence in the last 12 months. More than half, 54%, have experienced physical or sexual violence or both from a husband during their lifetime, and 16% of those in the last 12 months.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-ipv-forms-0",
+    "en": "Which forms of violence by husbands are most common in Bangladesh?\n\nControlling behaviour is the most common form, affecting 68% of women in their lifetime, followed by physical violence at 47%, emotional violence at 37%, sexual violence at 29% and economic violence at 20%. For violence in the last 12 months the order is similar: controlling behaviour 44%, emotional violence 18%, economic violence 11%, physical violence 11% and sexual violence 9%.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-pregnancy-0",
+    "en": "Does violence continue during pregnancy?\n\nYes. More than 7% of women experienced physical or sexual violence during pregnancy in their lifetime, and 4% in the past 12 months. In-depth research accompanying the survey found that violence often escalates during pregnancy rather than pausing.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-adolescents-0",
+    "en": "Which women are most at risk in Bangladesh?\n\nMarried adolescent girls aged 15 to 19 face the highest rates of intimate partner violence, accounting for 62% of all survivors of such violence in the past 12 months. Adolescents aged 15 to 19 also face the highest risk of violence from people other than a husband; women aged 55 and above have 91% lower odds of experiencing it than adolescent girls.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-risk-factors-0",
+    "en": "What raises a woman's risk of violence in Bangladesh?\n\nDowry increases a woman's risk of violence by 76%. A husband's extramarital relationships increase the risk 2.3-fold and drug addiction 1.7-fold. Where a woman lives matters too: women in urban slums face a 47% higher risk of intimate partner violence than those in non-slum areas, and women in city corporation areas face a 35% higher risk than those elsewhere. Women with disabilities face higher risk of violence from non-partners — 54% higher odds for those with some functional difficulty.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-repetition-0",
+    "en": "Is violence usually a one-off incident?\n\nNo. Among women who experienced physical violence in the last 12 months, one in two faced it several times. Among those who experienced sexual violence in the same period, three in five went through it several times. Violence by a husband is typically repeated rather than isolated.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-education-0",
+    "en": "Does education make a difference to violence?\n\nYes. Women whose husbands completed secondary education face 17% lower odds of facing violence, and those whose husbands hold a bachelor's degree or higher face 32% lower odds. Education protects against violence by non-partners as well: women with primary education have 26% lower odds than women with no or pre-primary education, secondary education reduces the odds by 58%, and a bachelor's degree or higher by 59%.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-decline-0",
+    "en": "Is violence against women in Bangladesh getting better or worse?\n\nViolence against women is preventable, and it is declining. Since 2015 most forms of intimate partner violence have fallen, with total prevalence in the past 12 months dropping from around 66% to 49% — a decrease of nearly 17 percentage points. Violence by non-partners has also declined: physical violence in the past 12 months fell from nearly 6% in 2015 to around 4% in 2024, and sexual violence from 2.5% to 0.5%.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-npv-0",
+    "en": "Violence from people other than a husband\n\nNearly 16% of women in Bangladesh experienced physical or sexual violence from someone who was not a husband in their lifetime, and around 4% in the past year. Most of it comes from family or acquaintances rather than strangers: mothers-in-law (35%), other male family members (34%), brothers or sisters-in-law (29%) and mothers (20.5%) are the most frequently reported perpetrators of physical violence. Nearly half of survivors of non-partner physical violence reported more than one perpetrator.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-partner-vs-nonpartner-0",
+    "en": "Are women more at risk from a husband or from others?\n\nFrom a husband. Women in Bangladesh are three times more likely to experience physical violence from an intimate partner (47%) than from a non-partner (15%), and over 13 times more likely to face sexual violence from a partner (29%) than from a non-partner (2.2%).",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-inlaws-0",
+    "en": "Violence from in-laws\n\nIn-depth research alongside the survey found economic, emotional and controlling abuse frequently perpetrated by in-laws, intensified where a woman lives with her husband's family. Mothers-in-law and sisters-in-law were reported restricting women's finances, education and even access to food. One respondent described it this way: her mother-in-law began giving her not enough food, and would eat with her own sons and daughters without allowing her at the same table.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-tfgbv-0",
+    "en": "Online and technology-facilitated violence in Bangladesh",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-tfgbv-1",
+    "en": "Over 8% of women with access to technology experienced unwanted sexual communications, sexual blackmail, image-based abuse or technology-facilitated controlling behaviour in their lifetime, and over 5% in the past year. It is most common in city corporation areas, where lifetime prevalence reaches nearly 12%, and among younger women: 16% of those aged 20 to 24, compared with 1.4% of women aged 60 and above. Unlike other forms of violence, strangers are the main perpetrators, accounting for 46% of cases of technology-facilitated harassment and blackmail. Within marriages, image-based sexual abuse was the most commonly reported form, often alongside physical and sexual violence.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-costs-0",
+    "en": "What does violence cost survivors in Bangladesh?\n\nMedical treatment costs an average of BDT 2,512 per survivor, slightly higher in rural areas (BDT 2,672) than urban (BDT 2,394). Legal proceedings cost considerably more, averaging BDT 4,104, and more in urban areas (BDT 4,341) than rural (BDT 3,780). Combined out-of-pocket costs average BDT 2,674, with rural survivors paying more.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-silence-0",
+    "en": "Why do women not tell anyone about violence?\n\nNearly two in three women — 64% — never shared their experience with anyone. Among those who did, most confided in parents, then other family members. The most common reason given for not disclosing was that it was considered unnecessary (39%); over 14% feared losing family honour and 13% were concerned about public disgrace. Fear of the perpetrator, of divorce, of the violence escalating, and of family reprisals were also identified as barriers.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-legal-action-0",
+    "en": "How many survivors take formal action?\n\nFew. Only 7% of survivors of violence by a husband pursued legal action in the last 12 months, and 13% at some point in their lifetime. Local leaders are the most common authority approached, accounting for 41% of legal actions and contacted by 58% of survivors, followed by the police at 25% of actions. Far fewer turn to courts or government facilities.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-health-seeking-0",
+    "en": "Do survivors get medical help?\n\nRarely. Only 14.5% of women sought any treatment following violence in the last 12 months. Of those who did, 93% sought it for physical injuries, 15.5% for emotional violence and just 1.5% for sexual violence. Pharmacies were the most used source (61%), followed by government hospitals (18%) and private doctors' chambers (17%). Among those who did not seek treatment, most felt it was unnecessary (75%), while fear, stigma and concerns about social prestige accounted for about 10% and financial constraints 4%.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-awareness-0",
+    "en": "Do women know where to report violence in Bangladesh?\n\nMost do not. Only 12% of women knew about the national helpline for violence against women and children, and 45% knew about the national emergency number. Fewer than half — 48.5% — said they know where to report violence at all. Among women who are aware of reporting mechanisms, the police or thana is by far the most recognised (91%), followed by local governance structures (32%) and village leaders or mediators (26%). Specialised services such as One Stop Crisis Centres are known to only 2% of women.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-recommendations-0",
+    "en": "What does the 2024 survey recommend to end violence against women?",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-recommendations-1",
+    "en": "Two directions. Strengthen response: universal access to health, legal, social and judicial services with multisectoral coordination, a well-trained workforce, protection services integrated into the health system, expanded mental health and psychosocial support, and safe economic assistance and shelters — tailored to reach adolescent girls, women in slums and women with disabilities",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-recommendations-2",
+    "en": ". Invest in prevention: address the drivers, including harmful social and gender norms, substance abuse, dowry practices and child marriage, through positive parenting, healthy couple relationships, gender-equitable attitudes among adolescents, engaging men and boys, quality education, and economic empowerment combined with shifting unequal power relations.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-norms-0",
+    "en": "What drives violence against women in Bangladesh?",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-bbs2024-norms-1",
+    "en": "The survey's in-depth research found violence is often triggered by conflicts around gendered household and caregiving duties, by women's attempts to seek help, and by wider family tensions. Men's attitudes — framing violence as a private matter — shape the daily reality of it. The research concluded that intimate partner violence is rooted in harmful social and gender norms and unequal power, and that its effects extend to children. Attitudes recorded during the research included the belief that controlling a wife is part of a husband's duty, and that forced sex within marriage is not violence. Both beliefs are contradicted by the evidence and by law.",
+    "bn": null,
+    "source": "Bangladesh Bureau of Statistics, Violence Against Women Survey 2024",
+    "url": "https://bangladesh.unfpa.org/sites/default/files/report_documents/2025-10/Highlights%20VAW%20Survey%20BGD%202024.pdf",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-who-definition-0",
+    "en": "How do the UN and WHO define violence against women?\n\nThe United Nations defines violence against women as any act of gender-based violence that results in, or is likely to result in, physical, sexual or mental harm or suffering to women, including threats of such acts, coercion or arbitrary deprivation of liberty, whether it occurs in public or in private life. Intimate partner violence is behaviour by a current or former partner that causes physical, sexual or psychological harm, including physical aggression, sexual coercion, psychological abuse and controlling behaviour.",
+    "bn": null,
+    "source": "World Health Organization, Violence against women fact sheet",
+    "url": "https://www.who.int/news-room/fact-sheets/detail/violence-against-women",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-who-global-prevalence-0",
+    "en": "How common is violence against women worldwide?\n\nAbout one in three women — 31.6%, or 840 million — have experienced physical or sexual violence from an intimate partner, or sexual violence from a non-partner, at least once in their lifetime. Around one in four women aged 15 to 49 who have been in a relationship have experienced physical or sexual violence from a partner. More than one in five girls aged 15 to 19 have experienced partner violence. Prevalence is highest in Oceania (37%), sub-Saharan Africa (32%) and Southern Asia (31%), the region that includes Bangladesh.",
+    "bn": null,
+    "source": "World Health Organization, Violence against women fact sheet",
+    "url": "https://www.who.int/news-room/fact-sheets/detail/violence-against-women",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-who-health-consequences-0",
+    "en": "What does violence do to a woman's health?\n\nThe consequences reach far beyond immediate injury. They include physical injuries, headaches, chronic pain and gastrointestinal problems; reproductive harm including unintended pregnancy, sexually transmitted infections including HIV, miscarriage and low birth weight; and mental health effects including depression, post-traumatic stress disorder, anxiety, sleep difficulties and suicide attempts. Violence is also linked to increased smoking, substance use and risky sexual behaviour. In 2023, 140 women and girls were killed by partners or family members every day worldwide.",
+    "bn": null,
+    "source": "World Health Organization, Violence against women fact sheet",
+    "url": "https://www.who.int/news-room/fact-sheets/detail/violence-against-women",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-who-children-0",
+    "en": "How does violence in the home affect children?\n\nChildren who grow up in families where there is violence may suffer behavioural and emotional disturbances, and face higher rates of infant and child mortality and illness. Witnessing violence in childhood is also associated with a higher risk of experiencing or perpetrating violence later in life, which is one of the ways violence passes from one generation to the next.",
+    "bn": null,
+    "source": "World Health Organization, Violence against women fact sheet",
+    "url": "https://www.who.int/news-room/fact-sheets/detail/violence-against-women",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-who-risk-factors-0",
+    "en": "What increases the risk of violence against women?\n\nAt the individual and relationship level: lower levels of education, a history of exposure to child maltreatment, witnessing family violence, mental health problems, harmful use of alcohol, attitudes that accept violence, and controlling behaviour by a partner. At the community and societal level: harmful gender norms, poverty, high prevalence of child marriage, community violence, weak or unenforced laws, and gender discrimination in institutions.",
+    "bn": null,
+    "source": "World Health Organization, Violence against women fact sheet",
+    "url": "https://www.who.int/news-room/fact-sheets/detail/violence-against-women",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-who-services-0",
+    "en": "What does WHO say survivors need?\n\nWHO recommends comprehensive, survivor-centred health services, with protocols and trained staff; integration of protection services into the health system; coordination between health, justice and social services; data and research on prevalence; advocacy for gender-equal norms; and enacting and enforcing laws that protect women.",
+    "bn": null,
+    "source": "World Health Organization, Violence against women fact sheet",
+    "url": "https://www.who.int/news-room/fact-sheets/detail/violence-against-women",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-unwomen-ipv-types-0",
+    "en": "What are the forms of intimate partner violence?\n\nPhysical violence, such as slapping, choking or burning. Sexual violence, including coercive acts and rape by a spouse. Psychological violence, including intimidation and forced isolation. Economic violence, such as controlling household finances, withholding money, or forbidding a woman from studying or working. All four are recognised forms of violence, not private matters.",
+    "bn": null,
+    "source": "UN Women, Types of violence against women and girls",
+    "url": "https://www.unwomen.org/en/articles/faqs/faqs-types-of-violence-against-women-and-girls",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-unwomen-sexual-violence-0",
+    "en": "What counts as sexual violence and sexual harassment?",
+    "bn": null,
+    "source": "UN Women, Types of violence against women and girls",
+    "url": "https://www.unwomen.org/en/articles/faqs/faqs-types-of-violence-against-women-and-girls",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-unwomen-sexual-violence-1",
+    "en": "Sexual violence is any unwanted or harmful sexual behaviour imposed on someone: abusive sexual contact, forced engagement in sexual acts, attempted or completed sexual acts without consent, sexual harassment, verbal abuse, threats, exposure and unwanted touching. Sexual harassment is verbal, non-verbal or physical conduct of a sexual nature — unwanted touching, repeated requests for dates, or sexual comments about a person's appearance. Rape is sexual penetration without consent, obtained by force, coercion or abuse of power. Sexual exploitation is the abuse of someone's vulnerability, or of a position of power, for sexual purposes or profit.",
+    "bn": null,
+    "source": "UN Women, Types of violence against women and girls",
+    "url": "https://www.unwomen.org/en/articles/faqs/faqs-types-of-violence-against-women-and-girls",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-unwomen-harmful-practices-0",
+    "en": "What are harmful practices, child marriage and forced marriage?\n\nHarmful practices are violations of human rights that affect sexual and reproductive health. Child marriage is any marriage where at least one party is under 18. Forced marriage is marriage entered into without the full and free consent of one or both parties. Both are recognised internationally as forms of violence, whatever the local custom around them.",
+    "bn": null,
+    "source": "UN Women, Types of violence against women and girls",
+    "url": "https://www.unwomen.org/en/articles/faqs/faqs-types-of-violence-against-women-and-girls",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-unwomen-femicide-trafficking-0",
+    "en": "What are femicide and human trafficking?\n\nFemicide is the intentional killing of a woman or girl because she is a woman or a girl. It includes so-called honour killings by family members over perceived violations of sexual purity. Human trafficking is a global crime that trades in people and exploits them for profit; women are the primary targets, and girls are mainly trafficked for sexual exploitation.",
+    "bn": null,
+    "source": "UN Women, Types of violence against women and girls",
+    "url": "https://www.unwomen.org/en/articles/faqs/faqs-types-of-violence-against-women-and-girls",
+    "origin": "external_pending_review"
+  },
+  {
+    "id": "ext-unwomen-online-violence-0",
+    "en": "What is online or technology-facilitated violence?\n\nAny harmful act committed, assisted, aggravated or amplified by digital tools or information and communication technologies. Examples include cyberbullying — intimidating or threatening messages; non-consensual sharing of explicit messages or photographs; and doxing, the public release of someone's private identifying information. It is violence, not a lesser category of harm, and it commonly accompanies offline abuse.",
+    "bn": null,
+    "source": "UN Women, Types of violence against women and girls",
+    "url": "https://www.unwomen.org/en/articles/faqs/faqs-types-of-violence-against-women-and-girls",
+    "origin": "external_pending_review"
   }
 ]

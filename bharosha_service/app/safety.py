@@ -289,6 +289,12 @@ _PATTERNS: dict[str, tuple[str, ...]] = {
         # inheritance rights" as economic violence.
         r"\bwhich\s+(section|law)\b",
         r"\bhow\s+much\s+(punishment|sentence)\b",
+        # The Bangla "শাস্তি কী" was refused while the English "what is the
+        # punishment for..." was not — found when the expanded corpus pulled a
+        # theft-punishment question close enough to reach the model.
+        r"\bwhat\s+(is|are)\s+the\s+(punishment|sentence|penalt(y|ies))\b",
+        r"\bpunishment\s+for\b",
+        r"\bwhat\s+(does|do)\s+the\s+law\s+say\b",
         r"\bcourt\s+(case|outcome|decide)\b",
     ),
 }

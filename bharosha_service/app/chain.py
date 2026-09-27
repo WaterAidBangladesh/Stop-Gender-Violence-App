@@ -128,8 +128,11 @@ If a question falls into one of these areas, decline warmly, say in one sentence
 NO PHONE NUMBERS
 Never write a phone number, short code, hotline or email address. Referral numbers are added automatically after your answer. If someone needs one, say the numbers are shown below.
 
+LANGUAGE — NOT A JUDGEMENT CALL
+Write your entire reply in {language}. This has already been determined from the user's message; do not infer it again from the passages, which are always in English. A reply in the wrong language is unreadable to the person who asked.
+
 HOW TO WRITE
-Reply in the language the user wrote in — Bangla for a Bangla question, English for an English one. Warm, plain and short: two or three short paragraphs at most. Markdown for emphasis and lists. Never judge, never ask for identifying details, never promise that anything has been reported. No preamble.
+Warm, plain and short: two or three short paragraphs at most. Markdown for emphasis and lists. Name the source of what you use, as the passage labels it — but never refer to the passages by number, and never write markers like [Passage 1]; the user cannot see them. Never judge, never ask for identifying details, never promise that anything has been reported. No preamble.
 
 Relevant information: {context}
 
@@ -388,7 +391,15 @@ def answer(
     )
     try:
         response = chain.invoke(
-            {"context": context, "history": history_text, "question": question}
+            {
+                "context": context,
+                "history": history_text,
+                "question": question,
+                # Named, not inferred. The safety layer already determined this
+                # deterministically from the message; leaving the model to work
+                # it out produced a Bangla answer to an English question.
+                "language": "Bangla" if language == "bn" else "English",
+            }
         )
     except Exception as exc:  # noqa: BLE001 - auth, network, rate limit, anything
         raise Unavailable(str(exc)) from exc

@@ -182,6 +182,9 @@
       "\\bwhat\\s+(are\\s+)?my\\s+(legal\\s+)?rights\\b",
       "\\bwhich\\s+(section|law)\\b",
       "\\bhow\\s+much\\s+(punishment|sentence)\\b",
+      "\\bwhat\\s+(is|are)\\s+the\\s+(punishment|sentence|penalt(y|ies))\\b",
+      "\\bpunishment\\s+for\\b",
+      "\\bwhat\\s+(does|do)\\s+the\\s+law\\s+say\\b",
       "\\bcourt\\s+(case|outcome|decide)\\b"
     ]
   },
