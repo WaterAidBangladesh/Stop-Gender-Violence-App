@@ -203,7 +203,6 @@ def test_suicide_risk_wins_when_combined() -> None:
         "What are the myths about GBV?",
         "How can violence be prevented in a community?",
         "Tell me about WaterAid's safeguarding principles",
-        "hello",
         "ধন্যবাদ",
     ],
 )
@@ -212,6 +211,34 @@ def test_ordinary_questions_proceed(message: str) -> None:
     assert decision.kind == "proceed"
     assert decision.category is None
     assert not decision.stops_turn
+
+
+@pytest.mark.parametrize(
+    "message",
+    ["hi", "hello", "Hello!", "assalamu alaikum", "good morning",
+     "নমস্কার", "হ্যালো", "আসসালামু আলাইকুম"],
+)
+def test_greetings_are_answered_locally(message: str) -> None:
+    """A greeting must not cost a round trip, and on a sleeping free instance it
+    must not produce "I could not reach the service" to someone saying hello."""
+    decision = safety.classify(message)
+    assert decision.kind == "greeting"
+    assert decision.stops_turn, "a greeting must never reach the model"
+
+
+@pytest.mark.parametrize(
+    "message, category",
+    [
+        ("hi, he is beating me", "active_violence"),
+        ("hello, should I leave my husband?", "leave_decision"),
+        ("নমস্কার, আমাকে মারছে", "active_violence"),
+    ],
+)
+def test_a_greeting_that_carries_a_disclosure_is_not_a_greeting(
+    message: str, category: str
+) -> None:
+    """Greeting sits last in the priority order for exactly this reason."""
+    assert safety.classify(message).category == category
 
 
 def test_language_detection() -> None:

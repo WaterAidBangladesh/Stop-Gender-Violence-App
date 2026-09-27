@@ -344,6 +344,43 @@ NO_CONTEXT_BN = f"""এ বিষয়ে আমার কাছে নির�
 
 আপনি {SAFEGUARDING_EMAIL} ঠিকানায় ইমেইল করতে পারেন, অথবা এই অ্যাপের "Important Numbers"-এ দেওয়া সেফগার্ডিং যোগাযোগ ব্যবহার করতে পারেন।"""
 
+# Short on purpose. Someone who typed "hi" has not asked a question yet, and the
+# no-context text — which is written to rescue a real question the corpus cannot
+# answer — reads as a wall in response to a greeting.
+GREETING_EN = """Hello. Ask me anything about safeguarding or gender-based violence, and I will answer from WaterAid's own material — in English or Bangla.
+
+For example: *What is safeguarding?* · *What counts as economic violence?* · *How can violence be prevented?*
+
+If you are in danger right now, do not wait for me — the numbers below connect you to a person."""
+
+GREETING_BN = """নমস্কার। সেফগার্ডিং বা জেন্ডারভিত্তিক সহিংসতা নিয়ে যেকোনো প্রশ্ন করুন — আমি ওয়াটারএইডের নিজস্ব উপকরণ থেকে বাংলা বা ইংরেজিতে উত্তর দেব।
+
+যেমন: *সেফগার্ডিং কী?* · *অর্থনৈতিক সহিংসতা কী?* · *সহিংসতা কীভাবে প্রতিরোধ করা যায়?*
+
+আপনি যদি এখনই বিপদে থাকেন, আমার জন্য অপেক্ষা করবেন না — নিচের নম্বরগুলো আপনাকে একজন মানুষের কাছে পৌঁছে দেবে।"""
+
+# NOT the same as no_context, and the difference matters. no_context says "the
+# material does not cover that", which is a claim about the question. This says
+# "I could not ask", which is a claim about the connection — the honest one when
+# the service is asleep, the phone is offline, or the request timed out. Saying
+# the first when the second is true tells her the app has no answer for her when
+# in fact it never looked.
+UNREACHABLE_EN = f"""I could not reach the service just now, so I have not been able to look your question up. It is worth trying again in a moment.
+
+What does not depend on that connection: if anyone is in danger, these numbers work whether or not I do.
+
+**{EMERGENCY.number}** — {EMERGENCY.name_en}. Free, any hour.
+
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential."""
+
+UNREACHABLE_BN = f"""এই মুহূর্তে সেবার সঙ্গে সংযোগ করতে পারিনি, তাই আপনার প্রশ্নটি খুঁজে দেখা হয়নি। একটু পরে আবার চেষ্টা করে দেখুন।
+
+তবে এই সংযোগের ওপর যা নির্ভর করে না: কেউ বিপদে থাকলে এই নম্বরগুলো আমি কাজ করি বা না করি, কাজ করবেই।
+
+**{EMERGENCY.number}** — {EMERGENCY.name_bn}। ফ্রি, যেকোনো সময়।
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।"""
+
 # Shown when a question arrives while the models are still loading. Emergencies
 # never reach this — they are answered from pattern matching alone, with no
 # model involved, which is why a cold service still protects someone in danger.
@@ -412,6 +449,8 @@ RESPONSES: dict[str, dict[str, str]] = {
     "legal_advice": {"en": REFUSE_LEGAL_EN, "bn": REFUSE_LEGAL_BN},
     "confront_or_evidence": {"en": REFUSE_CONFRONT_EN, "bn": REFUSE_CONFRONT_BN},
     "no_context": {"en": NO_CONTEXT_EN, "bn": NO_CONTEXT_BN},
+    "greeting": {"en": GREETING_EN, "bn": GREETING_BN},
+    "unreachable": {"en": UNREACHABLE_EN, "bn": UNREACHABLE_BN},
     "starting": {"en": STARTING_EN, "bn": STARTING_BN},
     "rate_limited": {"en": RATE_LIMITED_EN, "bn": RATE_LIMITED_BN},
 }

@@ -60,6 +60,7 @@ def safety_rules() -> dict:
         "_generated": HEADER,
         "emergency_categories": list(safety.EMERGENCY_CATEGORIES),
         "refusal_categories": list(safety.REFUSAL_CATEGORIES),
+        "greeting_categories": list(safety.GREETING_CATEGORIES),
         # Evaluation order matters: the first category that fires wins, so the
         # Dart port must walk this list in this order or the two will disagree on
         # messages that match more than one category.
@@ -163,8 +164,20 @@ CASES: list[dict] = [
     {"message": "Who is responsible for safeguarding?", "kind": "proceed", "category": None},
     {"message": "How can violence be prevented in a community?", "kind": "proceed", "category": None},
     {"message": "What are the myths about GBV?", "kind": "proceed", "category": None},
-    {"message": "hello", "kind": "proceed", "category": None},
     {"message": "ধন্যবাদ", "kind": "proceed", "category": None},
+    # --- greetings, answered locally rather than over the network ---
+    {"message": "hello", "kind": "greeting", "category": "greeting"},
+    {"message": "hi", "kind": "greeting", "category": "greeting"},
+    {"message": "Assalamu alaikum", "kind": "greeting", "category": "greeting"},
+    {"message": "good morning", "kind": "greeting", "category": "greeting"},
+    {"message": "নমস্কার", "kind": "greeting", "category": "greeting"},
+    {"message": "আসসালামু আলাইকুম", "kind": "greeting", "category": "greeting"},
+    {"message": "হ্যালো", "kind": "greeting", "category": "greeting"},
+    # A greeting that carries a disclosure is NOT a greeting.
+    {"message": "hi, he is beating me", "kind": "emergency", "category": "active_violence"},
+    {"message": "hello, should I leave my husband?", "kind": "refuse", "category": "leave_decision"},
+    # "hi" inside a real question must not be mistaken for one either.
+    {"message": "What is safeguarding in this context?", "kind": "proceed", "category": None},
     # Window check: "daughter" and "abused" far apart must NOT fire the rule.
     {
         "message": (

@@ -91,6 +91,11 @@ def chat(request: ChatRequest, http: Request) -> dict[str, str]:
     if decision.kind == "refuse":
         return _reply(decision.category, decision.language, "refusal")
 
+    # A greeting costs nothing to answer and needs no corpus. Before the rate
+    # limiter for the same reason emergencies are: it never reaches the model.
+    if decision.kind == "greeting":
+        return _reply(decision.category, decision.language, "greeting")
+
     # ---- 2. Rate limiting, only for messages that may reach the model ------
     # Emergencies and refusals never reach here: they cost nothing to serve, and
     # nobody in danger is turned away for asking twice.

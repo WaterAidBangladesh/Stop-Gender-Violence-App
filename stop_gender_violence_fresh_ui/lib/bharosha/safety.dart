@@ -37,7 +37,7 @@ class SafetyDecision {
     required this.matched,
   });
 
-  /// `emergency`, `refuse`, or `proceed`.
+  /// `emergency`, `refuse`, `greeting`, or `proceed`.
   final String kind;
 
   /// The winning category, or null when proceeding.
@@ -50,7 +50,11 @@ class SafetyDecision {
   final List<String> matched;
 
   /// True when the model and the network must not be involved at all.
-  bool get stopsTurn => kind == 'emergency' || kind == 'refuse';
+  ///
+  /// Greetings included: they are answered from the same bundled table, so a
+  /// "hi" costs no round trip and works with the radio off.
+  bool get stopsTurn =>
+      kind == 'emergency' || kind == 'refuse' || kind == 'greeting';
 }
 
 class _NearRule {
@@ -73,6 +77,7 @@ class SafetyRules {
     required this.priority,
     required this.emergencyCategories,
     required this.refusalCategories,
+    required this.greetingCategories,
     required Map<String, List<RegExp>> patterns,
     required List<_NearRule> nearRules,
     required List<String> invisibleCharacters,
@@ -83,6 +88,7 @@ class SafetyRules {
   final List<String> priority;
   final List<String> emergencyCategories;
   final List<String> refusalCategories;
+  final List<String> greetingCategories;
   final Map<String, List<RegExp>> _patterns;
   final List<_NearRule> _nearRules;
   final RegExp _invisible;
@@ -110,6 +116,8 @@ class SafetyRules {
       emergencyCategories:
           (data['emergency_categories'] as List).cast<String>(),
       refusalCategories: (data['refusal_categories'] as List).cast<String>(),
+      greetingCategories:
+          ((data['greeting_categories'] as List?) ?? const []).cast<String>(),
       patterns: patterns,
       nearRules: [
         for (final rule in (data['near_rules'] as List))
@@ -193,7 +201,11 @@ class SafetyRules {
     for (final category in priority) {
       if (!matched.contains(category)) continue;
       return SafetyDecision(
-        kind: emergencyCategories.contains(category) ? 'emergency' : 'refuse',
+        kind: emergencyCategories.contains(category)
+            ? 'emergency'
+            : refusalCategories.contains(category)
+                ? 'refuse'
+                : 'greeting',
         category: category,
         language: language,
         matched: matched,

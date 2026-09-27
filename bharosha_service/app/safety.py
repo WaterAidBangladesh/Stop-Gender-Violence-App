@@ -46,11 +46,17 @@ REFUSAL_CATEGORIES = (
     "legal_advice",
 )
 
+# Not a safety category — a courtesy one. "hi" is not a safeguarding question,
+# and sending it to retrieval and a model costs a round trip, a little quota, and
+# on a sleeping free instance a "could not reach the service" reply to someone
+# who only said hello. Answered locally instead, like every other category here.
+GREETING_CATEGORIES = ("greeting",)
+
 # Evaluation order, not a ranking of severity. The first match wins so the
 # outcome for a given message never depends on dict ordering or regex speed.
 # Emergencies are checked before refusals: "he will kill me if I leave" is an
 # emergency, not a question about leaving.
-_PRIORITY = EMERGENCY_CATEGORIES + REFUSAL_CATEGORIES
+_PRIORITY = EMERGENCY_CATEGORIES + REFUSAL_CATEGORIES + GREETING_CATEGORIES
 
 # Zero-width joiners and marks that break naive matching on Bangla text.
 _INVISIBLE = re.compile(r"[​‌‍﻿]")
@@ -206,6 +212,16 @@ _PATTERNS: dict[str, tuple[str, ...]] = {
     # Found by the near-topic controls: every leaving pattern assumed a decision
     # framing ("should I…"), so a procedural framing ("how do I…") walked past all
     # of them and reached the corpus.
+    # Whole-message greetings only. Anchored end to end so "hi, he is beating
+    # me" is not a greeting — and even if it were matched, greeting sits last in
+    # the priority order, so every emergency and refusal beats it.
+    "greeting": (
+        r"^(hi|hii+|hey|hello+|helo|yo|salam|salaam|assalamu\s*alaikum|"
+        r"as-?salamu\s*alaykum|good\s*(morning|afternoon|evening)|start|/start)"
+        r"[\s!.,?]*$",
+        r"^(হাই|হ্যালো|হেলো|নমস্কার|আসসালামু\s*আলাইকুম|সালাম|শুভেচ্ছা|"
+        r"শুভ\s*(সকাল|দুপুর|বিকাল|সন্ধ্যা))[\s!।.,?]*$",
+    ),
     "divorce_process": (
         r"\bhow\s+(do|can|would)\s+i\s+(get|file\s+for|apply\s+for|start)\s+a?\s*(divorce|separation|khula)\b",
         r"\b(divorce|separation|khula)\s+(process|procedure|rules?|law|papers)\b",
@@ -381,15 +397,20 @@ class Decision:
     the user — see the logging rules in api.py.
     """
 
-    kind: str  # "emergency" | "refuse" | "proceed"
+    kind: str  # "emergency" | "refuse" | "greeting" | "proceed"
     category: str | None
     language: str
     matched: tuple[str, ...]
 
     @property
     def stops_turn(self) -> bool:
-        """True when the model must not be called at all."""
-        return self.kind in ("emergency", "refuse")
+        """True when the model must not be called at all.
+
+        Includes greetings: they are answered from the same hardcoded table, so
+        nothing downstream needs to distinguish "answered locally because it was
+        urgent" from "answered locally because it was a hello".
+        """
+        return self.kind in ("emergency", "refuse", "greeting")
 
 
 def classify(message: str) -> Decision:
@@ -411,7 +432,12 @@ def classify(message: str) -> Decision:
 
     for category in _PRIORITY:
         if category in matched:
-            kind = "emergency" if category in EMERGENCY_CATEGORIES else "refuse"
+            if category in EMERGENCY_CATEGORIES:
+                kind = "emergency"
+            elif category in REFUSAL_CATEGORIES:
+                kind = "refuse"
+            else:
+                kind = "greeting"
             return Decision(kind=kind, category=category, language=language, matched=matched)
 
     return Decision(kind="proceed", category=None, language=language, matched=())

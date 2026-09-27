@@ -47,7 +47,6 @@ const Map<String, Map<String, String>> _ui = {
     'exit': 'Leave now',
     'exitTooltip': 'Clear this conversation and close the app',
     'thinking': 'Looking in WaterAid’s material…',
-    'offline': 'I could not reach the service just now.',
     'greeting':
         'Hello. You can ask me about safeguarding and gender-based violence, and I will answer from WaterAid’s own material.\n\n'
         'If you are in danger right now, do not wait for me — call **999**.',
@@ -65,7 +64,6 @@ const Map<String, Map<String, String>> _ui = {
     'exit': 'এখনই বেরিয়ে যান',
     'exitTooltip': 'এই কথাবার্তা মুছে অ্যাপ বন্ধ করুন',
     'thinking': 'ওয়াটারএইডের উপকরণে খুঁজছি…',
-    'offline': 'এই মুহূর্তে সেবার সঙ্গে সংযোগ করা গেল না।',
     'greeting':
         'নমস্কার। সেফগার্ডিং ও জেন্ডারভিত্তিক সহিংসতা নিয়ে আমাকে জিজ্ঞেস করতে পারেন; আমি ওয়াটারএইডের নিজস্ব উপকরণ থেকে উত্তর দেব।\n\n'
         'আপনি যদি এখনই বিপদে থাকেন, আমার জন্য অপেক্ষা করবেন না — **999** নম্বরে কল করুন।',
@@ -187,14 +185,18 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
     });
     _scrollToEnd();
 
-    // THE WHOLE POINT: an emergency or a refusal is answered here, from bundled
-    // text, with no request, no model and no wait. Nothing about this path can
-    // be slow or offline.
+    // THE WHOLE POINT: an emergency, a refusal or a greeting is answered here,
+    // from bundled text, with no request, no model and no wait. Nothing about
+    // this path can be slow or offline.
     if (decision.stopsTurn) {
       setState(() {
         _messages.add(_Message.bot(
           rules.referrals.responseFor(decision.category!, decision.language),
-          decision.kind == 'emergency' ? 'emergency' : 'refusal',
+          decision.kind == 'emergency'
+              ? 'emergency'
+              : decision.kind == 'greeting'
+                  ? 'greeting'
+                  : 'refusal',
         ));
       });
       _scrollToEnd();
@@ -208,12 +210,14 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
     setState(() {
       _waiting = false;
       if (reply.kind == 'unreachable') {
-        // Offline, or the service is asleep. Fall back to the same no-context
-        // referral the server would have sent, so she still gets numbers.
+        // Its own message, NOT the no-context one. "I don't have reliable
+        // information about that" is a claim about her question; the truth here
+        // is that the question was never asked, because the service could not be
+        // reached. Saying the first when the second is true tells her the app has
+        // no answer for her when in fact it never looked.
         _messages.add(_Message.bot(
-          '${_t(decision.language, 'offline')}\n\n'
-          '${rules.referrals.responseFor('no_context', decision.language)}',
-          'no_context',
+          rules.referrals.responseFor('unreachable', decision.language),
+          'unreachable',
         ));
       } else {
         _messages.add(_Message.bot(reply.text, reply.kind));

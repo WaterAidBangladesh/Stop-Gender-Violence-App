@@ -14,6 +14,9 @@
     "economic_rights",
     "legal_advice"
   ],
+  "greeting_categories": [
+    "greeting"
+  ],
   "priority": [
     "suicide_risk",
     "immediate_danger",
@@ -24,7 +27,8 @@
     "divorce_process",
     "confront_or_evidence",
     "economic_rights",
-    "legal_advice"
+    "legal_advice",
+    "greeting"
   ],
   "invisible_characters": [
     "​",
@@ -133,6 +137,10 @@
       "\\b(is\\s+it|when\\s+is)\\s+.{0,20}\\b(safe|right)\\s+(time\\s+)?to\\s+leave\\b",
       "\\bshould\\s+i\\s+stay\\s+or\\s+(go|leave)\\b",
       "\\bmove\\s+out\\s+of\\s+(the\\s+)?(house|home)\\b"
+    ],
+    "greeting": [
+      "^(hi|hii+|hey|hello+|helo|yo|salam|salaam|assalamu\\s*alaikum|as-?salamu\\s*alaykum|good\\s*(morning|afternoon|evening)|start|/start)[\\s!.,?]*$",
+      "^(হাই|হ্যালো|হেলো|নমস্কার|আসসালামু\\s*আলাইকুম|সালাম|শুভেচ্ছা|শুভ\\s*(সকাল|দুপুর|বিকাল|সন্ধ্যা))[\\s!।.,?]*$"
     ],
     "divorce_process": [
       "\\bhow\\s+(do|can|would)\\s+i\\s+(get|file\\s+for|apply\\s+for|start)\\s+a?\\s*(divorce|separation|khula)\\b",
