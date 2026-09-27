@@ -107,7 +107,7 @@ MODEL = os.getenv("BHAROSHA_MODEL", "openai/gpt-oss-20b")
 #   embedder fits the budget — or, more cheaply, it narrows as soon as the
 #   Bangla side of corpus/chunks.json is populated, since the answer then quotes
 #   Bangla source text instead of translating English.
-TRANSLATE_QUERIES = os.getenv("BHAROSHA_TRANSLATE_QUERIES", "off").lower() in (
+TRANSLATE_QUERIES = os.getenv("BHAROSHA_TRANSLATE_QUERIES", "on").lower() in (
     "on", "1", "true"
 )
 

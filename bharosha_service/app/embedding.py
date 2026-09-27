@@ -27,7 +27,22 @@ from __future__ import annotations
 import os
 from functools import lru_cache
 
-MODEL_NAME = os.getenv("BHAROSHA_EMBED_MODEL", "intfloat/multilingual-e5-small")
+# English-only, 30k vocabulary, ~250 MB resident — the model Probahini uses.
+#
+# Why not a multilingual one, when most users write Bangla: every XLM-R family
+# model carries a 250,000-token vocabulary, ~384 MB of embedding table alone once
+# dequantized, measured at 925 MB resident against a 512 MB instance. Translating
+# the Bangla question to English before embedding removes the need for one and
+# measured BETTER — a 0.175 margin between genuine and off-topic questions,
+# against 0.042 for multilingual e5.
+#
+# THIS AND chain.TRANSLATE_QUERIES ARE ONE DECISION. An English-only embedder
+# with translation off cannot represent Bangla at all; chain.retrieve refuses
+# rather than retrieving arbitrary passages, but the right fix is to change both
+# or neither. The relevance floor was measured against this pair too.
+MODEL_NAME = os.getenv(
+    "BHAROSHA_EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2"
+)
 
 # int8 by default: ~120 MB against ~470 MB for onnx/model.onnx.
 MODEL_FILE = os.getenv(

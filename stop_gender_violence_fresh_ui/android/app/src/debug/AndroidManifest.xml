@@ -1,7 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- The INTERNET permission is required for development. Specifically,
-         the Flutter tool needs it to communicate with the running application
-         to allow setting breakpoints, to provide hot reload, etc.
+    <!--
+      DEBUG BUILDS ONLY. Gradle merges this into debug variants and never into
+      release, so the shipped app keeps Android's default: cleartext HTTP is
+      blocked outright.
+
+      Why it is needed at all: testing against a service running on your own
+      machine means http://10.0.2.2:8000 from the emulator, and without this the
+      request fails silently — the app would just show the offline referral and
+      look as though the server were down.
+
+      Once the service is on Render it is HTTPS, and none of this applies.
     -->
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <application android:usesCleartextTraffic="true" />
 </manifest>
