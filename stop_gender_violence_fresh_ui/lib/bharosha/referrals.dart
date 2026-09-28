@@ -19,11 +19,24 @@ class Helpline {
     required this.nameEn,
     required this.nameBn,
     required this.inEmergencyScript,
+    this.descEn = '',
+    this.descBn = '',
   });
 
   final String number;
   final String nameEn;
   final String nameBn;
+
+  /// The longer text the Important Numbers screen shows under the name.
+  ///
+  /// Generated from referrals.py, not written in the screen. That screen used
+  /// to carry its own copy and described 16263 as "24/7 confidential support
+  /// for survivors of gender-based violence" — while this same file, five taps
+  /// away, correctly called it a health line.
+  final String descEn;
+  final String descBn;
+
+  String description(String language) => language == 'bn' ? descBn : descEn;
 
   /// False keeps a number out of the crisis scripts while it stays visible in
   /// the contacts list. 16263 is the case: confirmed as Shastho Batayon, the
@@ -79,6 +92,8 @@ class Referrals {
             nameEn: line['name_en'] as String,
             nameBn: line['name_bn'] as String,
             inEmergencyScript: line['in_emergency_script'] as bool,
+            descEn: (line['desc_en'] as String?) ?? '',
+            descBn: (line['desc_bn'] as String?) ?? '',
           ),
       ],
       focalPoints: [

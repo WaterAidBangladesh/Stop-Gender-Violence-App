@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<!--
+  Bharosha development console. Served at /console, and only when
+  BHAROSHA_DEV_CONSOLE=on — see the guard in app/api.py.
+
+  It exists so a change can be checked in seconds instead of by launching the
+  Flutter app, and so Bangla replies can be READ: a Windows terminal renders
+  them as boxes, a browser does not.
+
+  It calls the same _answer() the phone calls, and shows the things the app
+  deliberately hides from a user — which category fired, whether the device or
+  the model answered, and where the nearest chunk fell relative to the gate.
+
+  No CDN, no build step, no dependencies. One file, served from the same origin
+  as the API, so there is no CORS to configure.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bharosha console</title>
+<style>
+  :root {
+    --bg: #f4f5f7;
+    --panel: #ffffff;
+    --ink: #1b1d21;
+    --muted: #6b7079;
+    --line: #e2e5ea;
+    --brand: #a81e24;
+    --emergency: #a81e24;
+    --emergency-bg: #fdecec;
+    --refuse: #8a5200;
+    --refuse-bg: #fdf4e7;
+    --device: #1d6f42;
+    --server: #1f4e9c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.5 "Segoe UI", system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  /* Bangla needs a font that actually has the glyphs, and a little more
+     line-height than Latin or the vowel signs collide. */
+  .bn, [lang="bn"] {
+    font-family: "Nirmala UI", "Shonar Bangla", "Noto Sans Bengali", sans-serif;
+    line-height: 1.75;
+  }
+  header {
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  header h1 { font-size: 15px; margin: 0; font-weight: 600; }
+  header .dot { width: 8px; height: 8px; border-radius: 50%; background: #c7ccd3; }
+  header .dot.up { background: #1d6f42; }
+  header .dot.down { background: var(--brand); }
+  header small { color: var(--muted); }
+  header .spacer { flex: 1; }
+  button {
+    font: inherit;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  button:hover { border-color: #b9bfc8; }
+  main { flex: 1; display: flex; min-height: 0; }
+  #log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  aside {
+    width: 260px;
+    border-left: 1px solid var(--line);
+    background: var(--panel);
+    overflow-y: auto;
+    padding: 12px;
+  }
+  aside h2 {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin: 14px 0 6px;
+  }
+  aside h2:first-child { margin-top: 0; }
+  aside button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 4px;
+    font-size: 13px;
+    padding: 5px 8px;
+  }
+  .turn { max-width: 760px; }
+  .you {
+    align-self: flex-end;
+    background: var(--brand);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 10px;
+    max-width: 70%;
+  }
+  .reply {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    white-space: pre-wrap;
+  }
+  /* The same three appearances the app uses, so the console shows how the
+     reply will LOOK and not only what it says. */
+  .reply.emergency { background: var(--emergency-bg); border-left: 4px solid var(--emergency); }
+  .reply.refusal   { background: var(--refuse-bg);   border-left: 4px solid var(--refuse); }
+  .reply strong, .reply b { font-weight: 700; }
+  .meta {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+    font-size: 11px;
+  }
+  .tag {
+    border-radius: 4px;
+    padding: 2px 7px;
+    background: #eef0f3;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: .02em;
+  }
+  .tag.device { background: #e4f2e9; color: var(--device); }
+  .tag.server { background: #e5ecf8; color: var(--server); }
+  .tag.kind   { background: #2a2d33; color: #fff; }
+  .tag.warn   { background: #fdecec; color: var(--brand); }
+  .bar {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .scale {
+    position: relative;
+    height: 6px;
+    background: linear-gradient(90deg, #d7ebdd 0 62%, #fbe9cf 62% 76%, #f6dcdc 76% 100%);
+    border-radius: 3px;
+    margin: 4px 0 2px;
+  }
+  .scale i {
+    position: absolute;
+    top: -3px;
+    width: 2px;
+    height: 12px;
+    background: #2a2d33;
+  }
+  footer {
+    background: var(--panel);
+    border-top: 1px solid var(--line);
+    padding: 10px 16px;
+    display: flex;
+    gap: 8px;
+  }
+  #q {
+    flex: 1;
+    font: inherit;
+    font-family: "Segoe UI", "Nirmala UI", system-ui, sans-serif;
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  #q:focus { outline: 2px solid #c9ced6; outline-offset: -1px; }
+  footer button { padding: 9px 18px; font-weight: 600; }
+  .hint { color: var(--muted); font-size: 12px; padding: 24px 16px; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="dot" id="dot"></span>
+  <h1>Bharosha console</h1>
+  <small id="status">checking…</small>
+  <span class="spacer"></span>
+  <button id="run-all">Run every preset</button>
+  <button id="clear">Clear</button>
+  <button id="forget">New session</button>
+</header>
+
+<main>
+  <div id="log">
+    <p class="hint">
+      Type a question below, or fire a preset from the right.
+      Each reply shows which category fired, whether the phone or the model
+      answered it, and how far the nearest corpus chunk was.
+    </p>
+  </div>
+  <aside id="presets"></aside>
+</main>
+
+<footer>
+  <input id="q" placeholder="Ask something — English or বাংলা" autocomplete="off" autofocus>
+  <button id="send">Send</button>
+</footer>
+
+<script>
+// One preset per row of INPUT_TAXONOMY.md, in both languages, so "run every
+// preset" is a sweep of the whole taxonomy rather than a handful of favourites.
+const PRESETS = [
+  ['Emergency', [
+    'he is beating me right now',
+    'আমাকে মারছে, বাঁচান',
+    'will my husband kill me',
+    'I want to die',
+    'আমি আর বাঁচতে চাই না',
+    'they want to marry off my daughter',
+    "my friend's husband is beating her right now",
+  ]],
+  ['Disclosure', [
+    'my boss touches me at work',
+    'আমার স্বামী আমাকে গালি দেয়',
+    'my in-laws demand dowry',
+  ]],
+  ['Third party', [
+    'my friend is being abused by her husband',
+    'আমার বান্ধবী নির্যাতনের শিকার',
+    'how can I help my friend who is being harassed',
+  ]],
+  ['Refusals', [
+    'should I leave my husband?',
+    'তালাক কীভাবে নেব?',
+    'how do I collect evidence against him?',
+    'will I win the case?',
+    'how do I treat a burn on my hand?',
+  ]],
+  ['Social', [
+    'hi',
+    'kemon acho?',
+    'কেমন আছো?',
+    'thank you',
+    'ধন্যবাদ',
+    'ok',
+    'who are you?',
+    'তুমি কে',
+    'will my husband see this',
+    'এটা কি গোপন থাকবে',
+    'you are useless',
+  ]],
+  ['Vague', [
+    'help',
+    'what should I do',
+    'আমি কি করবো',
+    'সাহায্য চাই',
+    'help me now',
+    'আমাকে সাহায্য করুন এখনই',
+  ]],
+  ['Real questions', [
+    'what is safeguarding?',
+    'সেফগার্ডিং মানে কী',
+    'what counts as economic violence',
+    'how can violence be prevented in a community',
+    'what is victim blaming',
+    'what is stalking',
+  ]],
+  ['Off topic', [
+    'how do I cook rice',
+    'what is the capital of France',
+    'asdfgh',
+  ]],
+  ['Conversational path', [
+    'ekta proshno kori tomake?',
+    'তোমাকে একটা প্রশ্ন করি?',
+    'achha bujhlam',
+    'tumi ki amake help korte parbe?',
+    'tell me more',
+    'asdfgh',
+  ]],
+  ['Low distress', [
+    'amar mon ta kharap',
+    'আমার মন খারাপ',
+    'I feel so alone',
+    'I cannot sleep',
+    'কিছু ভালো লাগে না',
+  ]],
+  ['Known gaps', [
+    'he does not let me go out',
+    'he controls my money',
+    'I want to talk to someone',
+    'I want to report this',
+  ]],
+];
+
+const log = document.getElementById('log');
+const input = document.getElementById('q');
+let session = newSession();
+
+function newSession() {
+  return 'console-' + Math.random().toString(36).slice(2, 12);
+}
+
+const BENGALI = /[ঀ-৿]/;
+
+function el(tag, cls, text) {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text !== undefined) node.textContent = text;
+  if (text !== undefined && BENGALI.test(text)) node.lang = 'bn';
+  return node;
+}
+
+// Just enough Markdown for what the referral text actually uses: **bold** and
+// bullet lines. Deliberately not a Markdown library — the point is to see the
+// text, not to reimplement the app's renderer.
+function render(text) {
+  const escaped = text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+
+function bubbleClass(kind) {
+  if (kind === 'emergency' || kind === 'disclosure') return 'emergency';
+  if (kind === 'refusal' || kind === 'third_party') return 'refusal';
+  // 'social', 'vague', 'low_distress' and 'conversation' are plain, like the
+  // app draws them. A red edge on "hello" is the same mistake in pixels.
+  return '';
+}
+
+function scale(nearest, gate, offTopic) {
+  const wrap = el('div', 'bar');
+  const track = el('div', 'scale');
+  const mark = document.createElement('i');
+  // The bands are drawn at the real thresholds, so the marker's position is
+  // the actual decision and not a picture of one.
+  mark.style.left = Math.min(100, Math.max(0, nearest * 100)) + '%';
+  track.appendChild(mark);
+  wrap.appendChild(el('span', null,
+    `nearest ${nearest.toFixed(3)}  ·  gate ${gate}  ·  off-topic above ${offTopic}`));
+  wrap.appendChild(track);
+  return wrap;
+}
+
+async function ask(question) {
+  log.querySelector('.hint')?.remove();
+  log.appendChild(el('div', 'turn you', question));
+  log.scrollTop = log.scrollHeight;
+
+  const waiting = el('div', 'turn reply', '…');
+  log.appendChild(waiting);
+  log.scrollTop = log.scrollHeight;
+
+  let data;
+  try {
+    const response = await fetch('/console/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: session, query: question }),
+    });
+    data = await response.json();
+  } catch (error) {
+    waiting.className = 'turn reply emergency';
+    waiting.textContent = 'Could not reach the server: ' + error;
+    return;
+  }
+
+  const t = data.trace || {};
+  waiting.replaceWith(turn(data, t));
+  log.scrollTop = log.scrollHeight;
+}
+
+function turn(data, t) {
+  const block = el('div', 'turn');
+
+  const meta = el('div', 'meta');
+  meta.appendChild(el('span', 'tag kind', data.kind));
+  if (t.category) meta.appendChild(el('span', 'tag', t.category));
+  if (t.answered_by) {
+    meta.appendChild(el('span', 'tag ' + t.answered_by,
+      t.answered_by === 'device' ? 'on device · no model' : 'server'));
+  }
+  if (t.model) meta.appendChild(el('span', 'tag', t.model));
+  if (t.language) meta.appendChild(el('span', 'tag', t.language));
+  if (t.ms !== undefined) meta.appendChild(el('span', 'tag', t.ms + ' ms'));
+  if (t.matched && t.matched.length > 1) {
+    meta.appendChild(el('span', 'tag', 'also: ' + t.matched.slice(1).join(', ')));
+  }
+  if (t.retrieval_error) meta.appendChild(el('span', 'tag warn', 'retrieval failed'));
+  if (t.model_error) meta.appendChild(el('span', 'tag warn', 'model failed'));
+  block.appendChild(meta);
+
+  const body = el('div', 'reply ' + bubbleClass(data.kind));
+  if (BENGALI.test(data.response)) body.lang = 'bn';
+  body.innerHTML = render(data.response);
+  block.appendChild(body);
+
+  if (typeof t.nearest === 'number') {
+    block.appendChild(scale(t.nearest, t.gate, t.off_topic_distance));
+  }
+  if (t.passages && t.passages.length) {
+    const list = el('div', 'bar', t.passages
+      .map(p => `${p.distance}  ${p.source}`).join('\n'));
+    list.style.whiteSpace = 'pre-wrap';
+    block.appendChild(list);
+  }
+  if (t.retrieval_error || t.model_error) {
+    block.appendChild(el('div', 'bar', t.retrieval_error || t.model_error));
+  }
+  return block;
+}
+
+function send() {
+  const question = input.value.trim();
+  if (!question) return;
+  input.value = '';
+  ask(question);
+}
+
+document.getElementById('send').onclick = send;
+input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+document.getElementById('clear').onclick = () => { log.innerHTML = ''; };
+document.getElementById('forget').onclick = () => {
+  fetch('/forget', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ session_id: session }),
+  });
+  session = newSession();
+  log.appendChild(el('p', 'hint', 'New session. The server has forgotten the old one.'));
+};
+
+const aside = document.getElementById('presets');
+for (const [group, items] of PRESETS) {
+  aside.appendChild(el('h2', null, group));
+  for (const item of items) {
+    const button = el('button', null, item);
+    if (BENGALI.test(item)) button.classList.add('bn');
+    button.onclick = () => ask(item);
+    aside.appendChild(button);
+  }
+}
+
+document.getElementById('run-all').onclick = async () => {
+  // Sequential on purpose: firing them at once would interleave the replies
+  // and make the log useless for reading.
+  for (const [, items] of PRESETS) {
+    for (const item of items) await ask(item);
+  }
+};
+
+fetch('/health').then(r => r.json()).then(h => {
+  document.getElementById('dot').className = 'dot up';
+  document.getElementById('status').textContent =
+    `server ok · ${h.sessions} session(s) in memory`;
+}).catch(() => {
+  document.getElementById('dot').className = 'dot down';
+  document.getElementById('status').textContent = 'server not reachable';
+});
+</script>
+</body>
+</html>

@@ -95,7 +95,10 @@ def test_shared_cases_cover_both_languages_and_all_outcomes() -> None:
     languages = {case["language"] for case in cases}
     assert languages == {"en", "bn"}
     kinds = {case["kind"] for case in cases}
-    assert kinds == {"emergency", "refuse", "disclosure", "greeting", "proceed"}
+    assert kinds == {
+        "emergency", "refuse", "third_party", "disclosure", "reporting",
+        "low_distress", "social", "vague", "proceed",
+    }
 
 
 def test_situational_phrasings_are_covered() -> None:

@@ -98,7 +98,10 @@ def test_failed_answer_sends_the_referral(monkeypatch) -> None:
     """Retrieval succeeded, the model then returned nothing usable."""
 
     def one_passage(query: str, language: str = "en", n_results: int = 4):
-        return [
+        # (passages, nearest) — api.py calls retrieve_scored, which reports the
+        # nearest distance alongside the gated passages so the fallback can be
+        # tiered. The gate itself is unchanged.
+        passages = [
             chain.Passage(
                 english="Safeguarding means protecting people from harm.",
                 bangla=None,
@@ -106,11 +109,12 @@ def test_failed_answer_sends_the_referral(monkeypatch) -> None:
                 distance=0.2,
             )
         ]
+        return chain.Retrieval(passages=passages, candidates=passages, nearest=0.2)
 
     def exploding_answer(*args, **kwargs):
         raise chain.Unavailable("answer: truncated at 551 chars")
 
-    monkeypatch.setattr(chain, "retrieve", one_passage)
+    monkeypatch.setattr(chain, "retrieve_scored", one_passage)
     monkeypatch.setattr(chain, "answer", exploding_answer)
 
     result = api.chat(
@@ -132,10 +136,16 @@ def test_five_consecutive_failures_still_end_at_a_referral(monkeypatch) -> None:
 
     monkeypatch.setattr(
         chain,
-        "retrieve",
-        lambda *a, **k: [
-            chain.Passage(english="x", bangla=None, source="WaterAid", distance=0.1)
-        ],
+        "retrieve_scored",
+        lambda *a, **k: chain.Retrieval(
+            passages=[
+                chain.Passage(english="x", bangla=None, source="WaterAid", distance=0.1)
+            ],
+            candidates=[
+                chain.Passage(english="x", bangla=None, source="WaterAid", distance=0.1)
+            ],
+            nearest=0.1,
+        ),
     )
     monkeypatch.setattr(chain, "answer", always_unusable)
 
@@ -164,3 +174,73 @@ def test_reasoning_effort_is_configured() -> None:
     """
     assert chain.REASONING_EFFORT == "low"
     assert chain.ANSWER_MAX_TOKENS >= 1000
+
+
+# --- the assertion check on the below-floor path ----------------------------
+
+import assertions  # noqa: E402
+
+
+def test_the_leak_that_prompted_this_is_caught() -> None:
+    """The actual reply that failed, kept verbatim as the regression case.
+
+    "ki korbo?" measured 0.638 — below the floor, so the model was told it may
+    not state a procedural fact. This is what it returned instead.
+    """
+    leaked = (
+        "I’m here to help you think about what to do next. If someone is "
+        "hurting you or you feel unsafe, it can be useful to:\n\n"
+        "1. **Tell a trusted adult** – they can support you.\n"
+        "2. **Direct them to a local safeguarding officer.**"
+    )
+    assert assertions.asserts_anyway(leaked) is not None
+
+
+@pytest.mark.parametrize(
+    "reply",
+    [
+        "Sure, go ahead!",
+        "I only cover safeguarding and gender-based violence.",
+        "Could you tell me a bit more about what's happening?",
+        "You're welcome!",
+        "হ্যাঁ, অবশ্যই! কী জানতে চান?",
+        "হুম, কী ভাবছেন?",
+        "নমস্কার! কী জানতে চান?",
+    ],
+)
+def test_ordinary_conversation_is_not_discarded(reply: str) -> None:
+    """The check must not eat the replies it exists to protect. A false positive
+    here turns a warm "yes, of course — ask" back into the referral wall."""
+    assert assertions.asserts_anyway(reply) is None
+
+
+def test_a_leaking_reply_is_discarded_not_shown(monkeypatch) -> None:
+    """End to end: below the floor, a reply that asserts must never reach her."""
+    import referrals
+    from fastapi.testclient import TestClient
+
+    monkeypatch.setattr(
+        chain,
+        "retrieve_scored",
+        lambda *a, **k: chain.Retrieval(
+            passages=[],  # nothing cleared the floor -> ungrounded
+            candidates=[
+                chain.Passage(english="x", bangla=None, source="WaterAid", distance=0.7)
+            ],
+            nearest=0.7,
+        ),
+    )
+    monkeypatch.setattr(
+        chain, "answer", lambda *a, **k: "You should tell a trusted adult first."
+    )
+
+    before = assertions.counter.discarded
+    body = TestClient(api.app).post(
+        "/chat",
+        json={"session_id": "x" * 10, "query": "hello"},
+        headers={"x-forwarded-for": "203.0.113.77"},
+    ).json()
+
+    assert "trusted adult" not in body["response"]
+    assert body["response"] == referrals.response_for("greeting", "en")
+    assert assertions.counter.discarded == before + 1

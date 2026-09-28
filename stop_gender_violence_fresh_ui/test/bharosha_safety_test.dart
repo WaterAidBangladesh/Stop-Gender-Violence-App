@@ -30,11 +30,21 @@ void main() {
       .cast<Map<String, dynamic>>();
 
   group('shared case corpus', () {
-    test('has cases in both languages and all three outcomes', () {
+    test('has cases in both languages and every outcome', () {
       expect(cases.length, greaterThan(40));
       expect(cases.where((c) => c['language'] == 'bn'), isNotEmpty);
       expect(cases.where((c) => c['language'] == 'en'), isNotEmpty);
-      for (final kind in ['emergency', 'refuse', 'proceed']) {
+      for (final kind in [
+        'emergency',
+        'refuse',
+        'third_party',
+        'disclosure',
+        'low_distress',
+        'reporting',
+        'social',
+        'vague',
+        'proceed',
+      ]) {
         expect(cases.where((c) => c['kind'] == kind), isNotEmpty,
             reason: 'no $kind cases in the shared corpus');
       }
@@ -85,6 +95,23 @@ void main() {
       expect(referrals.focalPoints.length, 9);
     });
 
+    test('the Important Numbers screen cannot relabel a number', () {
+      // That screen now reads this same list. The regression it guards against
+      // is concrete: it described 16263 as "24/7 confidential support for
+      // survivors of gender-based violence" while this list called it a health
+      // line. Every number must carry a description, and 16263's must say what
+      // it is and where violence actually goes.
+      for (final line in referrals.helplines) {
+        expect(line.descEn.trim(), isNotEmpty, reason: line.number);
+        expect(line.descBn.trim(), isNotEmpty, reason: line.number);
+      }
+      final health = referrals.helpline('16263');
+      expect(health.descEn.toLowerCase(), contains('health'));
+      expect(health.descEn, contains('109'));
+      expect(health.descEn.toLowerCase(),
+          isNot(contains('support for survivors')));
+    });
+
     test('16263 is a health line and stays out of crisis scripts', () {
       final line = referrals.helpline('16263');
       expect(line.nameEn.toLowerCase(), contains('health'));
@@ -110,7 +137,135 @@ void main() {
     });
   });
 
+  group('the light replies stay light', () {
+    // These assert that text is ABSENT, which is the only way restraint holds.
+    // The failure they guard against is the one the app shipped with: "kemon
+    // acho?" answered with an apology, a five-item topic list and two emergency
+    // helplines. Nothing stops that creeping back except a test that fails.
+
+    test('a social reply carries no helpline number', () {
+      for (final category in ['greeting', 'thanks', 'acknowledgement', 'bot_abuse']) {
+        for (final language in ['en', 'bn']) {
+          final text = referrals.responseFor(category, language);
+          for (final line in referrals.helplines) {
+            expect(text, isNot(contains(line.number)),
+                reason: '$category/$language still lists ${line.number}');
+          }
+        }
+      }
+    });
+
+    test('a social reply carries no topic list', () {
+      const bulletPoint = '\n- ';
+      for (final category in rules.socialCategories) {
+        for (final language in ['en', 'bn']) {
+          expect(referrals.responseFor(category, language),
+              isNot(contains(bulletPoint)),
+              reason: '$category/$language has a bullet list');
+        }
+      }
+    });
+
+    test('the vague reply asks a question and gives exactly one number', () {
+      for (final language in ['en', 'bn']) {
+        final text = referrals.responseFor('vague', language);
+        expect(text, contains('?'));
+        expect(text, contains('999'));
+        expect(text, isNot(contains('109')));
+      }
+    });
+
+    test('the off-topic reply is shorter than half the no-context reply', () {
+      for (final language in ['en', 'bn']) {
+        expect(
+          referrals.responseFor('off_topic', language).length * 2,
+          lessThan(referrals.responseFor('no_context', language).length),
+        );
+      }
+    });
+
+    test('a social turn is styled like conversation, not like a crisis', () {
+      // A red emergency edge on "hello" is the visual form of the same mistake.
+      for (final kind in ['social', 'vague']) {
+        expect(kind, isNot('emergency'));
+      }
+      expect(rules.classify('kemon acho?').kind, 'social');
+      expect(rules.classify('hi, he is beating me').kind, 'emergency');
+    });
+  });
+
+  group('the device list is the whole boundary', () {
+    // stopsTurn is the one thing the phone decides by itself. If a category
+    // drifts onto this list, a reply that should be written for the person
+    // becomes a saved message; if one drifts off it, "he is going to kill me"
+    // starts depending on a network she may not have.
+    test('exactly these are answered on the device', () {
+      expect(rules.deviceCategories.toSet(), {
+        'suicide_risk', 'immediate_danger', 'threat_to_life',
+        'child_disclosure', 'active_violence',
+        'leave_decision', 'divorce_process', 'confront_or_evidence',
+        'economic_rights', 'legal_advice', 'medical_advice',
+        'personal_disclosure', 'coercive_control', 'reporting_request',
+        'low_distress',
+        'identity', 'privacy',
+      });
+    });
+
+    test('an emergency is decided here, synchronously, with a number', () {
+      for (final message in [
+        'he is beating me right now',
+        'আমাকে মারছে, বাঁচান',
+        'I want to die',
+        'he said he will kill me',
+        'my husband hits me',
+      ]) {
+        final decision = rules.classify(message);
+        expect(decision.stopsTurn, isTrue, reason: message);
+        expect(referrals.responseFor(decision.category!, decision.language),
+            contains('999'));
+      }
+    });
+
+    test('everything conversational goes to the model', () {
+      for (final message in [
+        'hi',
+        'kemon acho?',
+        'thank you',
+        'hmm',
+        'ki korbo',
+        'my friend is being abused by her husband',
+        'what is gender based violence',
+        'how do I cook rice',
+      ]) {
+        expect(rules.classify(message).stopsTurn, isFalse, reason: message);
+      }
+    });
+
+    test('but each of those still has bundled text for when it cannot', () {
+      for (final message in ['hi', 'thank you', 'hmm', 'ki korbo',
+          'my friend is being abused by her husband']) {
+        final decision = rules.classify(message);
+        expect(referrals.responseFor(decision.category!, decision.language).trim(),
+            isNotEmpty, reason: message);
+      }
+    });
+  });
+
   group('offline behaviour', () {
+    test('every recognised category has bundled text for a dead network', () {
+      // The offline fallback is keyed on CATEGORY, not on whether the device
+      // answers it. A greeting with no network must get the greeting, not
+      // "I could not reach the service" — which is what it got until this
+      // test existed.
+      for (final testCase in cases) {
+        final category = testCase['category'] as String?;
+        if (category == null) continue;
+        expect(referrals.responseFor(category, testCase['language'] as String)
+            .trim(), isNotEmpty,
+            reason: 'no offline text for $category');
+      }
+    });
+
     test('classification needs no network and no async', () {
       // If this ever becomes async, an emergency reply starts depending on
       // something that can hang. It must stay a synchronous, local call.

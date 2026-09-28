@@ -24,6 +24,13 @@ class Helpline:
     # False keeps a number out of the hardcoded emergency scripts while it
     # stays visible in the app's own contacts list. See NOTE_16263 below.
     in_emergency_script: bool = True
+    # The longer text the app's Important Numbers screen shows under the name.
+    # It lives HERE, not in the Flutter screen, because that screen kept its own
+    # copy and the two drifted: the chatbot correctly called 16263 a health line
+    # while the screen five taps away called it a Gender Based Violence Hotline.
+    # One list, one label, one place to be wrong in.
+    desc_en: str = ""
+    desc_bn: str = ""
 
 
 @dataclass(frozen=True)
@@ -32,6 +39,21 @@ class FocalPoint:
     number: str
     email: str
 
+
+# NOT ONE OF THESE NUMBERS HAS BEEN DIALLED BY A PERSON.
+#
+# Every one was taken from a document — WaterAid's material, the knowledge pack,
+# or a published directory. That is how 16430 got into this app as the GBV
+# helpline months after it had been replaced: a document said so, and nobody
+# rang it.
+#
+# tools/verification_list.py generates REFERRAL_VERIFICATION.md, which states
+# what the app CLAIMS each number does and what hours it claims, because those
+# claims are what a woman acts on. "It rings" is not a pass.
+#
+# Flip this to "VERIFIED <date>" only when that document comes back completed.
+# tests/test_referrals.py asserts the two agree, so this cannot be left behind.
+VERIFICATION_STATUS = "UNVERIFIED"
 
 NOTE_16263 = """CONFIRMED by WaterAid, 2026-09: 16263 is NOT a GBV hotline. It is
 Shastho Batayon, the national health call centre run by DGHS under the Ministry
@@ -46,8 +68,12 @@ police and fire on one number.
 
 OUTSTANDING: press reporting says the service has degraded (staff unpaid for
 months, closure threatened). Someone must ring it and confirm it answers before
-launch. The app's own contacts screen still carries the old 'Gender Based
-Violence Hotline' label; that is fixed in the Flutter refactor."""
+launch — see REFERRAL_VERIFICATION.md.
+
+The app's contacts screen used to carry the old 'Gender Based Violence Hotline'
+label. That screen now reads this list instead of keeping its own copy, so the
+label cannot diverge again; a Dart test asserts 16263's description says
+'health' and names 109."""
 
 
 # Mirrors emergency_contacts_screen.dart, in the same order.
@@ -56,27 +82,60 @@ NATIONAL_HELPLINES: tuple[Helpline, ...] = (
         number="999",
         name_en="National Emergency Services — police, fire, ambulance",
         name_bn="জাতীয় জরুরি সেবা — পুলিশ, ফায়ার সার্ভিস, অ্যাম্বুলেন্স",
+        desc_en="Free, 24 hours. Connects you to police, fire and ambulance "
+                "anywhere in the country. Use this if anyone is in danger now.",
+        desc_bn="ফ্রি, ২৪ ঘণ্টা। দেশের যেকোনো জায়গা থেকে পুলিশ, ফায়ার সার্ভিস ও "
+                "অ্যাম্বুলেন্সের সঙ্গে যুক্ত করে। কেউ এখনই বিপদে থাকলে এই নম্বরে কল করুন।",
     ),
     Helpline(
         number="109",
         name_en="National Helpline for Violence Against Women and Children",
         name_bn="নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন",
+        desc_en="Free, 24 hours, confidential. Takes complaints of violence, "
+                "abuse and harassment, including at work. Offers counselling "
+                "and legal information, and can refer you to protection and "
+                "social services.",
+        desc_bn="ফ্রি, ২৪ ঘণ্টা, গোপনীয়। কর্মক্ষেত্রসহ সহিংসতা, নির্যাতন ও হয়রানির "
+                "অভিযোগ নেয়। কাউন্সেলিং ও আইনি তথ্য দেয়, এবং সুরক্ষা ও সামাজিক "
+                "সেবার সঙ্গে যুক্ত করতে পারে।",
     ),
     Helpline(
         number="16263",
         name_en="Shastho Batayon — national health call centre (medical advice, ambulance)",
         name_bn="স্বাস্থ্য বাতায়ন — জাতীয় স্বাস্থ্য কল সেন্টার (চিকিৎসা পরামর্শ, অ্যাম্বুলেন্স)",
         in_emergency_script=False,  # see NOTE_16263
+        # THE WHOLE POINT OF MOVING THESE HERE. The app's own screen described
+        # this number as "24/7 confidential support for survivors of
+        # gender-based violence". It is a health line. That sentence is the one
+        # this refactor exists to delete.
+        desc_en="Free, 24 hours. Medical advice from doctors, health "
+                "information and emergency ambulance, run by the Directorate "
+                "General of Health Services. This is a HEALTH line, not a "
+                "gender-based violence line — for violence, call 109 or 999.",
+        desc_bn="ফ্রি, ২৪ ঘণ্টা। স্বাস্থ্য অধিদপ্তর পরিচালিত — চিকিৎসকের পরামর্শ, "
+                "স্বাস্থ্য তথ্য ও জরুরি অ্যাম্বুলেন্স। এটি একটি স্বাস্থ্যসেবার নম্বর, "
+                "জেন্ডারভিত্তিক সহিংসতার নম্বর নয় — সহিংসতার জন্য ১০৯ বা ৯৯৯ নম্বরে "
+                "কল করুন।",
     ),
     Helpline(
         number="1098",
         name_en="Child Helpline",
         name_bn="শিশু হেল্পলাইন",
+        desc_en="Free, 24 hours, confidential. For children facing abuse, "
+                "violence, exploitation, neglect or child marriage. Connects "
+                "children with protection services and emergency help.",
+        desc_bn="ফ্রি, ২৪ ঘণ্টা, গোপনীয়। নির্যাতন, সহিংসতা, শোষণ, অবহেলা বা "
+                "বাল্যবিবাহের শিকার শিশুদের জন্য। শিশুদের সুরক্ষা সেবা ও জরুরি "
+                "সহায়তার সঙ্গে যুক্ত করে।",
     ),
     Helpline(
         number="333",
         name_en="Citizen Service",
         name_bn="নাগরিক সেবা",
+        desc_en="Government information line for public services, complaints "
+                "and social issues, including help reaching local officials.",
+        desc_bn="সরকারি তথ্যসেবা — সরকারি সেবা, অভিযোগ ও সামাজিক বিষয়ে তথ্য ও "
+                "সহায়তা, স্থানীয় প্রশাসনের সঙ্গে যোগাযোগসহ।",
     ),
 )
 
@@ -404,20 +463,307 @@ DISCLOSURE_BN = f"""আপনি বলেছেন, সেজন্য ধন�
 
 এরপর কী করবেন সে বিষয়ে আমি পরামর্শ দিতে পারি না; উপরের নম্বরগুলোর মানুষ সেজন্য প্রশিক্ষিত, এবং তাঁরা আপনার কথা গুরুত্ব দিয়ে নেবেন।"""
 
-# Short on purpose. Someone who typed "hi" has not asked a question yet, and the
-# no-context text — which is written to rescue a real question the corpus cannot
-# answer — reads as a wall in response to a greeting.
-GREETING_EN = """Hello. Ask me anything about safeguarding or gender-based violence, and I will answer from WaterAid's own material — in English or Bangla.
+# --- Social replies --------------------------------------------------------
+#
+# TWO LINES. No topic list, no helpline numbers, no example questions. The rule
+# for this whole group is that the weight of the reply matches the weight of the
+# message: someone who typed "hi" has not asked anything yet, and answering a
+# hello with an apology, a five-item menu and two emergency numbers is how the
+# app came to feel like a leaflet rack.
+#
+# The numbers are not lost by leaving them out. 999 and 109 sit on the chat
+# screen as tappable buttons the whole time, so a social reply does not need to
+# repeat them — and repeating them here is what made the greeting read as a
+# warning.
+#
+# Line one answers the social turn like a person would. Line two says what this
+# is for, once, without listing anything.
 
-For example: *What is safeguarding?* · *What counts as economic violence?* · *How can violence be prevented?*
+GREETING_EN = """Hello — I'm glad you're here. I'm well, thank you for asking.
 
-If you are in danger right now, do not wait for me — the numbers below connect you to a person."""
+I'm here for questions about safeguarding and gender-based violence. Ask me anything, in English or Bangla, and I'll answer from WaterAid's own material."""
 
-GREETING_BN = """নমস্কার। সেফগার্ডিং বা জেন্ডারভিত্তিক সহিংসতা নিয়ে যেকোনো প্রশ্ন করুন — আমি ওয়াটারএইডের নিজস্ব উপকরণ থেকে বাংলা বা ইংরেজিতে উত্তর দেব।
+GREETING_BN = """নমস্কার — আপনি এসেছেন, ভালো লাগল। আমি ভালো আছি, জিজ্ঞেস করার জন্য ধন্যবাদ।
 
-যেমন: *সেফগার্ডিং কী?* · *অর্থনৈতিক সহিংসতা কী?* · *সহিংসতা কীভাবে প্রতিরোধ করা যায়?*
+সেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে প্রশ্নের জন্য আমি আছি। বাংলা বা ইংরেজি — যেকোনো ভাষায় জিজ্ঞেস করুন, আমি ওয়াটারএইডের নিজস্ব উপকরণ থেকে উত্তর দেব।"""
 
-আপনি যদি এখনই বিপদে থাকেন, আমার জন্য অপেক্ষা করবেন না — নিচের নম্বরগুলো আপনাকে একজন মানুষের কাছে পৌঁছে দেবে।"""
+THANKS_EN = """You're welcome.
+
+If anything else comes up — about safeguarding, or about violence and what counts as it — I'm here."""
+
+THANKS_BN = """আপনাকেও ধন্যবাদ।
+
+আর কিছু জানার থাকলে — সেফগার্ডিং নিয়ে, বা সহিংসতা ও তার ধরন নিয়ে — আমি আছি।"""
+
+# "ok", "hmm", "got it". A turn that expects nothing back. The worst thing to do
+# is answer it at length; the second worst is to say nothing and leave her
+# looking at an apology.
+ACKNOWLEDGEMENT_EN = """Understood.
+
+Take your time — ask whenever you're ready."""
+
+ACKNOWLEDGEMENT_BN = """বুঝেছি।
+
+তাড়াহুড়ো নেই — যখন ইচ্ছে জিজ্ঞেস করবেন।"""
+
+# Answered honestly and in plain words. Someone deciding whether to tell this
+# app something is entitled to know what it is BEFORE she tells it, and a
+# chatbot that lets her believe she is talking to a counsellor has taken that
+# decision away from her. It says what it is, what it is not, and what it does
+# with what she types — in that order, because the last one is the one she is
+# really asking about.
+IDENTITY_EN = f"""I'm Bharosha, an automated assistant in WaterAid Bangladesh's Shomota Shurokkha app. Not a person, and not a counsellor, lawyer or doctor.
+
+I answer from WaterAid's safeguarding material, and I can point you to people who are trained for the rest. Nothing you type here is saved or sent to anyone, and you don't need an account to use me.
+
+To talk to a person instead: **{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential."""
+
+IDENTITY_BN = f"""আমি ভরসা — ওয়াটারএইড বাংলাদেশের "সমতা সুরক্ষা" অ্যাপের একটি স্বয়ংক্রিয় সহায়ক। আমি মানুষ নই, কাউন্সেলর, আইনজীবী বা ডাক্তারও নই।
+
+আমি ওয়াটারএইডের সেফগার্ডিং উপকরণ থেকে উত্তর দিই, আর বাকি বিষয়ে প্রশিক্ষিত মানুষের সন্ধান দিতে পারি। আপনি এখানে যা লেখেন তা সংরক্ষণ করা হয় না, কাউকে পাঠানোও হয় না; আমাকে ব্যবহার করতে কোনো অ্যাকাউন্ট লাগে না।
+
+কোনো মানুষের সঙ্গে কথা বলতে চাইলে: **{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।"""
+
+# DRAFT WORDING — awaiting sign-off. Every sentence below is a factual claim
+# about how this app behaves, and a wrong one is dangerous in the same way a
+# dead helpline number is: she may decide whether it is safe to type something
+# based on it. Each is checked against the code as it stands —
+#
+#   "not saved on your phone"   the chat lives in a list in memory; there is no
+#                               local database, file or shared-preferences write
+#   "no account needed"         /bharosha is routed before any login screen
+#   "sent to look it up"        true, and stated rather than glossed: a corpus
+#                               question does go to the server over HTTPS
+#   "kept only for this
+#    conversation, then gone"   sessions.store is in memory, /forget is called
+#                               when the chat closes, and a restart clears it
+#   "no notifications"          nothing in this feature schedules one
+#   "Leave now"                 clears the conversation, calls /forget, exits
+#
+# What it does NOT claim, on purpose:
+#
+#   nothing about hiding from the app switcher — FLAG_SECURE is Android-only
+#     and this text is shown on iOS too;
+#   nothing about her phone bill, her network, or anyone with physical access
+#     to an unlocked handset, none of which this app controls.
+#
+# If any of those six facts changes, this text changes with it.
+PRIVACY_EN = """This conversation is not saved on your phone, and you don't need an account to use it. When you ask about something, the question is sent to be looked up, kept only for as long as this conversation is open, and then forgotten. Nothing here sends you notifications.
+
+**Leave now**, at the top of this screen, clears everything and closes the app straight away.
+
+One thing I can't do anything about: if someone else can unlock your phone while this is open, they can read what is on the screen."""
+
+PRIVACY_BN = """এই কথাবার্তা আপনার ফোনে সংরক্ষণ করা হয় না, আর এটি ব্যবহার করতে কোনো অ্যাকাউন্ট লাগে না। আপনি কিছু জিজ্ঞেস করলে প্রশ্নটি খুঁজে দেখার জন্য পাঠানো হয়, কেবল এই কথাবার্তা চলার সময়টুকু রাখা হয়, তারপর মুছে যায়। এখান থেকে কোনো নোটিফিকেশন যায় না।
+
+উপরে থাকা **"এখনই বেরিয়ে যান"** বোতামে সবকিছু মুছে গিয়ে অ্যাপ সঙ্গে সঙ্গে বন্ধ হয়ে যায়।
+
+একটি বিষয়ে আমার কিছু করার নেই: এটি খোলা থাকা অবস্থায় অন্য কেউ যদি আপনার ফোন আনলক করতে পারেন, তিনি পর্দায় যা আছে তা পড়তে পারবেন।"""
+
+# One flat line, no offence taken, door left open. Frustration at an app is
+# sometimes the first thing a person can say out loud, and a lecture about
+# politeness would close the only door she has opened.
+BOT_ABUSE_EN = """That's fair — I can only answer from the material I have, and it doesn't cover everything.
+
+If you tell me what you were looking for, I'll say plainly whether I have it."""
+
+BOT_ABUSE_BN = """ঠিক আছে — আমার কাছে যে উপকরণ আছে কেবল সেখান থেকেই উত্তর দিতে পারি, আর তাতে সবকিছু নেই।
+
+আপনি কী খুঁজছিলেন বললে, আমার কাছে সেটা আছে কি না খোলাখুলি বলব।"""
+
+# --- Asking how to report ---------------------------------------------------
+#
+# DRAFT WORDING — awaiting sign-off.
+#
+# The first sentence is the one that must never be got wrong: Bharosha is not a
+# reporting channel and cannot pass anything on. Left to the model, "I want to
+# report this" was answered from WaterAid's staff-facing safeguarding material
+# with "you can report anonymously" — pointing at an incident form that requires
+# a login and is not reachable. She would have believed something had been done.
+#
+# So it says what this is not, then names channels that are real and answered by
+# people. It deliberately does NOT mention the app's own Report screen: see
+# KNOWN_DEPENDENCIES in the README — until that form is reachable without a
+# login and someone confirms who reads it, sending a woman there is sending her
+# nowhere.
+#
+# No advice on whether to report. That decision has safety consequences she is
+# better placed to weigh than this app, and 109 can talk it through with her.
+REPORTING_EN = f"""I want to be clear about one thing first: I cannot take a report. Nothing you type here is passed on to anyone, and I have no way to record or forward a complaint.
+
+Here is where a report actually goes to a person:
+
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. They take complaints of violence, abuse and harassment directly, and they can refer you on.
+
+**{EMERGENCY.number}** — the police, if a crime has been committed or anyone is in danger now.
+
+If this concerns a WaterAid programme, workplace, staff member or partner organisation, it goes to safeguarding: email {SAFEGUARDING_EMAIL}, or use the safeguarding contacts under Important Numbers in this app.
+
+If the person harmed is under 18, {CHILD.number} is the Child Helpline.
+
+Whether to report, and when, is your decision. The people on those numbers can talk it through with you before you decide anything."""
+
+REPORTING_BN = f"""প্রথমেই একটি বিষয় স্পষ্ট করে বলি: আমি কোনো অভিযোগ গ্রহণ করতে পারি না। আপনি এখানে যা লেখেন তা কারও কাছে পাঠানো হয় না, এবং কোনো অভিযোগ সংরক্ষণ বা হস্তান্তর করার ক্ষমতা আমার নেই।
+
+অভিযোগ আসলে যেখানে একজন মানুষের কাছে পৌঁছায়:
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। সহিংসতা, নির্যাতন ও হয়রানির অভিযোগ তাঁরা সরাসরি নেন এবং প্রয়োজনে অন্যত্র পাঠাতে পারেন।
+
+**{EMERGENCY.number}** — পুলিশ, যদি কোনো অপরাধ ঘটে থাকে বা কেউ এখনই বিপদে থাকেন।
+
+বিষয়টি যদি ওয়াটারএইডের কোনো কার্যক্রম, কর্মক্ষেত্র, কর্মী বা সহযোগী সংস্থার সঙ্গে সম্পর্কিত হয়, তাহলে সেটি সেফগার্ডিংয়ের বিষয়: ইমেইল করুন {SAFEGUARDING_EMAIL}, অথবা এই অ্যাপের "Important Numbers"-এ দেওয়া সেফগার্ডিং যোগাযোগ ব্যবহার করুন।
+
+ক্ষতিগ্রস্ত ব্যক্তির বয়স ১৮ বছরের কম হলে {CHILD.number} শিশু হেল্পলাইন।
+
+অভিযোগ করবেন কি না, আর কখন করবেন — সিদ্ধান্তটি আপনার। উপরের নম্বরগুলোর মানুষ সিদ্ধান্ত নেওয়ার আগে আপনার সঙ্গে বিষয়টি নিয়ে কথা বলতে পারেন।"""
+
+# --- Coercive control and economic abuse ------------------------------------
+#
+# DRAFT WORDING — awaiting sign-off.
+#
+# Its own text rather than the general disclosure script, for one reason: the
+# single most useful sentence this app can give her is the one that names what
+# is happening, and "what you are describing is gender-based violence" is not
+# that sentence when what she described was her husband keeping her salary.
+#
+# Naming it matters more here than anywhere else. Being hit is recognised as
+# violence by everyone around her. Having her phone checked and her wages taken
+# is the form of abuse she is most likely to have been told is normal, or her
+# own fault, or simply how a household works — which is why it goes unreported
+# for years. So the first line does the naming, and does it in WaterAid's own
+# vocabulary: economic violence and coercive control.
+#
+# It still gives no advice. Not on leaving, not on money, not on getting her
+# documents back — that last one especially, because retrieving papers from
+# someone who is controlling you is exactly the kind of step that raises the
+# danger, and it is not this app's to plan.
+COERCIVE_CONTROL_EN = f"""Thank you for telling me. What you are describing has a name: controlling someone's money, their phone, their documents, or whether they can work, study or leave the house is recognised as **economic violence and coercive control**. It is a form of gender-based violence, and it is not a normal part of marriage or family life.
+
+It is often the hardest kind to name, because there may be no injury to point at and because people around you may treat it as ordinary. You do not need an injury, and you do not need proof, before anyone will take you seriously.
+
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. They take exactly this, and they can tell you what your options are.
+
+**{EMERGENCY.number}** — if you are ever in immediate danger.
+
+I am not able to advise you on what to do about the money, the documents or the restrictions themselves — those steps can change the risk you are in, and a trained person needs to weigh that with you."""
+
+COERCIVE_CONTROL_BN = f"""আপনি বলেছেন, সেজন্য ধন্যবাদ। আপনি যা বর্ণনা করছেন তার একটি নাম আছে: কারও টাকা, ফোন, কাগজপত্র বা তিনি কাজ করবেন কি না, পড়বেন কি না, বাইরে যাবেন কি না — এসব নিয়ন্ত্রণ করাকে **অর্থনৈতিক সহিংসতা ও কোয়ার্সিভ কন্ট্রোল (নিয়ন্ত্রণমূলক আচরণ)** হিসেবে স্বীকৃতি দেওয়া হয়। এটি জেন্ডারভিত্তিক সহিংসতারই একটি রূপ, এবং এটি বিয়ে বা সংসারের স্বাভাবিক অংশ নয়।
+
+এই ধরনের সহিংসতার নাম দেওয়াই সবচেয়ে কঠিন, কারণ দেখানোর মতো কোনো আঘাত হয়তো নেই, আর আশপাশের মানুষ একে সাধারণ ব্যাপার বলে ধরে নিতে পারেন। কেউ আপনার কথা গুরুত্ব দিয়ে নেওয়ার আগে আপনাকে আঘাতও দেখাতে হবে না, প্রমাণও দিতে হবে না।
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। ঠিক এ ধরনের বিষয়ই তাঁরা নেন এবং আপনার কী কী উপায় আছে তা বলতে পারেন।
+
+**{EMERGENCY.number}** — আপনি যদি কখনো তাৎক্ষণিক বিপদে পড়েন।
+
+টাকা, কাগজপত্র বা এই নিয়ন্ত্রণগুলো নিয়ে আপনি কী করবেন সে পরামর্শ আমি দিতে পারি না — এই পদক্ষেপগুলো আপনার ঝুঁকি বদলে দিতে পারে, আর একজন প্রশিক্ষিত মানুষকে আপনার সঙ্গে বসে সেটা বিবেচনা করতে হবে।"""
+
+# --- Low distress ----------------------------------------------------------
+#
+# DRAFT WORDING — awaiting sign-off.
+#
+# "mon kharap." She has said she feels bad and has not said why. Three things
+# this must do and two it must not.
+#
+#   sit with it first — the sentence she reads first should be about her, not
+#     about what this app can do;
+#   offer, do not prescribe — the corpus has grounding and coping material, and
+#     she can have it by asking. Handing it over unasked answers a feeling with
+#     a technique;
+#   name one place with a human in it, once.
+#
+# It must NOT diagnose — no "that sounds like depression", no "you may be
+# experiencing trauma" — and it must NOT ask what happened. If she wants to say,
+# she will; being asked is what makes a person close the app.
+#
+# Kaan Pete Roi is named with its hours, for the same reason it is in the
+# suicide script: a number that may not answer must never look like one that
+# always does.
+LOW_DISTRESS_EN = f"""I'm sorry you're feeling like this. You don't have to explain it or justify it to me.
+
+If you'd like to talk to someone who will just listen, **{KAAN_PETE_ROI_NUMBER}** is Kaan Pete Roi, open {KAAN_PETE_ROI_HOURS_EN}.
+
+And if it would help, you can ask me what WaterAid's material says about coping with stress or difficult feelings, and I'll answer from that. Or you can say more here — I'm listening."""
+
+LOW_DISTRESS_BN = f"""আপনার এমন লাগছে শুনে খারাপ লাগল। কেন এমন লাগছে, তা আমাকে ব্যাখ্যা করতে হবে না।
+
+কেউ শুধু আপনার কথা শুনুক — এমন চাইলে **{KAAN_PETE_ROI_NUMBER}** নম্বরে কান পেতে রই আছে, {KAAN_PETE_ROI_HOURS_BN} খোলা।
+
+আর যদি কাজে লাগে, মানসিক চাপ বা কঠিন অনুভূতি নিয়ে ওয়াটারএইডের উপকরণ কী বলে তা জিজ্ঞেস করতে পারেন — আমি সেখান থেকে বলব। অথবা এখানেই আরও কিছু বলতে পারেন; আমি শুনছি।"""
+
+# --- Vague input -----------------------------------------------------------
+#
+# "help", "ki korbo", "what should I do". ONE question back, and ONE safety
+# line — not the referral block.
+#
+# The safety line is there because in THIS app a bare "help" is not the same
+# input it would be in a shopping app. It may be someone who cannot yet type
+# the sentence. So the reply does two things at once: it asks her to say a
+# little more, and it makes sure that if she cannot, she still leaves this turn
+# knowing one number. One number, not five, and framed as "if it is urgent" so
+# that it does not read as a diagnosis of what she is going through.
+VAGUE_EN = f"""I want to help — tell me a little more and I'll know where to start. What's happening, or what would you like to know about?
+
+If it's urgent right now, don't wait for me: **{EMERGENCY.number}** reaches the police, fire service and ambulance, free, at any hour."""
+
+VAGUE_BN = f"""আমি সাহায্য করতে চাই — একটু বিস্তারিত বললে কোথা থেকে শুরু করব বুঝতে পারব। কী ঘটছে, বা কোন বিষয়ে জানতে চান?
+
+যদি এখনই জরুরি হয়, আমার জন্য অপেক্ষা করবেন না: **{EMERGENCY.number}** নম্বরে পুলিশ, ফায়ার সার্ভিস ও অ্যাম্বুলেন্স পাওয়া যায় — ফ্রি, যেকোনো সময়।"""
+
+# --- Asking on behalf of someone else --------------------------------------
+#
+# DRAFT WORDING — awaiting sign-off.
+#
+# A different answer, not a weaker one. What she needs is not the disclosure
+# text with the pronouns changed: she is not the one in danger, she is the one
+# deciding what to do about somebody who is, and that has its own failure modes.
+# The two worst are acting without the person's agreement, and going quiet
+# because it feels like none of her business.
+#
+# So: believe her, tell her the three things that actually help, tell her the
+# one thing not to do, and give her a number she can pass on or call herself.
+# No advice on whether the other person should leave — that refusal applies
+# whoever is asking.
+THIRD_PARTY_EN = f"""It matters that you noticed, and that you're asking. People in this situation are often reached by a friend long before they reach a helpline.
+
+What helps most is usually simple: believe her, tell her it isn't her fault, and stay in touch even if nothing changes for a long time. Let her decide what happens next, at her own pace — that includes deciding to do nothing for now.
+
+What to avoid is acting for her: contacting the person harming her, reporting it without her agreement, or pressing her to leave. Each of those can raise the danger she is in, and it is her safety being spent.
+
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. You can call for advice on supporting her, and so can she.
+
+**{EMERGENCY.number}** — if she is in danger right now.
+
+If she is under 18, {CHILD.number} is the Child Helpline, and this should not wait."""
+
+THIRD_PARTY_BN = f"""আপনি লক্ষ করেছেন এবং জিজ্ঞেস করছেন — এটা গুরুত্বপূর্ণ। এ ধরনের পরিস্থিতিতে থাকা মানুষের কাছে হেল্পলাইনের অনেক আগে পৌঁছান একজন বন্ধু।
+
+সবচেয়ে বেশি কাজে আসে সাধারণ কিছু বিষয়: তাঁকে বিশ্বাস করুন, বলুন যে এতে তাঁর কোনো দোষ নেই, আর অনেক দিন কিছু না বদলালেও যোগাযোগ রাখুন। এরপর কী হবে তা তিনিই ঠিক করবেন, তাঁর নিজের গতিতে — এর মধ্যে "এখন কিছুই করব না" সিদ্ধান্তটাও পড়ে।
+
+যা এড়িয়ে চলবেন তা হলো তাঁর হয়ে সিদ্ধান্ত নেওয়া: যে ব্যক্তি ক্ষতি করছে তার সঙ্গে যোগাযোগ করা, তাঁর সম্মতি ছাড়া অভিযোগ জানানো, বা চলে যাওয়ার জন্য চাপ দেওয়া। এর প্রতিটিই তাঁর বিপদ বাড়াতে পারে, আর ঝুঁকিটা তাঁরই।
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। তাঁকে কীভাবে পাশে থাকবেন সে বিষয়ে আপনি নিজেও পরামর্শ নিতে পারেন, তিনিও কল করতে পারেন।
+
+**{EMERGENCY.number}** — তিনি যদি এখনই বিপদে থাকেন।
+
+তাঁর বয়স ১৮ বছরের কম হলে {CHILD.number} শিশু হেল্পলাইন, এবং এটি ফেলে রাখার বিষয় নয়।"""
+
+# --- Off topic -------------------------------------------------------------
+#
+# The light end of the tiered fallback. NO_CONTEXT below is written to rescue a
+# real question this corpus happens to miss; it apologises, lists what it does
+# have and gives two helplines. Sending all of that to "how do I cook rice" was
+# absurd in the other direction — the app sounded like it could not tell a
+# recipe from a crisis.
+#
+# api.py chooses between the two by how far the nearest chunk was, which is a
+# number retrieval has already computed. Nothing about the gate changes.
+OFF_TOPIC_EN = """That's outside what I know about — I only cover safeguarding and gender-based violence, and I'd rather say so than make something up.
+
+Ask me anything in that area and I'll answer from WaterAid's own material."""
+
+OFF_TOPIC_BN = """এই বিষয়ে আমি জানি না — আমি কেবল সেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে কাজ করি, আর না জেনে কিছু বানিয়ে বলার চেয়ে সেটা স্বীকার করাই ভালো।
+
+এই বিষয়ের যেকোনো প্রশ্ন করুন — ওয়াটারএইডের নিজস্ব উপকরণ থেকে উত্তর দেব।"""
 
 # NOT the same as no_context, and the difference matters. no_context says "the
 # material does not cover that", which is a claim about the question. This says
@@ -493,6 +839,75 @@ ANSWER_FOOTER_BN = (
 )
 
 
+# --- Referral tails ---------------------------------------------------------
+#
+# What goes AFTER a grounded reply on the situation paths, in place of the full
+# hardcoded script.
+#
+# The scripts above are still exactly right when they are all she gets — no
+# network, no key, nothing retrieved. But once the model has written two
+# paragraphs that actually speak to her situation, printing the whole script
+# underneath produces the wall of text this app was criticised for. So the
+# script becomes the fallback and these become the normal ending: the same
+# numbers, the same boundary, a quarter of the length.
+#
+# Every number here is interpolated from the one shared list. The model is
+# forbidden from writing numbers precisely so that these are the only source.
+DISCLOSURE_TAIL_EN = f"""
+
+---
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. They take complaints of exactly this kind, including harassment at work.
+
+**{EMERGENCY.number}** — if you are ever in immediate danger. If the person being harmed is under 18, {CHILD.number} is the Child Helpline.
+
+I can explain what WaterAid's material says, but I am not able to advise you on what to do next — the people on those numbers are trained for that."""
+
+DISCLOSURE_TAIL_BN = f"""
+
+---
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। কর্মক্ষেত্রে হয়রানিসহ ঠিক এ ধরনের অভিযোগই তাঁরা নেন।
+
+**{EMERGENCY.number}** — আপনি যদি কখনো তাৎক্ষণিক বিপদে পড়েন। ক্ষতিগ্রস্ত ব্যক্তির বয়স ১৮ বছরের কম হলে {CHILD.number} শিশু হেল্পলাইন।
+
+ওয়াটারএইডের উপকরণ কী বলে তা আমি ব্যাখ্যা করতে পারি, কিন্তু এরপর কী করবেন সে পরামর্শ আমি দিতে পারি না — উপরের নম্বরগুলোর মানুষ সেজন্য প্রশিক্ষিত।"""
+
+THIRD_PARTY_TAIL_EN = f"""
+
+---
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. You can call for advice on supporting her, and so can she.
+
+**{EMERGENCY.number}** — if she is in danger right now. If she is under 18, {CHILD.number} is the Child Helpline, and this should not wait."""
+
+THIRD_PARTY_TAIL_BN = f"""
+
+---
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। তাঁকে কীভাবে পাশে থাকবেন সে বিষয়ে আপনি নিজেও পরামর্শ নিতে পারেন, তিনিও কল করতে পারেন।
+
+**{EMERGENCY.number}** — তিনি যদি এখনই বিপদে থাকেন। তাঁর বয়স ১৮ বছরের কম হলে {CHILD.number} শিশু হেল্পলাইন, এবং এটি ফেলে রাখার বিষয় নয়।"""
+
+LOW_DISTRESS_TAIL_EN = f"""
+
+---
+If you'd like to talk to someone who will just listen, **{KAAN_PETE_ROI_NUMBER}** is Kaan Pete Roi, open {KAAN_PETE_ROI_HOURS_EN}."""
+
+LOW_DISTRESS_TAIL_BN = f"""
+
+---
+কেউ শুধু আপনার কথা শুনুক — এমন চাইলে **{KAAN_PETE_ROI_NUMBER}** নম্বরে কান পেতে রই আছে, {KAAN_PETE_ROI_HOURS_BN} খোলা।"""
+
+SITUATION_TAILS: dict[str, dict[str, str]] = {
+    "personal_disclosure": {"en": DISCLOSURE_TAIL_EN, "bn": DISCLOSURE_TAIL_BN},
+    "third_party_concern": {"en": THIRD_PARTY_TAIL_EN, "bn": THIRD_PARTY_TAIL_BN},
+    "low_distress": {"en": LOW_DISTRESS_TAIL_EN, "bn": LOW_DISTRESS_TAIL_BN},
+}
+
+
+def situation_tail(category: str, language: str) -> str:
+    """The referral that follows a grounded reply on a situation path."""
+    by_language = SITUATION_TAILS[category]
+    return by_language.get(language, by_language["en"])
+
+
 def answer_footer(language: str) -> str:
     return ANSWER_FOOTER_BN if language == "bn" else ANSWER_FOOTER_EN
 
@@ -510,12 +925,37 @@ RESPONSES: dict[str, dict[str, str]] = {
     "medical_advice": {"en": REFUSE_MEDICAL_EN, "bn": REFUSE_MEDICAL_BN},
     "confront_or_evidence": {"en": REFUSE_CONFRONT_EN, "bn": REFUSE_CONFRONT_BN},
     "no_context": {"en": NO_CONTEXT_EN, "bn": NO_CONTEXT_BN},
+    "off_topic": {"en": OFF_TOPIC_EN, "bn": OFF_TOPIC_BN},
     "personal_disclosure": {"en": DISCLOSURE_EN, "bn": DISCLOSURE_BN},
+    "coercive_control": {"en": COERCIVE_CONTROL_EN, "bn": COERCIVE_CONTROL_BN},
+    "reporting_request": {"en": REPORTING_EN, "bn": REPORTING_BN},
+    "third_party_concern": {"en": THIRD_PARTY_EN, "bn": THIRD_PARTY_BN},
+    "low_distress": {"en": LOW_DISTRESS_EN, "bn": LOW_DISTRESS_BN},
     "greeting": {"en": GREETING_EN, "bn": GREETING_BN},
+    "thanks": {"en": THANKS_EN, "bn": THANKS_BN},
+    "acknowledgement": {"en": ACKNOWLEDGEMENT_EN, "bn": ACKNOWLEDGEMENT_BN},
+    "identity": {"en": IDENTITY_EN, "bn": IDENTITY_BN},
+    "privacy": {"en": PRIVACY_EN, "bn": PRIVACY_BN},
+    "bot_abuse": {"en": BOT_ABUSE_EN, "bn": BOT_ABUSE_BN},
+    "vague": {"en": VAGUE_EN, "bn": VAGUE_BN},
     "unreachable": {"en": UNREACHABLE_EN, "bn": UNREACHABLE_BN},
     "starting": {"en": STARTING_EN, "bn": STARTING_BN},
     "rate_limited": {"en": RATE_LIMITED_EN, "bn": RATE_LIMITED_BN},
 }
+
+
+# Every category safety.py can return must have text here, and the place to
+# find that out is import time — not in front of a user, mid-turn, as a KeyError
+# where a phone number should have been.
+def _check_every_category_has_text() -> None:  # pragma: no cover - import guard
+    import safety
+
+    missing = [c for c in safety._PRIORITY if c not in RESPONSES]
+    if missing:
+        raise RuntimeError(f"safety categories with no referral text: {missing}")
+
+
+_check_every_category_has_text()
 
 
 def response_for(category: str, language: str) -> str:

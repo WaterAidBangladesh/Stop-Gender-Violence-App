@@ -134,6 +134,62 @@ Open items needing WaterAid's answer, recorded in code comments where they bite:
   rendering English passages. Referral text is hand-written in both languages
   and never model-translated; explanatory content is the residual risk.
 
+## Testing it without the app
+
+    .\dev.ps1
+
+Then open **http://127.0.0.1:8000/console**.
+
+A browser page for asking questions and reading the answers, so a change can be
+checked in seconds instead of by launching the Flutter app. It shows what the
+app deliberately hides: which category fired, whether the phone or the model
+answered, the nearest chunk's distance against the gate, and which sources the
+answer came from. Presets down the right-hand side cover every row of
+[INPUT_TAXONOMY.md](INPUT_TAXONOMY.md) in both languages; "Run every preset"
+sweeps the lot.
+
+It is a browser page rather than a terminal script for one concrete reason: a
+Windows terminal renders Bangla as boxes, and Bangla is this app's primary
+language.
+
+The console calls the same `_answer()` the phone calls — it does not
+re-implement the pipeline — and the routes exist only when
+`BHAROSHA_DEV_CONSOLE=on`, which `dev.ps1` sets and nothing else does. A
+deployed instance does not serve them at all. `tests/test_startup.py` asserts
+both: that the routes are absent by default, and that `/chat` still returns
+exactly `{response, kind}`.
+
+## Known dependencies outside this service
+
+Things Bharosha's text depends on that are not in this repository. Each one has
+been written around rather than assumed, and each needs someone else to close it.
+
+### The app's incident report form is not usable
+
+`/reportForm` in the Flutter app requires a login and is not reachable. Until
+that changes, **Bharosha must not mention it.** This is not a style preference:
+the model, left to answer "I want to report this" from the corpus, replied that
+a report could be made anonymously — which would have told a woman something had
+been done when nothing had.
+
+That is why `reporting_request` is a hardcoded, on-device category whose first
+sentence is "I cannot take a report", and why the prompt forbids the model from
+naming any in-app reporting route. When the form works and someone confirms who
+reads it, this is the note to revisit.
+
+### The referral numbers have not been dialled
+
+See [REFERRAL_VERIFICATION.md](REFERRAL_VERIFICATION.md), generated from
+`app/referrals.py`. `VERIFICATION_STATUS` says `UNVERIFIED` and a test keeps it
+honest.
+
+### The corpus is awaiting WaterAid review
+
+345 of 418 chunks are `knowledge_pack_pending_review` and 36 more are
+`external_pending_review`. 133 of the pack's 459 rows are indexed; the 198 legal
+rows are excluded and legal questions are refused before retrieval, so that
+material is unreachable twice over.
+
 ## Secrets
 
 `GROQ_API_KEY` comes from the environment, nowhere else. Create a **new** key

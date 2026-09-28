@@ -35,9 +35,11 @@ class SafetyDecision {
     required this.category,
     required this.language,
     required this.matched,
+    required this.stopsTurn,
   });
 
-  /// `emergency`, `refuse`, `disclosure`, `greeting`, or `proceed`.
+  /// `emergency`, `refuse`, `third_party`, `disclosure`, `social`, `vague`,
+  /// or `proceed`. Only the last one reaches the network.
   final String kind;
 
   /// The winning category, or null when proceeding.
@@ -49,15 +51,11 @@ class SafetyDecision {
   /// Every category that fired, for debugging. Never logged or transmitted.
   final List<String> matched;
 
-  /// True when the model and the network must not be involved at all.
+  /// True when this is answered here, from bundled text, with no network.
   ///
-  /// Greetings included: they are answered from the same bundled table, so a
-  /// "hi" costs no round trip and works with the radio off.
-  bool get stopsTurn =>
-      kind == 'emergency' ||
-      kind == 'refuse' ||
-      kind == 'disclosure' ||
-      kind == 'greeting';
+  /// Set by [SafetyRules.classify] from the generated device-category list —
+  /// see [SafetyRules.deviceCategories] for what is on it and why.
+  final bool stopsTurn;
 }
 
 class _NearRule {
@@ -78,10 +76,8 @@ class _NearRule {
 class SafetyRules {
   SafetyRules._({
     required this.priority,
-    required this.emergencyCategories,
-    required this.refusalCategories,
-    required this.disclosureCategories,
-    required this.greetingCategories,
+    required this.kinds,
+    required this.deviceCategories,
     required Map<String, List<RegExp>> patterns,
     required List<_NearRule> nearRules,
     required List<String> invisibleCharacters,
@@ -90,13 +86,40 @@ class SafetyRules {
         _invisible = RegExp('[${invisibleCharacters.join()}]');
 
   final List<String> priority;
-  final List<String> emergencyCategories;
-  final List<String> refusalCategories;
-  final List<String> disclosureCategories;
-  final List<String> greetingCategories;
+
+  /// Category to kind, straight from the generated JSON rather than rebuilt
+  /// here from the category lists. That mapping decides which text a person
+  /// reads, and a second copy of it would be a second chance to disagree with
+  /// the server — silently, and only for the categories nobody tested.
+  final Map<String, String> kinds;
+
+  /// Categories answered here, from bundled text, with no network.
+  ///
+  /// The five emergencies, the six forbidden subjects, her own disclosure, low
+  /// distress, and the two categories that state facts about this app. That is
+  /// the whole list, and it comes from the generated JSON rather than being
+  /// restated here: a second copy would be a second chance for the phone and
+  /// the server to disagree about whether an emergency needs a network.
+  ///
+  /// Everything else goes to the model — and its bundled text is still what
+  /// arrives when the model cannot be reached.
+  final List<String> deviceCategories;
+
   final Map<String, List<RegExp>> _patterns;
   final List<_NearRule> _nearRules;
   final RegExp _invisible;
+
+  /// Every category that resolves to `kind`, in priority order.
+  ///
+  /// Derived from [kinds] rather than stored alongside it, so a category can
+  /// never appear in one list and a different kind in the other.
+  List<String> categoriesOfKind(String kind) =>
+      [for (final c in priority) if (kinds[c] == kind) c];
+
+  List<String> get emergencyCategories => categoriesOfKind('emergency');
+  List<String> get refusalCategories => categoriesOfKind('refuse');
+  List<String> get disclosureCategories => categoriesOfKind('disclosure');
+  List<String> get socialCategories => categoriesOfKind('social');
 
   static final RegExp _bengali = RegExp(r'[ঀ-৿]');
   static final RegExp _whitespace = RegExp(r'\s+');
@@ -118,13 +141,9 @@ class SafetyRules {
 
     return SafetyRules._(
       priority: (data['priority'] as List).cast<String>(),
-      emergencyCategories:
-          (data['emergency_categories'] as List).cast<String>(),
-      refusalCategories: (data['refusal_categories'] as List).cast<String>(),
-      disclosureCategories:
-          ((data['disclosure_categories'] as List?) ?? const []).cast<String>(),
-      greetingCategories:
-          ((data['greeting_categories'] as List?) ?? const []).cast<String>(),
+      kinds: (data['kinds'] as Map<String, dynamic>).cast<String, String>(),
+      deviceCategories:
+          ((data['device_categories'] as List?) ?? const []).cast<String>(),
       patterns: patterns,
       nearRules: [
         for (final rule in (data['near_rules'] as List))
@@ -208,16 +227,14 @@ class SafetyRules {
     for (final category in priority) {
       if (!matched.contains(category)) continue;
       return SafetyDecision(
-        kind: emergencyCategories.contains(category)
-            ? 'emergency'
-            : refusalCategories.contains(category)
-                ? 'refuse'
-                : disclosureCategories.contains(category)
-                    ? 'disclosure'
-                    : 'greeting',
+        // No fallback kind. A category with no entry here is a generation bug,
+        // and the old chained ternary hid exactly that: anything unrecognised
+        // quietly became a greeting, which is the lightest reply there is.
+        kind: kinds[category]!,
         category: category,
         language: language,
         matched: matched,
+        stopsTurn: deviceCategories.contains(category),
       );
     }
 
@@ -226,6 +243,7 @@ class SafetyRules {
       category: null,
       language: language,
       matched: const [],
+      stopsTurn: false,
     );
   }
 }

@@ -185,21 +185,29 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
     });
     _scrollToEnd();
 
-    // THE WHOLE POINT: an emergency, a refusal or a greeting is answered here,
-    // from bundled text, with no request, no model and no wait. Nothing about
-    // this path can be slow or offline.
+    // THE WHOLE POINT: everything except an ordinary question is answered
+    // here, from bundled text, with no request, no model and no wait. Nothing
+    // about this path can be slow or offline.
+    //
+    // ONE EXCEPTION, and only one. "ki korbo?" as the first thing anyone types
+    // is genuinely vague and gets the bundled clarifier. Said three turns into
+    // a conversation it means "what do I do ABOUT WHAT I JUST TOLD YOU", and
+    // answering that with the same fixed sentence is what makes the app feel
+    // like it is not listening. With history, it goes to the server, which can
+    // see the transcript. The server falls back to this same text if the model
+    // is unreachable, and the first message of any conversation has no history
+    // by definition — so nothing that worked offline stops working offline.
+    // stopsTurn now means exactly one thing: this category is on the bundled
+    // device list. Emergencies, the forbidden subjects, her own disclosure,
+    // low distress, and the two categories that state facts about this app.
+    // Everything else — a greeting, a thank you, "hmm", a friend in trouble, a
+    // vague message, any question at all — goes to the server and reaches the
+    // model. Their bundled text is still what arrives if it cannot be reached.
     if (decision.stopsTurn) {
       setState(() {
         _messages.add(_Message.bot(
           rules.referrals.responseFor(decision.category!, decision.language),
-          // A disclosure is styled like an emergency, not like a refusal: she
-          // has told the app something difficult, and the reply should look like
-          // it was taken seriously rather than like a decline.
-          decision.kind == 'emergency' || decision.kind == 'disclosure'
-              ? 'emergency'
-              : decision.kind == 'greeting'
-                  ? 'greeting'
-                  : 'refusal',
+          _bubbleKindFor(decision.kind),
         ));
       });
       _scrollToEnd();
@@ -212,7 +220,22 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
 
     setState(() {
       _waiting = false;
-      if (reply.kind == 'unreachable') {
+      if (reply.kind == 'unreachable' && decision.category != null) {
+        // ANY category the device recognised, not only the ones it answers
+        // itself. That distinction was a bug: once greetings, thanks and vague
+        // messages started going to the server, `stopsTurn` was false for all
+        // of them, this branch became unreachable, and "hi" with no network
+        // answered "I could not reach the service just now, so I have not been
+        // able to look your question up."
+        //
+        // The bundled text for a category is not a consolation prize — it is
+        // the complete, reviewed reply, and for the safety categories it is
+        // the full referral with every number in it.
+        _messages.add(_Message.bot(
+          rules.referrals.responseFor(decision.category!, decision.language),
+          _bubbleKindFor(decision.kind),
+        ));
+      } else if (reply.kind == 'unreachable') {
         // Its own message, NOT the no-context one. "I don't have reliable
         // information about that" is a claim about her question; the truth here
         // is that the question was never asked, because the service could not be
@@ -223,7 +246,10 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
           'unreachable',
         ));
       } else {
-        _messages.add(_Message.bot(reply.text, reply.kind));
+        // Styled by KIND, the same mapping the local path uses, so a disclosure
+        // answered by the server looks like a disclosure answered on the
+        // device rather than like an ordinary reply.
+        _messages.add(_Message.bot(reply.text, _bubbleKindFor(reply.kind)));
       }
     });
     _scrollToEnd();
@@ -374,6 +400,33 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
           ],
         ),
       );
+
+  /// How a locally answered turn should LOOK, which is not the same question as
+  /// what it says.
+  ///
+  /// Three appearances, not seven. A social reply or a clarifying question must
+  /// look like ordinary conversation — putting a red emergency edge on "hello"
+  /// is the visual version of the mistake this whole tier was built to fix.
+  static String _bubbleKindFor(String kind) {
+    switch (kind) {
+      // She has told the app something difficult. Styled like an emergency and
+      // not like a refusal, so the reply looks like it was taken seriously
+      // rather than like a decline.
+      case 'emergency':
+      case 'disclosure':
+        return 'emergency';
+      // A refusal, and a third-party concern: both hand over numbers and both
+      // say what this app will not do. Serious, but not an alarm.
+      case 'refuse':
+      case 'third_party':
+        return 'refusal';
+      // 'social', 'vague' and 'low_distress' — plain, like any other reply.
+      // low_distress especially: someone who wrote "mon kharap" should not
+      // have a red emergency edge drawn around the answer to it.
+      default:
+        return 'greeting';
+    }
+  }
 
   Widget _bubble(_Message message) {
     // An emergency referral must not look like conversation: red edge, full

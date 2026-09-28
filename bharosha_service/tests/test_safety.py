@@ -148,7 +148,12 @@ def test_refusals(message: str, category: str) -> None:
         ("উত্তরাধিকারের অধিকার", "অধিকার আছে কি উত্তরাধিকারে", "economic_rights"),
         ("how do I collect evidence", "the evidence I need to collect",
          "confront_or_evidence"),
-        ("filing a case, should I", "should I file a complaint", "legal_advice"),
+        # "complaint" left this rule deliberately — see reporting_request in
+        # safety.py. "Where do I complain" is a question about where to go, and
+        # the legal refusal answered it with "I cannot predict how a case would
+        # turn out". Filing a CASE is still a legal question, and this is the
+        # pair that checks it in both word orders.
+        ("filing a case, should I", "should I file a case", "legal_advice"),
         # Found by auditing the remaining ordered patterns rather than by a
         # failing case: "right now I am scared" matched, "I am scared right now"
         # did not, and the second is how people actually write it.
@@ -203,7 +208,10 @@ def test_suicide_risk_wins_when_combined() -> None:
         "What are the myths about GBV?",
         "How can violence be prevented in a community?",
         "Tell me about WaterAid's safeguarding principles",
-        "ধন্যবাদ",
+        # Short but real. There is deliberately no "too short to answer" rule —
+        # these are the queries it would have swallowed.
+        "sexual harassment",
+        "economic violence",
     ],
 )
 def test_ordinary_questions_proceed(message: str) -> None:
@@ -216,14 +224,27 @@ def test_ordinary_questions_proceed(message: str) -> None:
 @pytest.mark.parametrize(
     "message",
     ["hi", "hello", "Hello!", "assalamu alaikum", "good morning",
-     "নমস্কার", "হ্যালো", "আসসালামু আলাইকুম"],
+     "নমস্কার", "হ্যালো", "আসসালামু আলাইকুম",
+     # "How are you" opens a conversation in Bangla; it is not a question about
+     # the software. This is the message that exposed the whole gap: it used to
+     # return the no-context reply, topic list and helplines included.
+     "how are you?", "kemon acho?", "kemon achen", "ki khobor",
+     "কেমন আছো?", "আপনি কেমন আছেন", "কী খবর"],
 )
-def test_greetings_are_answered_locally(message: str) -> None:
-    """A greeting must not cost a round trip, and on a sleeping free instance it
-    must not produce "I could not reach the service" to someone saying hello."""
+def test_greetings_are_recognised(message: str) -> None:
+    """Recognised, but NOT answered on the device any more.
+
+    A greeting goes to the model like everything else outside
+    safety.DEVICE_CATEGORIES — a saved "Hello. Ask me anything about
+    safeguarding…" every single time is what made the app read as canned. The
+    category still exists because it is the offline fallback: when the model
+    cannot be reached, this is the text she gets.
+    """
     decision = safety.classify(message)
-    assert decision.kind == "greeting"
-    assert decision.stops_turn, "a greeting must never reach the model"
+    assert decision.kind == "social"
+    assert decision.category == "greeting"
+    assert not decision.stops_turn, "a greeting no longer bypasses the model"
+    assert referrals.response_for("greeting", decision.language)
 
 
 @pytest.mark.parametrize(

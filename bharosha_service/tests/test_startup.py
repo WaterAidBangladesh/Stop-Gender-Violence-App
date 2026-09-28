@@ -63,8 +63,8 @@ def test_importing_api_does_not_load_any_model() -> None:
         ("আমাকে মারছে, বাঁচান", "emergency"),
         ("I want to die", "emergency"),
         ("my daughter was touched by her teacher", "emergency"),
-        ("Should I leave my husband?", "refusal"),
-        ("Will I win the case?", "refusal"),
+        ("Should I leave my husband?", "refuse"),
+        ("Will I win the case?", "refuse"),
     ],
 )
 def test_emergency_and_refusal_served_with_no_models_loaded(
@@ -144,3 +144,152 @@ def test_nothing_is_logged_or_counted() -> None:
     """
     assert not hasattr(api, "metrics")
     assert not (ROOT / "app" / "metrics.py").exists()
+
+
+# --- the development console ------------------------------------------------
+
+
+def test_console_is_absent_unless_asked_for() -> None:
+    """Not hidden, not authenticated — ABSENT.
+
+    The routes are registered inside `if DEV_CONSOLE:`, so a deployed instance
+    does not have them at all. This is the test that keeps that true: a console
+    that 404s because of a config value can be turned on by a config mistake.
+    """
+    import api
+    from fastapi.testclient import TestClient
+
+    assert api.DEV_CONSOLE is False, "BHAROSHA_DEV_CONSOLE must default to off"
+    client = TestClient(api.app)
+    assert client.get("/console").status_code == 404
+    assert client.post(
+        "/console/ask", json={"session_id": "x" * 10, "query": "hi"}
+    ).status_code == 404
+
+
+def test_chat_response_shape_is_unchanged_by_the_console() -> None:
+    """The app's endpoint must return exactly what it always returned.
+
+    The console gets its diagnostics from a trace dict that _answer() writes
+    into; /chat passes None, so nothing extra can leak into the response the
+    phone parses.
+    """
+    import api
+    from fastapi.testclient import TestClient
+
+    body = TestClient(api.app).post(
+        "/chat", json={"session_id": "x" * 10, "query": "hi"}
+    ).json()
+    assert set(body) == {"response", "kind"}
+
+
+def test_a_question_asked_before_the_corpus_loads_says_so() -> None:
+    """"I don't have reliable information about that" is a claim about her
+    question. While the corpus is still embedding it is false — the question was
+    never looked up. That text existed and was tested from the first version,
+    and nothing returned it until the dev console made the difference visible.
+    """
+    import api
+    import chain
+    import referrals
+    from fastapi.testclient import TestClient
+
+    def not_loaded(*_args, **_kwargs):
+        raise chain.NotReady("corpus not loaded yet")
+
+    original = chain.retrieve_scored
+    chain.retrieve_scored = not_loaded
+    try:
+        body = TestClient(api.app).post(
+            "/chat", json={"session_id": "x" * 10, "query": "what is safeguarding?"}
+        ).json()
+    finally:
+        chain.retrieve_scored = original
+
+    assert body["kind"] == "starting"
+    assert body["response"] == referrals.response_for("starting", "en")
+
+
+def test_an_emergency_never_touches_the_model(monkeypatch) -> None:
+    """The one rule the whole design rests on.
+
+    Disclosures, third-party concerns and low distress now reach the model, so
+    this test matters more than it did, not less: it pins the line between what
+    was opened up and what was not. Every retrieval and generation entry point
+    is made to explode; an emergency must still return its script.
+    """
+    import api
+    import chain
+    import referrals
+    from fastapi.testclient import TestClient
+
+    def explode(*_args, **_kwargs):
+        raise AssertionError("an emergency reached the model")
+
+    for name in ("retrieve_scored", "search", "answer", "to_english"):
+        monkeypatch.setattr(chain, name, explode)
+
+    client = TestClient(api.app)
+    for message, category in [
+        ("he is beating me right now", "active_violence"),
+        ("I want to die", "suicide_risk"),
+        ("he said he will kill me", "threat_to_life"),
+        ("they want to marry off my daughter", "child_disclosure"),
+        ("আমাকে মারছে, বাঁচান", "immediate_danger"),
+        # And the forbidden subjects, which the brief also keeps off the model.
+        ("should I leave my husband?", "leave_decision"),
+        ("will I win the case?", "legal_advice"),
+        ("how do I treat a burn on my hand?", "medical_advice"),
+    ]:
+        body = client.post(
+            "/chat", json={"session_id": "x" * 10, "query": message}
+        ).json()
+        language = "bn" if category == "immediate_danger" else "en"
+        assert body["response"] == referrals.response_for(category, language), message
+
+
+def test_every_model_path_falls_back_to_its_own_hardcoded_text(
+    monkeypatch,
+) -> None:
+    """THE FLOOR DID NOT MOVE.
+
+    Greetings, thanks, vague messages and third-party concerns now go to the
+    model. When it cannot be reached they must still produce the text they
+    produced when they were hardcoded — not a generic apology, and not the
+    no-context wall. Only an ordinary question has no text of its own, and that
+    is the single case that falls to the tiered pair.
+    """
+    import api
+    import chain
+    import referrals
+    from fastapi.testclient import TestClient
+
+    def unavailable(*_args, **_kwargs):
+        raise chain.Unavailable("no key, no network, pick one")
+
+    monkeypatch.setattr(chain, "retrieve_scored", unavailable)
+    client = TestClient(api.app)
+
+    # A distinct caller per message: this measures the fallback, not the rate
+    # limiter, which would otherwise start answering halfway through.
+    def post(message: str, n: int) -> dict:
+        return client.post(
+            "/chat",
+            json={"session_id": "x" * 10, "query": message},
+            headers={"x-forwarded-for": f"203.0.113.{n + 40}"},
+        ).json()
+
+    for n, (message, category) in enumerate([
+        ("hello", "greeting"),
+        ("thank you", "thanks"),
+        ("hmm", "acknowledgement"),
+        ("you are useless", "bot_abuse"),
+        ("help", "vague"),
+        ("my friend is being abused by her husband", "third_party_concern"),
+    ]):
+        body = post(message, n)
+        assert body["response"] == referrals.response_for(category, "en"), message
+
+    # The one with no text of its own.
+    body = post("what is safeguarding?", 99)
+    assert body["response"] == referrals.response_for("no_context", "en")

@@ -13,8 +13,11 @@ fastembed or langchain. So from the moment uvicorn binds the port:
        no rate limiting, nothing to load first.
     2. Only messages that clear the safety layer are rate limited.
     3. Only then is the index opened (lazily, on first use) and queried.
-    4. Retrieval must clear the distance gate, or the hardcoded no-context
-       referral is returned and the model is never called.
+    4. Retrieval must clear the distance gate, or a hardcoded referral is
+       returned and the model is never called. Which referral depends on how
+       far the nearest chunk was: a question that belongs here and missed gets
+       the full no-context reply, a question about something else gets one
+       line. The gate itself is untouched by that choice.
     5. Any failure — missing index, missing key, Groq outage — falls back to
        that same referral text.
 
@@ -30,12 +33,17 @@ forgets it on restart.
 from __future__ import annotations
 
 import contextlib
+import os
 import threading
+import time
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel, Field
 
+import assertions
 import ratelimit
 import referrals
 import safety
@@ -80,68 +88,157 @@ def _reply(category: str, language: str, kind: str) -> dict[str, str]:
     return {"response": referrals.response_for(category, language), "kind": kind}
 
 
-@app.post("/chat")
-def chat(request: ChatRequest, http: Request) -> dict[str, str]:
+def _answer(
+    query: str, session_id: str, caller: str | None, trace: dict | None = None
+) -> dict[str, str]:
+    """The whole pipeline. One copy, called by /chat and by the dev console.
+
+    `trace` is filled in as it goes when a dict is passed. It is a WRITE-ONLY
+    output: nothing in here ever reads it or behaves differently because it is
+    present, so the console sees exactly the pipeline the app sees. /chat passes
+    None and its response shape is unchanged.
+    """
+
+    def note(**fields: object) -> None:
+        if trace is not None:
+            trace.update(fields)
+
     # ---- 1. Safety first, always, before anything is loaded or called ------
-    decision = safety.classify(request.query)
-
-    if decision.kind == "emergency":
-        return _reply(decision.category, decision.language, "emergency")
-
-    if decision.kind == "refuse":
-        return _reply(decision.category, decision.language, "refusal")
-
-    # Someone describing what is happening to her. Retrieval is the wrong tool —
-    # measured, her words sit further from the corpus than a cooking question —
-    # and the right answer was never a passage. Named and referred, locally.
-    if decision.kind == "disclosure":
-        return _reply(decision.category, decision.language, "disclosure")
-
-    # A greeting costs nothing to answer and needs no corpus. Before the rate
-    # limiter for the same reason emergencies are: it never reaches the model.
-    if decision.kind == "greeting":
-        return _reply(decision.category, decision.language, "greeting")
-
-    # ---- 2. Rate limiting, only for messages that may reach the model ------
-    # Emergencies and refusals never reach here: they cost nothing to serve, and
-    # nobody in danger is turned away for asking twice.
-    caller = ratelimit.client_key(
-        http.headers.get("x-forwarded-for"),
-        http.client.host if http.client else None,
+    decision = safety.classify(query)
+    note(
+        kind=decision.kind,
+        category=decision.category,
+        language=decision.language,
+        matched=list(decision.matched),
+        answered_by="device" if decision.stops_turn else "server",
     )
-    if not ratelimit.allow(caller):
+
+    # ANSWERED HERE, FROM FIXED TEXT, IN MICROSECONDS. The list is in
+    # safety.DEVICE_CATEGORIES and it is short on purpose: the five
+    # emergencies, the six forbidden subjects, her own disclosure, low
+    # distress, and the two categories that make factual claims about this app.
+    # Nothing is loaded, nothing is called, and none of it depends on a network
+    # the phone may not have.
+    if decision.stops_turn:
+        return _reply(decision.category, decision.language, decision.kind)
+
+    # ---- 2. Everything else goes to the model. One path. -------------------
+    #
+    # A greeting, a thank you, "hmm", a friend in trouble, a question about
+    # economic violence, a question about cooking — all of them from here on
+    # take the same code path and all of them reach the model. There is no
+    # longer a "cleared the gate" branch and a "fell through to a fixed wall"
+    # branch; that second branch is what made the app feel like a set of saved
+    # replies.
+    #
+    # Rate limited, because this is the part that costs money and there is no
+    # login in front of it. Nothing urgent reaches here — it was all answered
+    # above.
+    if caller is not None and not ratelimit.allow(caller):
+        # A category with its own text gets its own text, not "try again
+        # shortly". Someone asking how to help an abused friend should not be
+        # turned away with a thin apology because the last person asked twice —
+        # and returning it costs nothing, which is why it was never the thing
+        # the limiter was protecting.
+        if decision.category and decision.category in referrals.RESPONSES:
+            return _reply(decision.category, decision.language, decision.kind)
         return _reply("rate_limited", decision.language, "rate_limited")
 
-    # ---- 3. Retrieval, behind the distance gate ---------------------------
     import chain  # noqa: PLC0415 - kept off the import path; see module docstring
 
+    def fallback(reason: str, nearest: float | None = None) -> dict[str, str]:
+        """What she gets when the model cannot be reached.
+
+        The category's own hardcoded text if it has one — a greeting still gets
+        the greeting, a vague message still gets the clarifier, a third-party
+        concern still gets the full support script. Only an ordinary question
+        has no text of its own, and that is the one case that falls to the
+        tiered no-context / off-topic pair. Nothing that used to work offline
+        has stopped working offline.
+        """
+        note(fell_back=reason)
+        if decision.category and decision.category in referrals.RESPONSES:
+            return _reply(decision.category, decision.language, decision.kind)
+        far = nearest is not None and nearest > chain.OFF_TOPIC_DISTANCE
+        category = "off_topic" if far else "no_context"
+        note(kind=category, category=category)
+        return _reply(category, decision.language, category)
+
     try:
-        # Any failure here — corpus still embedding, corpus missing, a failed
-        # query translation — falls through to the referral, never to an
-        # ungated retrieval and never to a model call without context.
-        passages = chain.retrieve(request.query, decision.language)
-    except chain.Unavailable:
-        return _reply("no_context", decision.language, "no_context")
+        found = chain.retrieve_scored(query, decision.language)
+    except chain.NotReady as failure:
+        # Not the same claim. "I don't have reliable information about that" is
+        # about her question; while the corpus is embedding, the truth is that
+        # the question was never looked up.
+        note(retrieval_error=str(failure), kind="starting", category="starting")
+        return _reply("starting", decision.language, "starting")
+    except chain.Unavailable as failure:
+        return fallback(str(failure))
 
-    if not passages:
-        return _reply("no_context", decision.language, "no_context")
+    # THE GATE, REFRAMED. It no longer decides whether she gets a reply. It
+    # decides what the model may ASSERT: above the floor, answer from these
+    # passages; below it, they are probably irrelevant, so converse, ask one
+    # question, point to a person — and state no safeguarding, health, legal or
+    # procedural fact. The floor and its measurement are unchanged.
+    grounded = bool(found.passages)
+    note(
+        grounded=grounded,
+        nearest=found.nearest,
+        gate=chain.RELEVANCE_FLOOR,
+        passages=[
+            {"distance": round(p.distance, 3), "source": p.source}
+            for p in found.candidates
+        ],
+    )
 
-    # ---- 4. The model, with the referral footer added afterwards -----------
     try:
         text = chain.answer(
-            request.query,
-            passages,
-            sessions.store.history(request.session_id),
+            query,
+            found.passages if grounded else found.candidates,
+            sessions.store.history(session_id),
             language=decision.language,
+            grounded=grounded,
         )
-    except chain.Unavailable:
-        return _reply("no_context", decision.language, "no_context")
+    except chain.Unavailable as failure:
+        return fallback(str(failure), found.nearest)
 
-    sessions.store.record(request.session_id, request.query, text)
-    return {
-        "response": text + referrals.answer_footer(decision.language),
-        "kind": "answer",
-    }
+    # ---- 4. Check the output, do not trust the prohibition -----------------
+    #
+    # Below the floor the model was told it may converse but may not state a
+    # safeguarding, health, legal or procedural fact. Measured, it obeys that
+    # most of the time and not all of the time — so compliance is verified, not
+    # assumed, in exactly the way emergency detection is. On a match the reply
+    # is DISCARDED and she gets the hardcoded text, which is the same thing a
+    # model outage produces. A reply that broke the rule is not evidence about
+    # what the right reply was.
+    if not grounded:
+        marker = assertions.asserts_anyway(text)
+        assertions.counter.record(discarded=marker is not None)
+        if marker:
+            return fallback(f"asserted anyway: {marker!r}", found.nearest)
+
+    sessions.store.record(session_id, query, text)
+    note(kind="answer", model=chain.MODEL)
+    # The footer only when the reply was grounded. The model may not write
+    # numbers, so a substantive answer about violence needs them appended — but
+    # appending "To talk to a person: 109 · 999" to "Yes, of course, ask away"
+    # is the wall of text arriving by another door. Below the floor the prompt
+    # tells the model to point at the helpline buttons instead.
+    if grounded:
+        text += referrals.answer_footer(decision.language)
+    return {"response": text, "kind": "answer"}
+
+
+@app.post("/chat")
+def chat(request: ChatRequest, http: Request) -> dict[str, str]:
+    return _answer(
+        request.query,
+        request.session_id,
+        ratelimit.client_key(
+            http.headers.get("x-forwarded-for"),
+            http.client.host if http.client else None,
+        ),
+    )
 
 
 @app.post("/forget")
@@ -151,8 +248,55 @@ def forget(request: ForgetRequest) -> dict[str, bool]:
     return {"forgotten": True}
 
 
+# --- the development console ------------------------------------------------
+#
+# OFF UNLESS ASKED FOR. Two routes exist only when BHAROSHA_DEV_CONSOLE=on, so a
+# deployed instance does not serve them at all — not hidden, not authenticated,
+# absent. They are registered inside an `if`, which is the only form of that
+# guarantee that cannot be defeated by a config mistake.
+#
+# WHY IT EXISTS. Checking a change meant launching the Flutter app, which takes
+# minutes, and reading the reply in a Windows terminal, which renders Bangla as
+# boxes. The console is a browser page, so Bangla is Bangla, and it shows the
+# things the app deliberately hides: which category fired, whether the answer
+# came from the device or the model, the nearest distance and where it fell
+# relative to the gate.
+#
+# It calls the SAME _answer() the app calls. It does not re-implement the
+# pipeline, and the trace it prints is written as that pipeline runs, so the
+# console cannot show you something different from what the phone would get.
+DEV_CONSOLE = os.getenv("BHAROSHA_DEV_CONSOLE", "off").lower() in ("on", "1", "true")
+
+if DEV_CONSOLE:
+    CONSOLE_HTML = Path(__file__).resolve().parents[1] / "tools" / "console.html"
+
+    class ConsoleRequest(BaseModel):
+        session_id: Annotated[str, Field(min_length=8, max_length=64)]
+        query: Annotated[str, Field(min_length=1, max_length=2000)]
+
+    @app.get("/console", response_class=HTMLResponse)
+    def console() -> str:
+        return CONSOLE_HTML.read_text(encoding="utf-8")
+
+    @app.post("/console/ask")
+    def console_ask(request: ConsoleRequest) -> dict:
+        trace: dict = {}
+        started = time.perf_counter()
+        # No rate-limit key: the whole point of this page is to fire forty
+        # messages at it in a row. See the guard in _answer.
+        reply = _answer(request.query, request.session_id, None, trace)
+        trace["ms"] = round((time.perf_counter() - started) * 1000)
+        return {**reply, "trace": trace}
+
+
 @app.get("/health")
 def health() -> dict[str, object]:
     """Cheap on purpose, so the platform's health check does not load the model
     or wake the embedder — and so a slow first load never looks like a crash."""
-    return {"status": "ok", "sessions": sessions.store.count()}
+    return {
+        "status": "ok",
+        "sessions": sessions.store.count(),
+        # Counters only — no text, no ids, nothing timestamped. How often the
+        # model broke the below-floor prohibition and had its reply discarded.
+        **assertions.counter.snapshot(),
+    }

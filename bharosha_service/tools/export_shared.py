@@ -61,7 +61,21 @@ def safety_rules() -> dict:
         "emergency_categories": list(safety.EMERGENCY_CATEGORIES),
         "refusal_categories": list(safety.REFUSAL_CATEGORIES),
         "disclosure_categories": list(safety.DISCLOSURE_CATEGORIES),
-        "greeting_categories": list(safety.GREETING_CATEGORIES),
+        "third_party_categories": list(safety.THIRD_PARTY_CATEGORIES),
+        "low_distress_categories": list(safety.LOW_DISTRESS_CATEGORIES),
+        "reporting_categories": list(safety.REPORTING_CATEGORIES),
+        # THE BOUNDARY OF THE APP'S DETERMINISM. Categories in this list are
+        # answered on the device from bundled text; everything else goes to the
+        # model. Exported rather than restated in Dart, because two copies of
+        # this list would be two chances for the phone and the server to
+        # disagree about whether an emergency needs a network.
+        "device_categories": list(safety.DEVICE_CATEGORIES),
+        "social_categories": list(safety.SOCIAL_CATEGORIES),
+        "vague_categories": list(safety.VAGUE_CATEGORIES),
+        # Category -> kind, exported rather than reconstructed on the Dart side.
+        # The mapping is the thing that decides which text a person sees, and
+        # two copies of it would be two chances to disagree.
+        "kinds": dict(safety._KIND_OF),
         # Evaluation order matters: the first category that fires wins, so the
         # Dart port must walk this list in this order or the two will disagree on
         # messages that match more than one category.
@@ -98,6 +112,9 @@ def referral_data() -> dict:
             "hours_bn": referrals.KAAN_PETE_ROI_HOURS_BN,
         },
         "note_16263": referrals.NOTE_16263,
+        # Carried into the app so the state of the referral list travels with
+        # the list. None of these numbers has been dialled by a person yet.
+        "verification_status": referrals.VERIFICATION_STATUS,
         # Rendered text, not templates: this is exactly what a frightened person
         # reads, and it is the thing to review. The numbers are interpolated
         # already; tests on both sides assert each response still carries them.
@@ -165,7 +182,6 @@ CASES: list[dict] = [
     {"message": "Who is responsible for safeguarding?", "kind": "proceed", "category": None},
     {"message": "How can violence be prevented in a community?", "kind": "proceed", "category": None},
     {"message": "What are the myths about GBV?", "kind": "proceed", "category": None},
-    {"message": "ধন্যবাদ", "kind": "proceed", "category": None},
     # --- disclosures: how people actually write, not how test sets do ---
     # Every one of these was measured beyond the relevance floor, several further
     # from the corpus than "How do I cook rice?". Retrieval cannot serve them.
@@ -191,17 +207,174 @@ CASES: list[dict] = [
     {"message": "what counts as sexual harassment", "kind": "proceed", "category": None},
     {"message": "is sexual harassment at work a form of gender based violence", "kind": "proceed", "category": None},
     {"message": "what is economic violence", "kind": "proceed", "category": None},
-    # --- greetings, answered locally rather than over the network ---
-    {"message": "hello", "kind": "greeting", "category": "greeting"},
-    {"message": "hi", "kind": "greeting", "category": "greeting"},
-    {"message": "Assalamu alaikum", "kind": "greeting", "category": "greeting"},
-    {"message": "good morning", "kind": "greeting", "category": "greeting"},
-    {"message": "নমস্কার", "kind": "greeting", "category": "greeting"},
-    {"message": "আসসালামু আলাইকুম", "kind": "greeting", "category": "greeting"},
-    {"message": "হ্যালো", "kind": "greeting", "category": "greeting"},
-    # A greeting that carries a disclosure is NOT a greeting.
+    # --- third party: asking about a friend, a sister, a neighbour ---
+    # Checked before personal disclosure. The reply is a different one, not a
+    # softer one: support without taking over, and what not to do.
+    {"message": "my friend is being abused by her husband", "kind": "third_party", "category": "third_party_concern"},
+    {"message": "my sister's husband hits her", "kind": "third_party", "category": "third_party_concern"},
+    {"message": "how can I help my friend who is being harassed", "kind": "third_party", "category": "third_party_concern"},
+    {"message": "I am worried about my sister", "kind": "third_party", "category": "third_party_concern"},
+    {"message": "someone I know is being abused", "kind": "third_party", "category": "third_party_concern"},
+    {"message": "a friend of mine told me about her husband", "kind": "third_party", "category": "third_party_concern"},
+    {"message": "my colleague is being harassed at work", "kind": "third_party", "category": "third_party_concern"},
+    {"message": "আমার বান্ধবী নির্যাতনের শিকার", "kind": "third_party", "category": "third_party_concern"},
+    {"message": "আমার বোনকে তার স্বামী মারধর করে", "kind": "third_party", "category": "third_party_concern"},
+    {"message": "কীভাবে আমি আমার বান্ধবীকে সাহায্য করব", "kind": "third_party", "category": "third_party_concern"},
+    # A third party in immediate danger is an emergency first.
+    {"message": "my friend's husband is beating her right now", "kind": "emergency", "category": "active_violence"},
+    # A third party who is a child is a child disclosure, not a support question.
+    {"message": "my friend's daughter is being abused", "kind": "emergency", "category": "child_disclosure"},
+    # --- coercive control: 25 of 25 probes missed before this existed ---
+    {"message": "he controls my money", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "he does not let me go out", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "he checks my phone every night", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "my husband keeps my salary", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "he keeps my ID card", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "he says he will throw me out", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "he will not let me see my family", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "he never lets me go out", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "I have to ask permission for everything", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "আমার স্বামী আমার টাকা নিয়ে নেয়", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "সে আমাকে বাইরে যেতে দেয় না", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "সে আমার ফোন চেক করে", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "আমাকে চাকরি করতে দেয় না", "kind": "disclosure", "category": "coercive_control"},
+    {"message": "আমাকে বাড়ি থেকে বের করে দেবে বলে", "kind": "disclosure", "category": "coercive_control"},
+    # The definitional question must still reach the corpus — requiring "me" or
+    # "my" is what keeps it out.
+    {"message": "what is coercive control", "kind": "proceed", "category": None},
+    # --- reporting: never answered by the model, never implies this app can ---
+    {"message": "I want to report this", "kind": "reporting", "category": "reporting_request"},
+    {"message": "how do I report an incident", "kind": "reporting", "category": "reporting_request"},
+    {"message": "can I report anonymously", "kind": "reporting", "category": "reporting_request"},
+    {"message": "who do I report to", "kind": "reporting", "category": "reporting_request"},
+    {"message": "I want to file a complaint", "kind": "reporting", "category": "reporting_request"},
+    {"message": "আমি অভিযোগ জানাতে চাই", "kind": "reporting", "category": "reporting_request"},
+    {"message": "কোথায় অভিযোগ করব", "kind": "reporting", "category": "reporting_request"},
+    {"message": "কীভাবে রিপোর্ট করব", "kind": "reporting", "category": "reporting_request"},
+    # Filing a CASE is still a legal question; lodging a COMPLAINT is not.
+    {"message": "how do I file a case", "kind": "refuse", "category": "legal_advice"},
+    # A disclosure that asks how to report is a disclosure first.
+    {"message": "my boss touches me, how do I report it", "kind": "disclosure", "category": "personal_disclosure"},
+    # --- low distress: she feels bad and has not said why ---
+    # Hardcoded, not sent to the model: the right reply is short, warm and the
+    # same every time. Sits after her own disclosure and after every emergency,
+    # so it is the mild tail of both and never the sharp end of either.
+    {"message": "amar mon ta kharap", "kind": "low_distress", "category": "low_distress"},
+    {"message": "mon kharap", "kind": "low_distress", "category": "low_distress"},
+    {"message": "I feel so alone", "kind": "low_distress", "category": "low_distress"},
+    {"message": "I am not okay", "kind": "low_distress", "category": "low_distress"},
+    {"message": "I feel like crying", "kind": "low_distress", "category": "low_distress"},
+    {"message": "I cannot sleep", "kind": "low_distress", "category": "low_distress"},
+    {"message": "nobody understands me", "kind": "low_distress", "category": "low_distress"},
+    {"message": "bhalo lagche na", "kind": "low_distress", "category": "low_distress"},
+    {"message": "eka lage", "kind": "low_distress", "category": "low_distress"},
+    {"message": "মন খারাপ", "kind": "low_distress", "category": "low_distress"},
+    {"message": "ভালো লাগছে না", "kind": "low_distress", "category": "low_distress"},
+    {"message": "একা লাগে", "kind": "low_distress", "category": "low_distress"},
+    {"message": "কিছু ভালো লাগে না", "kind": "low_distress", "category": "low_distress"},
+    {"message": "খুব কষ্ট হচ্ছে", "kind": "low_distress", "category": "low_distress"},
+    # The two boundaries either side of it. Distress is not suicide risk, and a
+    # feeling attached to a disclosure is a disclosure.
+    {"message": "I want to die", "kind": "emergency", "category": "suicide_risk"},
+    {"message": "my husband hits me and I feel awful", "kind": "disclosure", "category": "personal_disclosure"},
+    # --- social: greetings, answered locally rather than over the network ---
+    {"message": "hello", "kind": "social", "category": "greeting"},
+    {"message": "hi", "kind": "social", "category": "greeting"},
+    {"message": "Assalamu alaikum", "kind": "social", "category": "greeting"},
+    {"message": "good morning", "kind": "social", "category": "greeting"},
+    {"message": "নমস্কার", "kind": "social", "category": "greeting"},
+    {"message": "আসসালামু আলাইকুম", "kind": "social", "category": "greeting"},
+    {"message": "হ্যালো", "kind": "social", "category": "greeting"},
+    # "How are you" is a greeting, not a question about the software's health —
+    # and "kemon acho?" is the message that started all of this. It used to
+    # return an apology, a five-item topic list and two helpline numbers.
+    {"message": "how are you?", "kind": "social", "category": "greeting"},
+    {"message": "kemon acho?", "kind": "social", "category": "greeting"},
+    {"message": "kemon achen", "kind": "social", "category": "greeting"},
+    {"message": "ki khobor", "kind": "social", "category": "greeting"},
+    {"message": "কেমন আছো?", "kind": "social", "category": "greeting"},
+    {"message": "আপনি কেমন আছেন", "kind": "social", "category": "greeting"},
+    {"message": "কী খবর", "kind": "social", "category": "greeting"},
+    # --- social: thanks ---
+    {"message": "thanks", "kind": "social", "category": "thanks"},
+    {"message": "thank you so much", "kind": "social", "category": "thanks"},
+    {"message": "dhonnobad", "kind": "social", "category": "thanks"},
+    {"message": "ধন্যবাদ", "kind": "social", "category": "thanks"},
+    {"message": "অনেক ধন্যবাদ", "kind": "social", "category": "thanks"},
+    # --- social: acknowledgement and farewell ---
+    {"message": "ok", "kind": "social", "category": "acknowledgement"},
+    {"message": "got it", "kind": "social", "category": "acknowledgement"},
+    {"message": "hmm", "kind": "social", "category": "acknowledgement"},
+    {"message": "bye", "kind": "social", "category": "acknowledgement"},
+    {"message": "thik ache", "kind": "social", "category": "acknowledgement"},
+    {"message": "ঠিক আছে", "kind": "social", "category": "acknowledgement"},
+    {"message": "বুঝেছি", "kind": "social", "category": "acknowledgement"},
+    # --- social: what are you? Answered honestly, before she decides to tell
+    # this app something. ---
+    {"message": "who are you?", "kind": "social", "category": "identity"},
+    {"message": "are you a real person", "kind": "social", "category": "identity"},
+    {"message": "are you an AI", "kind": "social", "category": "identity"},
+    {"message": "what is your name", "kind": "social", "category": "identity"},
+    {"message": "what can you do", "kind": "social", "category": "identity"},
+    {"message": "tumi ke", "kind": "social", "category": "identity"},
+    {"message": "তুমি কে", "kind": "social", "category": "identity"},
+    {"message": "আপনি কি মানুষ", "kind": "social", "category": "identity"},
+    {"message": "তোমার নাম কি", "kind": "social", "category": "identity"},
+    {"message": "আপনি কি করতে পারেন", "kind": "social", "category": "identity"},
+    # --- social: "will he see this?" — a question this app must answer from a
+    # fixed string, because the corpus has nothing about its own behaviour and
+    # a guess here decides whether she types the next sentence. ---
+    {"message": "is this confidential", "kind": "social", "category": "privacy"},
+    {"message": "do you save my messages", "kind": "social", "category": "privacy"},
+    {"message": "will my husband see this", "kind": "social", "category": "privacy"},
+    {"message": "will my husband know I used this", "kind": "social", "category": "privacy"},
+    {"message": "who can see my messages", "kind": "social", "category": "privacy"},
+    {"message": "how do I delete this chat", "kind": "social", "category": "privacy"},
+    {"message": "আমার স্বামী কি জানতে পারবে", "kind": "social", "category": "privacy"},
+    {"message": "এটা কি গোপন থাকবে", "kind": "social", "category": "privacy"},
+    {"message": "কেউ কি দেখতে পারবে", "kind": "social", "category": "privacy"},
+    # The one that must NOT be read as a question about privacy. It was reaching
+    # the model until the taxonomy was written out: "will my husband kill me"
+    # has a subject between "will" and "kill", and every threat pattern assumed
+    # they were adjacent.
+    {"message": "will my husband kill me", "kind": "emergency", "category": "threat_to_life"},
+    {"message": "do you think he will kill me", "kind": "emergency", "category": "threat_to_life"},
+    # --- social: frustration aimed at the app. One flat line, no lecture. ---
+    {"message": "you are useless", "kind": "social", "category": "bot_abuse"},
+    {"message": "stupid bot", "kind": "social", "category": "bot_abuse"},
+    {"message": "you know nothing", "kind": "social", "category": "bot_abuse"},
+    {"message": "ফালতু", "kind": "social", "category": "bot_abuse"},
+    {"message": "বাজে", "kind": "social", "category": "bot_abuse"},
+    # --- vague: too little to act on. One question back, one safety line. ---
+    {"message": "help", "kind": "vague", "category": "vague"},
+    {"message": "help me", "kind": "vague", "category": "vague"},
+    {"message": "what should I do", "kind": "vague", "category": "vague"},
+    {"message": "I need advice", "kind": "vague", "category": "vague"},
+    {"message": "can I ask you something", "kind": "vague", "category": "vague"},
+    {"message": "are you there", "kind": "vague", "category": "vague"},
+    {"message": "ki korbo", "kind": "vague", "category": "vague"},
+    {"message": "kotha bolte chai", "kind": "vague", "category": "vague"},
+    {"message": "আমি কি করবো", "kind": "vague", "category": "vague"},
+    {"message": "কি করা উচিত", "kind": "vague", "category": "vague"},
+    {"message": "সাহায্য চাই", "kind": "vague", "category": "vague"},
+    {"message": "বুঝতে পারছি না", "kind": "vague", "category": "vague"},
+    {"message": "কথা বলতে চাই", "kind": "vague", "category": "vague"},
+    # The boundary that matters most in this group: "help" is vague, "help me
+    # now" is an emergency, in both languages. The Bangla half of this pair was
+    # missing until these cases were written.
+    {"message": "help me now", "kind": "emergency", "category": "immediate_danger"},
+    {"message": "আমাকে সাহায্য করুন এখনই", "kind": "emergency", "category": "immediate_danger"},
+    # A social opener that carries something else is never social. These two are
+    # the reason every pattern in that group is anchored end to end.
     {"message": "hi, he is beating me", "kind": "emergency", "category": "active_violence"},
     {"message": "hello, should I leave my husband?", "kind": "refuse", "category": "leave_decision"},
+    {"message": "thanks, but my husband hits me", "kind": "disclosure", "category": "personal_disclosure"},
+    {"message": "ok so what should I do about my boss touching me", "kind": "disclosure", "category": "personal_disclosure"},
+    # Short REAL queries must not be swallowed by the vague rule. This is why
+    # there is no "under three words is vague" shortcut — see safety.py.
+    {"message": "sexual harassment", "kind": "proceed", "category": None},
+    {"message": "economic violence", "kind": "proceed", "category": None},
+    {"message": "safeguarding", "kind": "proceed", "category": None},
     # "hi" inside a real question must not be mistaken for one either.
     {"message": "What is safeguarding in this context?", "kind": "proceed", "category": None},
     # Window check: "daughter" and "abused" far apart must NOT fire the rule.

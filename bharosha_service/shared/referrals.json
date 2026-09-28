@@ -5,31 +5,41 @@
       "number": "999",
       "name_en": "National Emergency Services — police, fire, ambulance",
       "name_bn": "জাতীয় জরুরি সেবা — পুলিশ, ফায়ার সার্ভিস, অ্যাম্বুলেন্স",
-      "in_emergency_script": true
+      "in_emergency_script": true,
+      "desc_en": "Free, 24 hours. Connects you to police, fire and ambulance anywhere in the country. Use this if anyone is in danger now.",
+      "desc_bn": "ফ্রি, ২৪ ঘণ্টা। দেশের যেকোনো জায়গা থেকে পুলিশ, ফায়ার সার্ভিস ও অ্যাম্বুলেন্সের সঙ্গে যুক্ত করে। কেউ এখনই বিপদে থাকলে এই নম্বরে কল করুন।"
     },
     {
       "number": "109",
       "name_en": "National Helpline for Violence Against Women and Children",
       "name_bn": "নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন",
-      "in_emergency_script": true
+      "in_emergency_script": true,
+      "desc_en": "Free, 24 hours, confidential. Takes complaints of violence, abuse and harassment, including at work. Offers counselling and legal information, and can refer you to protection and social services.",
+      "desc_bn": "ফ্রি, ২৪ ঘণ্টা, গোপনীয়। কর্মক্ষেত্রসহ সহিংসতা, নির্যাতন ও হয়রানির অভিযোগ নেয়। কাউন্সেলিং ও আইনি তথ্য দেয়, এবং সুরক্ষা ও সামাজিক সেবার সঙ্গে যুক্ত করতে পারে।"
     },
     {
       "number": "16263",
       "name_en": "Shastho Batayon — national health call centre (medical advice, ambulance)",
       "name_bn": "স্বাস্থ্য বাতায়ন — জাতীয় স্বাস্থ্য কল সেন্টার (চিকিৎসা পরামর্শ, অ্যাম্বুলেন্স)",
-      "in_emergency_script": false
+      "in_emergency_script": false,
+      "desc_en": "Free, 24 hours. Medical advice from doctors, health information and emergency ambulance, run by the Directorate General of Health Services. This is a HEALTH line, not a gender-based violence line — for violence, call 109 or 999.",
+      "desc_bn": "ফ্রি, ২৪ ঘণ্টা। স্বাস্থ্য অধিদপ্তর পরিচালিত — চিকিৎসকের পরামর্শ, স্বাস্থ্য তথ্য ও জরুরি অ্যাম্বুলেন্স। এটি একটি স্বাস্থ্যসেবার নম্বর, জেন্ডারভিত্তিক সহিংসতার নম্বর নয় — সহিংসতার জন্য ১০৯ বা ৯৯৯ নম্বরে কল করুন।"
     },
     {
       "number": "1098",
       "name_en": "Child Helpline",
       "name_bn": "শিশু হেল্পলাইন",
-      "in_emergency_script": true
+      "in_emergency_script": true,
+      "desc_en": "Free, 24 hours, confidential. For children facing abuse, violence, exploitation, neglect or child marriage. Connects children with protection services and emergency help.",
+      "desc_bn": "ফ্রি, ২৪ ঘণ্টা, গোপনীয়। নির্যাতন, সহিংসতা, শোষণ, অবহেলা বা বাল্যবিবাহের শিকার শিশুদের জন্য। শিশুদের সুরক্ষা সেবা ও জরুরি সহায়তার সঙ্গে যুক্ত করে।"
     },
     {
       "number": "333",
       "name_en": "Citizen Service",
       "name_bn": "নাগরিক সেবা",
-      "in_emergency_script": true
+      "in_emergency_script": true,
+      "desc_en": "Government information line for public services, complaints and social issues, including help reaching local officials.",
+      "desc_bn": "সরকারি তথ্যসেবা — সরকারি সেবা, অভিযোগ ও সামাজিক বিষয়ে তথ্য ও সহায়তা, স্থানীয় প্রশাসনের সঙ্গে যোগাযোগসহ।"
     }
   ],
   "safeguarding_focal_points": [
@@ -85,7 +95,8 @@
     "hours_en": "3pm to 3am",
     "hours_bn": "বিকাল ৩টা থেকে রাত ৩টা"
   },
-  "note_16263": "CONFIRMED by WaterAid, 2026-09: 16263 is NOT a GBV hotline. It is\nShastho Batayon, the national health call centre run by DGHS under the Ministry\nof Health (launched September 2015): free 24/7 medical consultation, referrals\nand emergency ambulance.\n\nIt stays in the contacts list under its correct label and stays out of every GBV\nemergency script — sending a survivor to a health line she believes is a GBV\nservice is a concrete harm. It may be referenced where the need is genuinely\nmedical, though 999 is preferred in a crisis because it reaches ambulance,\npolice and fire on one number.\n\nOUTSTANDING: press reporting says the service has degraded (staff unpaid for\nmonths, closure threatened). Someone must ring it and confirm it answers before\nlaunch. The app's own contacts screen still carries the old 'Gender Based\nViolence Hotline' label; that is fixed in the Flutter refactor.",
+  "note_16263": "CONFIRMED by WaterAid, 2026-09: 16263 is NOT a GBV hotline. It is\nShastho Batayon, the national health call centre run by DGHS under the Ministry\nof Health (launched September 2015): free 24/7 medical consultation, referrals\nand emergency ambulance.\n\nIt stays in the contacts list under its correct label and stays out of every GBV\nemergency script — sending a survivor to a health line she believes is a GBV\nservice is a concrete harm. It may be referenced where the need is genuinely\nmedical, though 999 is preferred in a crisis because it reaches ambulance,\npolice and fire on one number.\n\nOUTSTANDING: press reporting says the service has degraded (staff unpaid for\nmonths, closure threatened). Someone must ring it and confirm it answers before\nlaunch — see REFERRAL_VERIFICATION.md.\n\nThe app's contacts screen used to carry the old 'Gender Based Violence Hotline'\nlabel. That screen now reads this list instead of keeping its own copy, so the\nlabel cannot diverge again; a Dart test asserts 16263's description says\n'health' and names 109.",
+  "verification_status": "UNVERIFIED",
   "responses": {
     "immediate_danger": {
       "en": "**If you are in danger right now, call 999.** Free, 24 hours — police, fire and ambulance.\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. They can trace where you are calling from and send local police.\n\nIf you cannot speak safely, try to reach someone nearby you trust.\n\nI am a guide, not a counsellor, and I cannot help with this myself. The numbers above are answered by trained people who can act now.",
@@ -135,13 +146,57 @@
       "en": "I don't have reliable information about that, and I would rather say so than guess — on safeguarding, health or legal questions a wrong answer can do real harm.\n\nThat isn't a dead end, though. Here is what I do have, drawn from WaterAid's own material:\n\n- what safeguarding means, and its core principles\n- what gender-based violence is, and the forms it takes\n- whose responsibility safeguarding is\n- how violence can be prevented in a community\n- the myths people repeat about gender-based violence, and the facts\n\nAsk me about any of those and I will answer from the source. And for anything beyond them, a person can help you far better than I can:\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential.\n\n**999** — if anyone is in danger right now.\n\nYou can also email safeguardwab@wateraid.org, or use the safeguarding contacts listed under Important Numbers in this app.",
       "bn": "এ বিষয়ে আমার কাছে নির্ভরযোগ্য তথ্য নেই, আর অনুমান করার চেয়ে সেটা খোলাখুলি বলা ভালো — সেফগার্ডিং, স্বাস্থ্য বা আইনি প্রশ্নে ভুল উত্তর সত্যিকারের ক্ষতি করতে পারে।\n\nতবে এখানেই শেষ নয়। ওয়াটারএইডের নিজস্ব উপকরণ থেকে আমি এই বিষয়গুলোতে সাহায্য করতে পারি:\n\n- সেফগার্ডিং কী, এবং এর মূল নীতিগুলো\n- জেন্ডারভিত্তিক সহিংসতা কী, এবং এর ধরনগুলো\n- সেফগার্ডিংয়ের দায়িত্ব কার কার\n- সমাজে সহিংসতা কীভাবে প্রতিরোধ করা যায়\n- জেন্ডারভিত্তিক সহিংসতা নিয়ে প্রচলিত ভুল ধারণা ও প্রকৃত তথ্য\n\nএগুলোর যেকোনোটি জিজ্ঞেস করুন, আমি মূল উপকরণ থেকে উত্তর দেব। আর এর বাইরের বিষয়ে আমার চেয়ে একজন মানুষ অনেক ভালো সাহায্য করতে পারবেন:\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।\n\n**999** — কেউ যদি এখনই বিপদে থাকে।\n\nআপনি safeguardwab@wateraid.org ঠিকানায় ইমেইল করতে পারেন, অথবা এই অ্যাপের \"Important Numbers\"-এ দেওয়া সেফগার্ডিং যোগাযোগ ব্যবহার করতে পারেন।"
     },
+    "off_topic": {
+      "en": "That's outside what I know about — I only cover safeguarding and gender-based violence, and I'd rather say so than make something up.\n\nAsk me anything in that area and I'll answer from WaterAid's own material.",
+      "bn": "এই বিষয়ে আমি জানি না — আমি কেবল সেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে কাজ করি, আর না জেনে কিছু বানিয়ে বলার চেয়ে সেটা স্বীকার করাই ভালো।\n\nএই বিষয়ের যেকোনো প্রশ্ন করুন — ওয়াটারএইডের নিজস্ব উপকরণ থেকে উত্তর দেব।"
+    },
     "personal_disclosure": {
       "en": "Thank you for telling me. What you are describing is recognised as gender-based violence — it is not a private matter you have to manage alone, and you do not need proof before anyone will listen to you.\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. They take complaints of exactly this kind, including harassment at work, and can tell you what your options are.\n\n**999** — if you are ever in immediate danger.\n\nIf this involves a WaterAid programme, workplace, staff member or partner, you can also contact a safeguarding focal point — listed under Important Numbers in this app — or email safeguardwab@wateraid.org.\n\nIf the person being harmed is under 18, 1098 is the Child Helpline.\n\nI am not able to advise you on what to do next; the people on those numbers are trained for that, and they will take you seriously.",
       "bn": "আপনি বলেছেন, সেজন্য ধন্যবাদ। আপনি যা বর্ণনা করছেন তা জেন্ডারভিত্তিক সহিংসতা হিসেবে স্বীকৃত — এটি আপনার একার সামলানোর মতো ব্যক্তিগত বিষয় নয়, এবং কেউ আপনার কথা শোনার আগে আপনাকে প্রমাণ দিতে হবে না।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। কর্মক্ষেত্রে হয়রানিসহ ঠিক এ ধরনের অভিযোগই তাঁরা নেন এবং আপনার কী কী উপায় আছে তা বলতে পারেন।\n\n**999** — আপনি যদি কখনো তাৎক্ষণিক বিপদে পড়েন।\n\nএটি যদি ওয়াটারএইডের কোনো কার্যক্রম, কর্মক্ষেত্র, কর্মী বা সহযোগী সংস্থার সঙ্গে সম্পর্কিত হয়, তাহলে সেফগার্ডিং ফোকাল পয়েন্টের সঙ্গেও যোগাযোগ করতে পারেন — তালিকা এই অ্যাপের \"Important Numbers\"-এ আছে — অথবা ইমেইল করুন safeguardwab@wateraid.org।\n\nক্ষতিগ্রস্ত ব্যক্তির বয়স ১৮ বছরের কম হলে 1098 শিশু হেল্পলাইন।\n\nএরপর কী করবেন সে বিষয়ে আমি পরামর্শ দিতে পারি না; উপরের নম্বরগুলোর মানুষ সেজন্য প্রশিক্ষিত, এবং তাঁরা আপনার কথা গুরুত্ব দিয়ে নেবেন।"
     },
+    "coercive_control": {
+      "en": "Thank you for telling me. What you are describing has a name: controlling someone's money, their phone, their documents, or whether they can work, study or leave the house is recognised as **economic violence and coercive control**. It is a form of gender-based violence, and it is not a normal part of marriage or family life.\n\nIt is often the hardest kind to name, because there may be no injury to point at and because people around you may treat it as ordinary. You do not need an injury, and you do not need proof, before anyone will take you seriously.\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. They take exactly this, and they can tell you what your options are.\n\n**999** — if you are ever in immediate danger.\n\nI am not able to advise you on what to do about the money, the documents or the restrictions themselves — those steps can change the risk you are in, and a trained person needs to weigh that with you.",
+      "bn": "আপনি বলেছেন, সেজন্য ধন্যবাদ। আপনি যা বর্ণনা করছেন তার একটি নাম আছে: কারও টাকা, ফোন, কাগজপত্র বা তিনি কাজ করবেন কি না, পড়বেন কি না, বাইরে যাবেন কি না — এসব নিয়ন্ত্রণ করাকে **অর্থনৈতিক সহিংসতা ও কোয়ার্সিভ কন্ট্রোল (নিয়ন্ত্রণমূলক আচরণ)** হিসেবে স্বীকৃতি দেওয়া হয়। এটি জেন্ডারভিত্তিক সহিংসতারই একটি রূপ, এবং এটি বিয়ে বা সংসারের স্বাভাবিক অংশ নয়।\n\nএই ধরনের সহিংসতার নাম দেওয়াই সবচেয়ে কঠিন, কারণ দেখানোর মতো কোনো আঘাত হয়তো নেই, আর আশপাশের মানুষ একে সাধারণ ব্যাপার বলে ধরে নিতে পারেন। কেউ আপনার কথা গুরুত্ব দিয়ে নেওয়ার আগে আপনাকে আঘাতও দেখাতে হবে না, প্রমাণও দিতে হবে না।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। ঠিক এ ধরনের বিষয়ই তাঁরা নেন এবং আপনার কী কী উপায় আছে তা বলতে পারেন।\n\n**999** — আপনি যদি কখনো তাৎক্ষণিক বিপদে পড়েন।\n\nটাকা, কাগজপত্র বা এই নিয়ন্ত্রণগুলো নিয়ে আপনি কী করবেন সে পরামর্শ আমি দিতে পারি না — এই পদক্ষেপগুলো আপনার ঝুঁকি বদলে দিতে পারে, আর একজন প্রশিক্ষিত মানুষকে আপনার সঙ্গে বসে সেটা বিবেচনা করতে হবে।"
+    },
+    "reporting_request": {
+      "en": "I want to be clear about one thing first: I cannot take a report. Nothing you type here is passed on to anyone, and I have no way to record or forward a complaint.\n\nHere is where a report actually goes to a person:\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. They take complaints of violence, abuse and harassment directly, and they can refer you on.\n\n**999** — the police, if a crime has been committed or anyone is in danger now.\n\nIf this concerns a WaterAid programme, workplace, staff member or partner organisation, it goes to safeguarding: email safeguardwab@wateraid.org, or use the safeguarding contacts under Important Numbers in this app.\n\nIf the person harmed is under 18, 1098 is the Child Helpline.\n\nWhether to report, and when, is your decision. The people on those numbers can talk it through with you before you decide anything.",
+      "bn": "প্রথমেই একটি বিষয় স্পষ্ট করে বলি: আমি কোনো অভিযোগ গ্রহণ করতে পারি না। আপনি এখানে যা লেখেন তা কারও কাছে পাঠানো হয় না, এবং কোনো অভিযোগ সংরক্ষণ বা হস্তান্তর করার ক্ষমতা আমার নেই।\n\nঅভিযোগ আসলে যেখানে একজন মানুষের কাছে পৌঁছায়:\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। সহিংসতা, নির্যাতন ও হয়রানির অভিযোগ তাঁরা সরাসরি নেন এবং প্রয়োজনে অন্যত্র পাঠাতে পারেন।\n\n**999** — পুলিশ, যদি কোনো অপরাধ ঘটে থাকে বা কেউ এখনই বিপদে থাকেন।\n\nবিষয়টি যদি ওয়াটারএইডের কোনো কার্যক্রম, কর্মক্ষেত্র, কর্মী বা সহযোগী সংস্থার সঙ্গে সম্পর্কিত হয়, তাহলে সেটি সেফগার্ডিংয়ের বিষয়: ইমেইল করুন safeguardwab@wateraid.org, অথবা এই অ্যাপের \"Important Numbers\"-এ দেওয়া সেফগার্ডিং যোগাযোগ ব্যবহার করুন।\n\nক্ষতিগ্রস্ত ব্যক্তির বয়স ১৮ বছরের কম হলে 1098 শিশু হেল্পলাইন।\n\nঅভিযোগ করবেন কি না, আর কখন করবেন — সিদ্ধান্তটি আপনার। উপরের নম্বরগুলোর মানুষ সিদ্ধান্ত নেওয়ার আগে আপনার সঙ্গে বিষয়টি নিয়ে কথা বলতে পারেন।"
+    },
+    "third_party_concern": {
+      "en": "It matters that you noticed, and that you're asking. People in this situation are often reached by a friend long before they reach a helpline.\n\nWhat helps most is usually simple: believe her, tell her it isn't her fault, and stay in touch even if nothing changes for a long time. Let her decide what happens next, at her own pace — that includes deciding to do nothing for now.\n\nWhat to avoid is acting for her: contacting the person harming her, reporting it without her agreement, or pressing her to leave. Each of those can raise the danger she is in, and it is her safety being spent.\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. You can call for advice on supporting her, and so can she.\n\n**999** — if she is in danger right now.\n\nIf she is under 18, 1098 is the Child Helpline, and this should not wait.",
+      "bn": "আপনি লক্ষ করেছেন এবং জিজ্ঞেস করছেন — এটা গুরুত্বপূর্ণ। এ ধরনের পরিস্থিতিতে থাকা মানুষের কাছে হেল্পলাইনের অনেক আগে পৌঁছান একজন বন্ধু।\n\nসবচেয়ে বেশি কাজে আসে সাধারণ কিছু বিষয়: তাঁকে বিশ্বাস করুন, বলুন যে এতে তাঁর কোনো দোষ নেই, আর অনেক দিন কিছু না বদলালেও যোগাযোগ রাখুন। এরপর কী হবে তা তিনিই ঠিক করবেন, তাঁর নিজের গতিতে — এর মধ্যে \"এখন কিছুই করব না\" সিদ্ধান্তটাও পড়ে।\n\nযা এড়িয়ে চলবেন তা হলো তাঁর হয়ে সিদ্ধান্ত নেওয়া: যে ব্যক্তি ক্ষতি করছে তার সঙ্গে যোগাযোগ করা, তাঁর সম্মতি ছাড়া অভিযোগ জানানো, বা চলে যাওয়ার জন্য চাপ দেওয়া। এর প্রতিটিই তাঁর বিপদ বাড়াতে পারে, আর ঝুঁকিটা তাঁরই।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। তাঁকে কীভাবে পাশে থাকবেন সে বিষয়ে আপনি নিজেও পরামর্শ নিতে পারেন, তিনিও কল করতে পারেন।\n\n**999** — তিনি যদি এখনই বিপদে থাকেন।\n\nতাঁর বয়স ১৮ বছরের কম হলে 1098 শিশু হেল্পলাইন, এবং এটি ফেলে রাখার বিষয় নয়।"
+    },
+    "low_distress": {
+      "en": "I'm sorry you're feeling like this. You don't have to explain it or justify it to me.\n\nIf you'd like to talk to someone who will just listen, **09612-119911** is Kaan Pete Roi, open 3pm to 3am.\n\nAnd if it would help, you can ask me what WaterAid's material says about coping with stress or difficult feelings, and I'll answer from that. Or you can say more here — I'm listening.",
+      "bn": "আপনার এমন লাগছে শুনে খারাপ লাগল। কেন এমন লাগছে, তা আমাকে ব্যাখ্যা করতে হবে না।\n\nকেউ শুধু আপনার কথা শুনুক — এমন চাইলে **09612-119911** নম্বরে কান পেতে রই আছে, বিকাল ৩টা থেকে রাত ৩টা খোলা।\n\nআর যদি কাজে লাগে, মানসিক চাপ বা কঠিন অনুভূতি নিয়ে ওয়াটারএইডের উপকরণ কী বলে তা জিজ্ঞেস করতে পারেন — আমি সেখান থেকে বলব। অথবা এখানেই আরও কিছু বলতে পারেন; আমি শুনছি।"
+    },
     "greeting": {
-      "en": "Hello. Ask me anything about safeguarding or gender-based violence, and I will answer from WaterAid's own material — in English or Bangla.\n\nFor example: *What is safeguarding?* · *What counts as economic violence?* · *How can violence be prevented?*\n\nIf you are in danger right now, do not wait for me — the numbers below connect you to a person.",
-      "bn": "নমস্কার। সেফগার্ডিং বা জেন্ডারভিত্তিক সহিংসতা নিয়ে যেকোনো প্রশ্ন করুন — আমি ওয়াটারএইডের নিজস্ব উপকরণ থেকে বাংলা বা ইংরেজিতে উত্তর দেব।\n\nযেমন: *সেফগার্ডিং কী?* · *অর্থনৈতিক সহিংসতা কী?* · *সহিংসতা কীভাবে প্রতিরোধ করা যায়?*\n\nআপনি যদি এখনই বিপদে থাকেন, আমার জন্য অপেক্ষা করবেন না — নিচের নম্বরগুলো আপনাকে একজন মানুষের কাছে পৌঁছে দেবে।"
+      "en": "Hello — I'm glad you're here. I'm well, thank you for asking.\n\nI'm here for questions about safeguarding and gender-based violence. Ask me anything, in English or Bangla, and I'll answer from WaterAid's own material.",
+      "bn": "নমস্কার — আপনি এসেছেন, ভালো লাগল। আমি ভালো আছি, জিজ্ঞেস করার জন্য ধন্যবাদ।\n\nসেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে প্রশ্নের জন্য আমি আছি। বাংলা বা ইংরেজি — যেকোনো ভাষায় জিজ্ঞেস করুন, আমি ওয়াটারএইডের নিজস্ব উপকরণ থেকে উত্তর দেব।"
+    },
+    "thanks": {
+      "en": "You're welcome.\n\nIf anything else comes up — about safeguarding, or about violence and what counts as it — I'm here.",
+      "bn": "আপনাকেও ধন্যবাদ।\n\nআর কিছু জানার থাকলে — সেফগার্ডিং নিয়ে, বা সহিংসতা ও তার ধরন নিয়ে — আমি আছি।"
+    },
+    "acknowledgement": {
+      "en": "Understood.\n\nTake your time — ask whenever you're ready.",
+      "bn": "বুঝেছি।\n\nতাড়াহুড়ো নেই — যখন ইচ্ছে জিজ্ঞেস করবেন।"
+    },
+    "identity": {
+      "en": "I'm Bharosha, an automated assistant in WaterAid Bangladesh's Shomota Shurokkha app. Not a person, and not a counsellor, lawyer or doctor.\n\nI answer from WaterAid's safeguarding material, and I can point you to people who are trained for the rest. Nothing you type here is saved or sent to anyone, and you don't need an account to use me.\n\nTo talk to a person instead: **109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential.",
+      "bn": "আমি ভরসা — ওয়াটারএইড বাংলাদেশের \"সমতা সুরক্ষা\" অ্যাপের একটি স্বয়ংক্রিয় সহায়ক। আমি মানুষ নই, কাউন্সেলর, আইনজীবী বা ডাক্তারও নই।\n\nআমি ওয়াটারএইডের সেফগার্ডিং উপকরণ থেকে উত্তর দিই, আর বাকি বিষয়ে প্রশিক্ষিত মানুষের সন্ধান দিতে পারি। আপনি এখানে যা লেখেন তা সংরক্ষণ করা হয় না, কাউকে পাঠানোও হয় না; আমাকে ব্যবহার করতে কোনো অ্যাকাউন্ট লাগে না।\n\nকোনো মানুষের সঙ্গে কথা বলতে চাইলে: **109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।"
+    },
+    "privacy": {
+      "en": "This conversation is not saved on your phone, and you don't need an account to use it. When you ask about something, the question is sent to be looked up, kept only for as long as this conversation is open, and then forgotten. Nothing here sends you notifications.\n\n**Leave now**, at the top of this screen, clears everything and closes the app straight away.\n\nOne thing I can't do anything about: if someone else can unlock your phone while this is open, they can read what is on the screen.",
+      "bn": "এই কথাবার্তা আপনার ফোনে সংরক্ষণ করা হয় না, আর এটি ব্যবহার করতে কোনো অ্যাকাউন্ট লাগে না। আপনি কিছু জিজ্ঞেস করলে প্রশ্নটি খুঁজে দেখার জন্য পাঠানো হয়, কেবল এই কথাবার্তা চলার সময়টুকু রাখা হয়, তারপর মুছে যায়। এখান থেকে কোনো নোটিফিকেশন যায় না।\n\nউপরে থাকা **\"এখনই বেরিয়ে যান\"** বোতামে সবকিছু মুছে গিয়ে অ্যাপ সঙ্গে সঙ্গে বন্ধ হয়ে যায়।\n\nএকটি বিষয়ে আমার কিছু করার নেই: এটি খোলা থাকা অবস্থায় অন্য কেউ যদি আপনার ফোন আনলক করতে পারেন, তিনি পর্দায় যা আছে তা পড়তে পারবেন।"
+    },
+    "bot_abuse": {
+      "en": "That's fair — I can only answer from the material I have, and it doesn't cover everything.\n\nIf you tell me what you were looking for, I'll say plainly whether I have it.",
+      "bn": "ঠিক আছে — আমার কাছে যে উপকরণ আছে কেবল সেখান থেকেই উত্তর দিতে পারি, আর তাতে সবকিছু নেই।\n\nআপনি কী খুঁজছিলেন বললে, আমার কাছে সেটা আছে কি না খোলাখুলি বলব।"
+    },
+    "vague": {
+      "en": "I want to help — tell me a little more and I'll know where to start. What's happening, or what would you like to know about?\n\nIf it's urgent right now, don't wait for me: **999** reaches the police, fire service and ambulance, free, at any hour.",
+      "bn": "আমি সাহায্য করতে চাই — একটু বিস্তারিত বললে কোথা থেকে শুরু করব বুঝতে পারব। কী ঘটছে, বা কোন বিষয়ে জানতে চান?\n\nযদি এখনই জরুরি হয়, আমার জন্য অপেক্ষা করবেন না: **999** নম্বরে পুলিশ, ফায়ার সার্ভিস ও অ্যাম্বুলেন্স পাওয়া যায় — ফ্রি, যেকোনো সময়।"
     },
     "unreachable": {
       "en": "I could not reach the service just now, so I have not been able to look your question up. It is worth trying again in a moment.\n\nWhat does not depend on that connection: if anyone is in danger, these numbers work whether or not I do.\n\n**999** — National Emergency Services — police, fire, ambulance. Free, any hour.\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential.",

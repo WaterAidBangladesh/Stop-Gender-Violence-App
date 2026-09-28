@@ -16,12 +16,19 @@
     "medical_advice"
   ],
   "disclosure_categories": [
-    "personal_disclosure"
+    "personal_disclosure",
+    "coercive_control"
   ],
-  "greeting_categories": [
-    "greeting"
+  "third_party_categories": [
+    "third_party_concern"
   ],
-  "priority": [
+  "low_distress_categories": [
+    "low_distress"
+  ],
+  "reporting_categories": [
+    "reporting_request"
+  ],
+  "device_categories": [
     "suicide_risk",
     "immediate_danger",
     "threat_to_life",
@@ -34,7 +41,72 @@
     "legal_advice",
     "medical_advice",
     "personal_disclosure",
-    "greeting"
+    "coercive_control",
+    "reporting_request",
+    "low_distress",
+    "identity",
+    "privacy"
+  ],
+  "social_categories": [
+    "greeting",
+    "thanks",
+    "acknowledgement",
+    "identity",
+    "privacy",
+    "bot_abuse"
+  ],
+  "vague_categories": [
+    "vague"
+  ],
+  "kinds": {
+    "suicide_risk": "emergency",
+    "immediate_danger": "emergency",
+    "threat_to_life": "emergency",
+    "child_disclosure": "emergency",
+    "active_violence": "emergency",
+    "leave_decision": "refuse",
+    "divorce_process": "refuse",
+    "confront_or_evidence": "refuse",
+    "economic_rights": "refuse",
+    "legal_advice": "refuse",
+    "medical_advice": "refuse",
+    "third_party_concern": "third_party",
+    "personal_disclosure": "disclosure",
+    "coercive_control": "disclosure",
+    "reporting_request": "reporting",
+    "low_distress": "low_distress",
+    "greeting": "social",
+    "thanks": "social",
+    "acknowledgement": "social",
+    "identity": "social",
+    "privacy": "social",
+    "bot_abuse": "social",
+    "vague": "vague"
+  },
+  "priority": [
+    "suicide_risk",
+    "immediate_danger",
+    "threat_to_life",
+    "child_disclosure",
+    "active_violence",
+    "leave_decision",
+    "divorce_process",
+    "confront_or_evidence",
+    "economic_rights",
+    "legal_advice",
+    "medical_advice",
+    "third_party_concern",
+    "personal_disclosure",
+    "coercive_control",
+    "reporting_request",
+    "low_distress",
+    "greeting",
+    "thanks",
+    "acknowledgement",
+    "identity",
+    "privacy",
+    "bot_abuse",
+    "vague"
   ],
   "invisible_characters": [
     "​",
@@ -73,6 +145,8 @@
       "বাঁচাও",
       "বাঁচান",
       "সাহায্য\\s*দরকার\\s*এখনই",
+      "এখনই\\s*(সাহায্য|বাঁচা|উদ্ধার)",
+      "(সাহায্য|বাঁচা|উদ্ধার)\\S*\\s*(করুন|করো|কর|চাই)?\\s*এখনই",
       "\\bright\\s+now\\b.{0,30}\\b(danger|unsafe|afraid|scared)\\b",
       "\\b(in|im|i'?m)\\s+(immediate\\s+)?danger\\b",
       "\\bnot\\s+safe\\b",
@@ -93,6 +167,7 @@
       "এসিড\\s*মার",
       "গলা\\s*টিপে",
       "\\b(will|going\\s+to|gonna)\\s+kill\\s+me\\b",
+      "\\b(kill|murder)\\s+me\\b",
       "\\bthreaten(ed|ing)?\\s+to\\s+kill\\b",
       "\\bdeath\\s+threat",
       "\\bacid\\s+attack\\b",
@@ -124,6 +199,8 @@
       "রক্ত\\s*(পড়ছে|ঝরছে)",
       "\\b(he|she|they)\\s+is\\s+(beating|hitting|attacking|choking)\\b",
       "\\b(beating|attacking|hitting)\\s+me\\s+(right\\s+)?now\\b",
+      "\\b(is|are|was|were)\\s+(beating|hitting|attacking|choking|strangl\\w*)\\s+(me|her|him|them)\\b",
+      "\\b(beating|attacking|hitting|choking)\\s+(her|him|them)\\s+(right\\s+)?now\\b",
       "\\bjust\\s+(beat|hit|attacked|raped)\\s+me\\b",
       "\\bbeing\\s+(raped|attacked|assaulted)\\b",
       "\\bi\\s+am\\s+bleeding\\b",
@@ -154,11 +231,139 @@
       "\\b(dosage|how\\s+many\\s+tablets)\\b",
       "(চিকিৎসা|ওষুধ|মলম|ব্যান্ডেজ)\\s*.{0,15}(কীভাবে|কিভাবে|কী|কি|কোন)",
       "(কীভাবে|কিভাবে)\\s*.{0,15}(চিকিৎসা|সারাব|সেরে|রক্ত\\s*বন্ধ)",
-      "(লক্ষণ|উপসর্গ)\\s*(কী|কি)\\b"
+      "(লক্ষণ|উপসর্গ)\\s*(কী|কি)"
+    ],
+    "third_party_concern": [
+      "\\bmy\\s+(friend|best\\s*friend|sister|cousin|colleague|co-?worker|neighbou?r|aunt|niece|classmate|roommate|student|sister-in-law|sister\\s*in\\s*law|maid|helper)\\b[^.?!]{0,60}\\b(is|was|has\\s+been|gets?|get|being)\\b[^.?!]{0,25}\\b(abus|beat|hit|harass|rape|molest|threaten|tortur|violen|hurt)",
+      "\\bmy\\s+(friend|sister|cousin|colleague|neighbou?r|aunt|classmate|roommate)'?s?\\s+(husband|boss|father|brother|in-?laws?|partner|boyfriend|manager|teacher)\\b[^.?!]{0,40}\\b(abus|beat|hit|harass|rape|molest|threaten|tortur|hurt)",
+      "\\b(a|my)\\s+friend\\s+(of\\s+mine\\s+)?(told|said|confided|shared)\\b",
+      "\\bsomeone\\s+i\\s+know\\b[^.?!]{0,50}\\b(abus|beat|harass|violen|rape|threaten|danger)",
+      "\\bhow\\s+(can|do|should)\\s+i\\s+(help|support)\\s+(my\\s+)?(friend|sister|cousin|colleague|neighbou?r|someone|a\\s+friend|her|him|them|a\\s+survivor|a\\s+victim)\\b",
+      "\\bwhat\\s+(can|should)\\s+i\\s+do\\s+(to\\s+help|for)\\s+(my\\s+)?(friend|sister|her|him|them|someone)\\b",
+      "\\b(my\\s+)?(friend|sister|colleague|neighbou?r)\\b[^.?!]{0,40}\\b(doesn'?t|won'?t|refuses\\s+to)\\s+(want\\s+to\\s+)?(leave|report|tell\\s+anyone|talk)",
+      "\\bi\\s+am\\s+(worried|concerned)\\s+about\\s+(my\\s+)?(friend|sister|cousin|colleague|neighbou?r|someone)\\b",
+      "আমার\\s*(বন্ধু|বান্ধবী|বোন|কাজিন|সহকর্মী|প্রতিবেশী|খালা|ফুপু|ভাবি)[^।?!]{0,40}(নির্যাতন|মারধর|মারে|হয়রানি|ধর্ষণ|অত্যাচার|নিপীড়ন)",
+      "(বন্ধু|বান্ধবী|বোন|সহকর্মী|প্রতিবেশী)কে\\s*[^।?!]{0,30}(সাহায্য|সহায়তা)\\s*(করব|করতে)",
+      "(কীভাবে|কিভাবে)\\s*[^।?!]{0,30}(বন্ধু|বান্ধবী|বোন|তাকে)[^।?!]{0,20}(সাহায্য|সহায়তা|পাশে)"
+    ],
+    "reporting_request": [
+      "\\b(i\\s+want\\s+to|i\\s+would\\s+like\\s+to|can\\s+i|how\\s+(do|can)\\s+i|where\\s+(do|can)\\s+i|how\\s+to)\\s+(report|complain|lodge)\\b",
+      "\\b(report|reporting)\\s+(this|it|him|her|them|the\\s+(incident|abuse|case|matter))\\b",
+      "\\b(file|lodge|make|submit)\\s+(a|an)\\s+(complaint|report)\\b",
+      "\\bwho\\s+(do|can)\\s+i\\s+(report|complain)\\s+to\\b",
+      "\\bis\\s+there\\s+(a\\s+)?(way|place)\\s+to\\s+report\\b",
+      "\\breport\\s+(it\\s+)?(anonymously|without\\s+(giving\\s+)?my\\s+name)\\b",
+      "(অভিযোগ|নালিশ|রিপোর্ট)\\s*[^।?!]{0,12}(করতে\\s*চাই|জানাতে\\s*চাই|করব|জানাব|করা\\s*যায়|কোথায়)",
+      "(কোথায়|কীভাবে|কিভাবে|কার\\s*কাছে)\\s*[^।?!]{0,12}(অভিযোগ|নালিশ|রিপোর্ট)",
+      "নাম\\s*না\\s*জানিয়ে\\s*[^।?!]{0,12}(অভিযোগ|রিপোর্ট)"
+    ],
+    "coercive_control": [
+      "\\b(controls?|controlling|keeps?|takes?|took|holds?)\\s+(all\\s+)?(my|the)\\s+(money|salary|wages?|pay|income|earnings|bank)",
+      "\\b(does\\s+not|does\\s*n'?t|doesn'?t|won'?t|will\\s+not|refuses\\s+to)\\s+(give|let\\s+me\\s+have)\\s+me?\\s*(any\\s+)?money",
+      "\\bi\\s+have\\s+to\\s+(ask|beg)\\s+(him|her|them)?\\s*for\\s+(money|everything)",
+      "\\bno\\s+money\\s+(of\\s+)?my\\s+own\\b",
+      "\\b(does\\s+not|does\\s*n'?t|doesn'?t|won'?t|will\\s+not|refuses\\s+to|never)\\s+(let|allow)s?\\s+me\\b",
+      "\\b(not\\s+allowed|forbids?\\s+me|stops?\\s+me)\\s+(to\\s+|from\\s+)?(go|leave|work|study|see|visit|talk)",
+      "\\blocks?\\s+(me\\s+in|the\\s+door|me\\s+inside)",
+      "\\b(need|have\\s+to\\s+get)\\s+(his|her|their)\\s+permission\\b",
+      "\\bhave\\s+to\\s+ask\\s+permission\\s+for\\s+everything\\b",
+      "\\b(checks?|reads?|goes\\s+through|monitors?|tracks?)\\s+(all\\s+)?my\\s+(phone|messages?|texts?|calls?|whatsapp|facebook|location)",
+      "\\b(took|takes?|keeps?|smashed|broke)\\s+my\\s+phone\\b",
+      "\\b(follows?|follow)\\s+me\\s+(everywhere|around)\\b",
+      "\\b(keeps?|took|takes?|hides?|holds?)\\s+my\\s+(id|nid|passport|certificates?|papers?|documents?)",
+      "\\b(throw|kick|put)\\s+me\\s+out\\b",
+      "\\bsend\\s+me\\s+back\\s+to\\s+my\\s+(parents|father|family)",
+      "\\b(decides?|controls?)\\s+(what|who)\\s+i\\s+(wear|can\\s+see|talk\\s+to)",
+      "(টাকা|বেতন|আয়|রোজগার)\\s*(সব\\s*)?(নিয়ে\\s*নেয়|কেড়ে\\s*নেয়|রেখে\\s*দেয়|দেয়\\s*না|আটকে\\s*রাখে)",
+      "(বাইরে|বাহিরে|বাবার\\s*বাড়ি|বাপের\\s*বাড়ি|কোথাও)\\s*[^।?!]{0,15}(যেতে|যাইতে)\\s*দেয়\\s*না",
+      "(চাকরি|কাজ|পড়াশোনা|পড়তে|লেখাপড়া)\\s*[^।?!]{0,12}করতে\\s*দেয়\\s*না",
+      "(দেখা|কথা)\\s*[^।?!]{0,12}(করতে|বলতে)\\s*দেয়\\s*না",
+      "(ফোন|মোবাইল|মেসেজ|কল)\\s*[^।?!]{0,12}(চেক\\s*করে|দেখে|পড়ে|কেড়ে\\s*নি)",
+      "(পরিচয়পত্র|এনআইডি|পাসপোর্ট|কাগজ|সার্টিফিকেট)\\s*[^।?!]{0,12}(নিয়ে\\s*নি|রেখে\\s*দি|আটকে)",
+      "(বাড়ি|ঘর)\\s*(থেকে)?\\s*বের\\s*করে\\s*দেবে",
+      "(অনুমতি|পারমিশন)\\s*(ছাড়া|নিতে\\s*হয়)",
+      "তালা\\s*(দিয়ে|মেরে)\\s*(রাখে|যায়)"
+    ],
+    "low_distress": [
+      "\\b(i\\s*(a?m|feel|'?m)|feeling)\\s+(so\\s+|very\\s+|really\\s+|quite\\s+)?(sad|low|down|lonely|alone|empty|numb|hopeless|helpless|worthless|upset|depressed|anxious|stressed|exhausted|overwhelmed|miserable|awful|terrible|broken|unwell|unhappy)\\b",
+      "\\bi\\s*(can'?t|cannot)\\s+(stop\\s+)?(crying|sleeping|coping|cope|sleep|take\\s+(it|this)\\s+any\\s*more)\\b",
+      "\\bi\\s+(feel\\s+like\\s+)?(just\\s+)?(want\\s+to\\s+)?cry(ing)?\\b",
+      "\\b(nobody|no\\s*one)\\s+(understands|cares|listens)\\b",
+      "\\bi\\s+(a?m|'?m)\\s+not\\s+(ok|okay|fine|well|alright)\\b",
+      "\\bmy\\s+(mind|head|heart)\\s+is\\s+(heavy|a\\s+mess|hurting)\\b",
+      "\\bmon\\s*(ta\\s*)?(kharap|kharab)\\b",
+      "\\bbhalo\\s*(lagche|lagse|lagchhe)\\s*na\\b",
+      "\\b(kanna|kadte)\\s*(pacche|ichche|korche)\\b",
+      "\\beka\\s*(lage|lagche)\\b",
+      "\\bkosto\\s*(hocche|hochhe|hoche)\\b",
+      "মন\\s*(টা\\s*)?খারাপ",
+      "ভাল(ো)?\\s*লাগছে\\s*না",
+      "কান্না\\s*(পাচ্ছে|আসছে)",
+      "কাঁদতে\\s*ইচ্ছে",
+      "একা\\s*(লাগে|লাগছে)",
+      "(খুব\\s*)?কষ্ট\\s*হচ্ছে",
+      "মানসিক\\s*(চাপ|যন্ত্রণা)",
+      "(ঘুম|শান্তি)\\s*হচ্ছে\\s*না",
+      "কিছু\\s*ভাল(ো)?\\s*লাগে\\s*না"
     ],
     "greeting": [
-      "^(hi|hii+|hey|hello+|helo|yo|salam|salaam|assalamu\\s*alaikum|as-?salamu\\s*alaykum|good\\s*(morning|afternoon|evening)|start|/start)[\\s!.,?]*$",
-      "^(হাই|হ্যালো|হেলো|নমস্কার|আসসালামু\\s*আলাইকুম|সালাম|শুভেচ্ছা|শুভ\\s*(সকাল|দুপুর|বিকাল|সন্ধ্যা))[\\s!।.,?]*$"
+      "^(hi|hii+|hey+|hello+|helo|yo|salam|salaam|assalamu\\s*alaikum|as-?salamu\\s*alaykum|walaikum\\s*assalam|good\\s*(morning|afternoon|evening|night)|start|/start|test|testing)[\\s!.,?]*$",
+      "^(হাই|হ্যালো|হেলো|নমস্কার|আসসালামু\\s*আলাইকুম|ওয়ালাইকুম\\s*আসসালাম|সালাম|শুভেচ্ছা|শুভ\\s*(সকাল|দুপুর|বিকাল|সন্ধ্যা|রাত্রি|রাত))[\\s!।.,?]*$",
+      "^(hi|hey|hello)?[\\s,!]*how\\s+(are|r)\\s*(you|u)\\s*(doing|today)?[\\s!.,?]*$",
+      "^(hi|hey|hello)?[\\s,!]*(kemon|kemn|kmn)\\s*(acho|achho|achen|asen|aso|aacho)\\s*(tumi|apni)?[\\s!.,?]*$",
+      "^(ki|ki\\s*re)?\\s*(khobor|khbr)\\s*(ki|bolo)?[\\s!.,?]*$",
+      "^(তুমি|আপনি)?\\s*কেমন\\s*(আছো|আছেন|আছিস|আছ)\\s*(তুমি|আপনি)?[\\s!।.,?]*$",
+      "^(কি|কী)\\s*খবর\\s*(বলো|বলুন)?[\\s!।.,?]*$"
+    ],
+    "thanks": [
+      "^(thanks?|thank\\s*(you|u)|thx|tnx|ty|many\\s*thanks|thank\\s*you\\s*(so\\s*much|very\\s*much)|shukriya|dhonnobad|donnobad|dhanyabad|jazakallah)[\\s!.,]*$",
+      "^(ধন্যবাদ|অনেক\\s*ধন্যবাদ|শুকরিয়া|কৃতজ্ঞ|জাজাকাল্লাহ)[\\s!।.,]*$"
+    ],
+    "acknowledgement": [
+      "^(ok(ay)?|k|kk|alright|right|fine|good|nice|great|sure|yes|yeah|yep|no|nope|hmm+|hm|oh|i\\s*see|got\\s*it|understood|noted|cool|bye|goodbye|see\\s*you|accha|achcha|thik\\s*ache|thik\\s*achhe|hmmm)[\\s!.,]*$",
+      "^(ঠিক\\s*আছে|আচ্ছা|হ্যাঁ|হা|না|বুঝলাম|বুঝেছি|ওকে|হুম+|আসি|বিদায়)[\\s!।.,]*$"
+    ],
+    "identity": [
+      "^(so\\s*)?(who|what)\\s*(are|r)\\s*(you|u)\\b.{0,30}$",
+      "^(are|r)\\s*(you|u)\\s*(an?\\s*)?(real\\s*)?(human|person|bot|robot|ai|machine|computer|man|woman|girl|boy|lawyer|doctor|counsell?or|police)\\b.{0,20}$",
+      "^(what|whats|what'?s)\\s*(is\\s*)?(your|ur)\\s*name\\b.{0,20}$",
+      "^(what|how)\\s*(can|do)\\s*(you|u)\\s*(do|help)\\b.{0,30}$",
+      "^(am\\s*i\\s*talking\\s*to|is\\s*this)\\s*(a\\s*)?(real\\s*)?(human|person|bot|machine|ai)\\b.{0,20}$",
+      "^(tumi|apni|tui)\\s*(ke|k|kee)\\b.{0,20}$",
+      "^(তুমি|আপনি|তুই)\\s*(কে|কি|কী)\\s*(হও|হন)?[\\s!।.,?]*$",
+      "^(তুমি|আপনি)\\s*(কি|কী)\\s*(মানুষ|রোবট|মেশিন|সত্যিকারের\\s*মানুষ|আইনজীবী|ডাক্তার|পুলিশ).{0,20}$",
+      "^(তোমার|আপনার)\\s*নাম\\s*(কি|কী).{0,20}$",
+      "^(তুমি|আপনি)\\s*(কি|কী)\\s*(করতে|করো|করেন)\\s*(পারো|পারেন)?.{0,20}$"
+    ],
+    "privacy": [
+      "\\b(do|will|does)\\s+(you|u|this|it|the\\s+app)\\s+(save|store|keep|record|log)\\b",
+      "\\bis\\s+(this|it)\\s+(private|confidential|anonymous|safe|secure)\\b",
+      "\\b(can|will|does)\\s+(anyone|someone|anybody|he|she|they|my\\s+\\w+)\\s+(see|read|find|know|check)\\b.{0,40}\\b(this|it|chat|messages?|app|conversation|history)\\b",
+      "\\b(will|does|can)\\s+(my\\s+)?(husband|partner|family|in-?laws?|boss|he|she|they)\\s+(see|know|find\\s+out|read)\\b",
+      "\\bwho\\s+(can\\s+)?(see|reads?)\\s+(this|my\\s+messages?)\\b",
+      "\\b(is|are)\\s+(my\\s+)?(messages?|chats?|data)\\s+(saved|stored|private|shared|sent)\\b",
+      "\\bhow\\s+do\\s+i\\s+(delete|clear|erase)\\s+(this|the\\s+chat|my\\s+messages?)\\b",
+      "\\bdoes\\s+it\\s+show\\s+(in|on)\\s+(my\\s+)?(phone|history|notifications?)\\b",
+      "(কেউ|স্বামী|পরিবার|বস)\\s*.{0,25}(দেখতে|জানতে|পড়তে)\\s*(পারবে|পারে)",
+      "(এটা|এটি|এই\\s*কথা|আমার\\s*বার্তা)\\s*.{0,20}(গোপন|সংরক্ষণ|সেভ|জমা)",
+      "(গোপনীয়|গোপন\\s*থাকবে|কেউ\\s*জানবে)\\s*(কি|কী|না)?",
+      "(মুছে|ডিলিট)\\s*(ফেলব|করব|করা)\\s*(কীভাবে|কিভাবে)?"
+    ],
+    "bot_abuse": [
+      "^(you\\s*(are|r)\\s*)?(stupid|useless|dumb|idiot|bad|rubbish|garbage|trash|nonsense|fake|shit|crap|worthless|boring)\\b.{0,30}$",
+      "^(fuck|fuk|fck|bullshit|wtf)\\b.{0,30}$",
+      "^(you|u)\\s*(know\\s*)?(nothing|don'?t\\s*(know|help|understand))\\b.{0,30}$",
+      "^(বাজে|ফালতু|বোকা|গাধা|অকেজো|বেকার|কাজের\\s*না).{0,30}$"
+    ],
+    "vague": [
+      "^(help|help\\s*me|i\\s*need\\s*help|need\\s*help|please\\s*help|plz\\s*help|can\\s*you\\s*help|can\\s*u\\s*help|help\\s*please)[\\s!.,?]*$",
+      "^(what\\s*(should|do|can)\\s*i\\s*do|what\\s*to\\s*do|what\\s*now|tell\\s*me\\s*what\\s*to\\s*do|i\\s*don'?t\\s*know\\s*what\\s*to\\s*do|i\\s*need\\s*advice|advice|i\\s*have\\s*a\\s*(problem|question)|i\\s*need\\s*to\\s*talk|can\\s*i\\s*ask\\s*(you\\s*)?something|are\\s*you\\s*there|hello\\s*\\?+)[\\s!.,?]*$",
+      "^(ki\\s*korbo|ki\\s*korte\\s*hobe|ami\\s*ki\\s*korbo|bujhte\\s*parchi\\s*na|kichu\\s*bujhte\\s*parchi\\s*na|ekta\\s*problem|kotha\\s*bolte\\s*chai)[\\s!.,?]*$",
+      "^(আমি\\s*)?(কি|কী)\\s*করবো?[\\s!।.,?]*$",
+      "^(কি|কী)\\s*করা\\s*উচিত[\\s!।.,?]*$",
+      "^(সাহায্য|সাহায্য\\s*চাই|একটু\\s*সাহায্য|আমার\\s*সাহায্য\\s*দরকার)[\\s!।.,?]*$",
+      "^(কিছু\\s*)?বুঝতে\\s*পারছি\\s*না[\\s!।.,?]*$",
+      "^(একটা\\s*(সমস্যা|প্রশ্ন)|কথা\\s*বলতে\\s*চাই|পরামর্শ\\s*দরকার|পরামর্শ\\s*চাই)[\\s!।.,?]*$"
     ],
     "divorce_process": [
       "\\bhow\\s+(do|can|would)\\s+i\\s+(get|file\\s+for|apply\\s+for|start)\\s+a?\\s*(divorce|separation|khula)\\b",
@@ -411,12 +616,10 @@
       "category": "legal_advice",
       "first": [
         "case",
-        "complaint",
         "fir",
         "lawsuit",
         "court",
         "মামলা",
-        "অভিযোগ",
         "আদালত",
         "কেস"
       ],
