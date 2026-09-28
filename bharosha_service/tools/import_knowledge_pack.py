@@ -63,6 +63,18 @@ PHONE = re.compile(
 BENGALI = re.compile(r"[ঀ-৿]")
 
 
+# The pack points at WaterAid's GLOBAL safeguarding inbox (a UK team). Users of
+# this app are in Bangladesh and should reach the Bangladesh address, which is
+# what referrals.py has used all along. Rewriting at ingest means that even if
+# the model echoes an address out of a passage, it echoes the right one.
+WATERAID_EMAIL = re.compile(r"\b[\w.+-]+@wateraid\.org\b", re.IGNORECASE)
+BANGLADESH_SAFEGUARDING_EMAIL = "safeguardwab@wateraid.org"
+
+
+def use_bangladesh_email(text: str) -> str:
+    return WATERAID_EMAIL.sub(BANGLADESH_SAFEGUARDING_EMAIL, text)
+
+
 def strip_numbers(text: str) -> str:
     """Remove helpline digits, leaving the sentence readable.
 
@@ -120,8 +132,8 @@ def main() -> int:
 
         question = row["question_en"].strip()
         variations = latin_variations(row["other_ways_people_ask"])
-        answer_en = strip_numbers(row["answer_en"].strip())
-        answer_bn = strip_numbers(row["answer_bn"].strip())
+        answer_en = use_bangladesh_email(strip_numbers(row["answer_en"].strip()))
+        answer_bn = use_bangladesh_email(strip_numbers(row["answer_bn"].strip()))
 
         # The embedded side leads with the question and its variations, so a
         # user's phrasing has something of the same shape to match.
