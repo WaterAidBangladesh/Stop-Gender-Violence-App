@@ -278,6 +278,29 @@ REFUSE_ECONOMIC_BN = f"""একজন নারীকে তাঁর উত্�
 
 এই অ্যাপের "Important Numbers" পাতা থেকে সেফগার্ডিং ফোকাল পয়েন্টের সঙ্গেও যোগাযোগ করতে পারেন।"""
 
+# DRAFT WORDING — awaiting sign-off.
+#
+# For treatment and diagnosis questions. The corpus contains material about
+# injuries from violence — including acid attacks — and answering a general
+# medical question from it would be both wrong and frightening. Refuse the
+# medical part, point to care, and leave the door open in case the injury came
+# from violence, without assuming it did.
+REFUSE_MEDICAL_EN = f"""I cannot tell you how to treat an injury — getting that wrong causes real harm, and I am not able to see or assess it.
+
+**{EMERGENCY.number}** — for an ambulance, or if the injury is serious. Free, any hour.
+
+For anything that needs looking at, the emergency department of your nearest hospital is the right place, and treatment there does not depend on explaining how it happened.
+
+**{VAWC.number}** — {VAWC.name_en}. If the injury came from someone hurting you, they can arrange medical care through a One-Stop Crisis Centre and talk through what happens next. Free, 24 hours, confidential."""
+
+REFUSE_MEDICAL_BN = f"""কোনো আঘাতের চিকিৎসা কীভাবে করবেন তা আমি বলতে পারি না — এতে ভুল হলে প্রকৃত ক্ষতি হয়, আর আমি আঘাতটি দেখতে বা বুঝতে পারি না।
+
+**{EMERGENCY.number}** — অ্যাম্বুলেন্সের জন্য, বা আঘাত গুরুতর হলে। ফ্রি, যেকোনো সময়।
+
+যা দেখানো দরকার, তার জন্য নিকটস্থ হাসপাতালের জরুরি বিভাগই সঠিক জায়গা; সেখানে চিকিৎসা পেতে কীভাবে আঘাত পেয়েছেন তা ব্যাখ্যা করা বাধ্যতামূলক নয়।
+
+**{VAWC.number}** — {VAWC.name_bn}। আঘাতটি যদি কেউ আপনাকে আঘাত করার কারণে হয়ে থাকে, তাঁরা ওয়ান-স্টপ ক্রাইসিস সেন্টারের মাধ্যমে চিকিৎসার ব্যবস্থা করতে এবং পরবর্তী করণীয় নিয়ে কথা বলতে পারেন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।"""
+
 REFUSE_LEGAL_EN = f"""I cannot give legal advice or tell you how a case would turn out — I would only be guessing, and a wrong answer here costs you time you may not have.
 
 **{VAWC.number}** — {VAWC.name_en}. They take complaints on domestic violence, child marriage, sexual harassment and dowry, and can refer you to legal aid.
@@ -484,6 +507,7 @@ RESPONSES: dict[str, dict[str, str]] = {
     "divorce_process": {"en": REFUSE_DIVORCE_EN, "bn": REFUSE_DIVORCE_BN},
     "economic_rights": {"en": REFUSE_ECONOMIC_EN, "bn": REFUSE_ECONOMIC_BN},
     "legal_advice": {"en": REFUSE_LEGAL_EN, "bn": REFUSE_LEGAL_BN},
+    "medical_advice": {"en": REFUSE_MEDICAL_EN, "bn": REFUSE_MEDICAL_BN},
     "confront_or_evidence": {"en": REFUSE_CONFRONT_EN, "bn": REFUSE_CONFRONT_BN},
     "no_context": {"en": NO_CONTEXT_EN, "bn": NO_CONTEXT_BN},
     "personal_disclosure": {"en": DISCLOSURE_EN, "bn": DISCLOSURE_BN},

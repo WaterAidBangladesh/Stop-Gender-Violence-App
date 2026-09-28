@@ -44,6 +44,7 @@ REFUSAL_CATEGORIES = (
     "confront_or_evidence",
     "economic_rights",
     "legal_advice",
+    "medical_advice",
 )
 
 # Someone describing what is happening to her, rather than asking a question
@@ -242,6 +243,28 @@ _PATTERNS: dict[str, tuple[str, ...]] = {
     # Whole-message greetings only. Anchored end to end so "hi, he is beating
     # me" is not a greeting — and even if it were matched, greeting sits last in
     # the priority order, so every emergency and refusal beats it.
+    # "Never improvise safeguarding, medical, or legal content" has always been
+    # the rule; only the legal half was enforced. The knowledge pack made the gap
+    # visible: "How do I treat a burn on my hand?" retrieved ACID ATTACK first
+    # aid at distance 0.384 — inside the range of genuine questions, so no
+    # threshold could exclude it. A woman with a kitchen burn would have been
+    # answered from acid-violence material.
+    #
+    # Deliberately narrow: this catches treatment and diagnosis questions, NOT
+    # emotional states. "I feel anxious all the time" must still reach the
+    # corpus, which has grounding techniques written for exactly that.
+    "medical_advice": (
+        r"\bhow\s+(do|can|should)\s+i\s+(treat|heal|cure|dress|bandage|clean)\b",
+        r"\b(what|which)\s+(medicine|medication|ointment|cream|antibiotic|painkiller|tablet)\b",
+        r"\bhow\s+to\s+(treat|cure|heal|stop\s+the\s+bleeding)\b",
+        r"\bis\s+(it|this|the\s+wound)\s+(infected|serious|normal)\b",
+        r"\bsymptoms?\s+of\b",
+        r"\bdo\s+i\s+need\s+(stitches|surgery|an?\s+x-?ray)\b",
+        r"\b(dosage|how\s+many\s+tablets)\b",
+        r"(চিকিৎসা|ওষুধ|মলম|ব্যান্ডেজ)\s*.{0,15}(কীভাবে|কিভাবে|কী|কি|কোন)",
+        r"(কীভাবে|কিভাবে)\s*.{0,15}(চিকিৎসা|সারাব|সেরে|রক্ত\s*বন্ধ)",
+        r"(লক্ষণ|উপসর্গ)\s*(কী|কি)\b",
+    ),
     "greeting": (
         r"^(hi|hii+|hey|hello+|helo|yo|salam|salaam|assalamu\s*alaikum|"
         r"as-?salamu\s*alaykum|good\s*(morning|afternoon|evening)|start|/start)"

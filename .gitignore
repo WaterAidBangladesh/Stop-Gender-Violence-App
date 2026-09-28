@@ -86,3 +86,8 @@ app.*.map.json
 Thumbs.db
 *.swp
 *.log
+
+# The knowledge pack is imported into corpus/knowledge_pack.json; the zip and
+# its extracted copy are inputs, not sources of truth.
+Bhorosha_Knowledge_Base_Pack.zip
+knowledge_pack/

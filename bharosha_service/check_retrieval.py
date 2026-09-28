@@ -42,6 +42,12 @@ PAIRS: list[tuple[str, str]] = [
      "নারীর প্রতি সহিংসতা কি পরিবারের ব্যক্তিগত বিষয়?"),
     ("What are the core principles of safeguarding?", "সুরক্ষার মূল নীতিগুলো কী?"),
     ("What counts as economic violence?", "অর্থনৈতিক সহিংসতা কী?"),
+    # Moved here from the controls when the knowledge pack arrived. It was never
+    # off-topic — the pack deliberately includes grounding and breathing
+    # techniques for exactly this, and retrieval finds them. A control that the
+    # corpus legitimately covers is a stale control, not a leak.
+    ("I feel anxious all the time", "আমি সব সময় দুশ্চিন্তায় থাকি"),
+    ("How can I calm down when I panic?", "আতঙ্কিত হলে কীভাবে শান্ত হব?"),
 ]
 
 # Trivially off topic. These were never going to leak; they are the sanity floor.
@@ -76,7 +82,6 @@ NEAR_CONTROLS: list[tuple[str, str]] = [
     ("What are normal period symptoms?", "স্বাভাবিক মাসিকের লক্ষণ কী?"),
     ("How much maternity leave am I entitled to?",
      "মাতৃত্বকালীন ছুটি কত দিন পাওয়া যায়?"),
-    ("I feel anxious all the time", "আমি সব সময় দুশ্চিন্তায় থাকি"),
     ("My daughter is being bullied at school", "আমার মেয়েকে স্কুলে উত্যক্ত করা হয়"),
     ("How do I talk to my teenage daughter?",
      "আমার কিশোরী মেয়ের সঙ্গে কীভাবে কথা বলব?"),

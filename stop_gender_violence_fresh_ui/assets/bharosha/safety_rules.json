@@ -12,7 +12,8 @@
     "divorce_process",
     "confront_or_evidence",
     "economic_rights",
-    "legal_advice"
+    "legal_advice",
+    "medical_advice"
   ],
   "disclosure_categories": [
     "personal_disclosure"
@@ -31,6 +32,7 @@
     "confront_or_evidence",
     "economic_rights",
     "legal_advice",
+    "medical_advice",
     "personal_disclosure",
     "greeting"
   ],
@@ -141,6 +143,18 @@
       "\\b(is\\s+it|when\\s+is)\\s+.{0,20}\\b(safe|right)\\s+(time\\s+)?to\\s+leave\\b",
       "\\bshould\\s+i\\s+stay\\s+or\\s+(go|leave)\\b",
       "\\bmove\\s+out\\s+of\\s+(the\\s+)?(house|home)\\b"
+    ],
+    "medical_advice": [
+      "\\bhow\\s+(do|can|should)\\s+i\\s+(treat|heal|cure|dress|bandage|clean)\\b",
+      "\\b(what|which)\\s+(medicine|medication|ointment|cream|antibiotic|painkiller|tablet)\\b",
+      "\\bhow\\s+to\\s+(treat|cure|heal|stop\\s+the\\s+bleeding)\\b",
+      "\\bis\\s+(it|this|the\\s+wound)\\s+(infected|serious|normal)\\b",
+      "\\bsymptoms?\\s+of\\b",
+      "\\bdo\\s+i\\s+need\\s+(stitches|surgery|an?\\s+x-?ray)\\b",
+      "\\b(dosage|how\\s+many\\s+tablets)\\b",
+      "(চিকিৎসা|ওষুধ|মলম|ব্যান্ডেজ)\\s*.{0,15}(কীভাবে|কিভাবে|কী|কি|কোন)",
+      "(কীভাবে|কিভাবে)\\s*.{0,15}(চিকিৎসা|সারাব|সেরে|রক্ত\\s*বন্ধ)",
+      "(লক্ষণ|উপসর্গ)\\s*(কী|কি)\\b"
     ],
     "greeting": [
       "^(hi|hii+|hey|hello+|helo|yo|salam|salaam|assalamu\\s*alaikum|as-?salamu\\s*alaykum|good\\s*(morning|afternoon|evening)|start|/start)[\\s!.,?]*$",

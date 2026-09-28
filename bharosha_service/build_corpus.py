@@ -183,15 +183,63 @@ def apply_translations(chunks: list[dict]) -> list[dict]:
         applied += 1
         human += entry.get("review") == "human"
 
-    missing = len(chunks) - applied
-    print(f"  translations: {applied}/{len(chunks)} chunks have Bangla "
-          f"({human} human-reviewed, {applied - human} machine, {missing} missing)")
+    # Chunks that arrived bilingual (the knowledge pack) need no overlay entry;
+    # only English-only sources do. Counting those as "missing" made a healthy
+    # build look broken.
+    already = sum(1 for c in chunks if c.get("bn") and c["id"] not in data)
+    needs = [c for c in chunks if not c.get("bn")]
+    print(
+        f"  translations: {applied} from the overlay "
+        f"({human} human-reviewed, {applied - human} machine), "
+        f"{already} already bilingual at source, {len(needs)} still English-only"
+    )
+    return chunks
+
+
+def knowledge_pack_chunks() -> list[dict]:
+    """Q&A pairs from the Bhorosha Knowledge Base Pack.
+
+    These arrive with Bangla already written, so they need no machine
+    translation, and they carry the question and its variations in the embedded
+    text — which is what lets a real phrasing match rather than only a
+    definitional one. See tools/import_knowledge_pack.py for what is filtered
+    out and why.
+    """
+    path = CORPUS_DIR / "knowledge_pack.json"
+    if not path.exists():
+        print("  (no knowledge_pack.json — run tools/import_knowledge_pack.py)")
+        return []
+
+    data = json.loads(path.read_text(encoding="utf-8"))
+    split = splitter()
+    chunks: list[dict] = []
+    for entry in data["entries"]:
+        pieces = split.split_text(entry["en"])
+        for i, piece in enumerate(pieces):
+            chunks.append(
+                {
+                    "id": f"{entry['id']}-{i}",
+                    "en": piece,
+                    # The Bangla side is not chunked in step with the English —
+                    # it is the whole answer, attached to every piece. Retrieval
+                    # matches on English; generation reads Bangla, and a partial
+                    # Bangla answer would be worse than a complete one.
+                    "bn": entry.get("bn"),
+                    "source": entry["source"],
+                    "url": entry.get("url"),
+                    "origin": entry.get("origin", "knowledge_pack"),
+                }
+            )
+    print(f"  knowledge pack: {len(data['entries'])} Q&A -> {len(chunks)} chunks")
     return chunks
 
 
 def main() -> int:
     chunks = apply_translations(
-        knowledge_hub_chunks() + pdf_chunks() + external_chunks()
+        knowledge_hub_chunks()
+        + pdf_chunks()
+        + external_chunks()
+        + knowledge_pack_chunks()
     )
     if not chunks:
         print("No chunks produced.")
