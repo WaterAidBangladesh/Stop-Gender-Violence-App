@@ -152,6 +152,19 @@ It is a browser page rather than a terminal script for one concrete reason: a
 Windows terminal renders Bangla as boxes, and Bangla is this app's primary
 language.
 
+`tools/probe.py` fires the same messages and writes `probe_results.md` for
+reading. `tests/test_live_behaviour.py` fires them and ASSERTS — the path taken,
+that a generated reply contains no phone number the model wrote, and that
+nothing below the relevance floor gives advice. It is skipped unless
+`BHAROSHA_BASE` is set:
+
+    $env:BHAROSHA_BASE = "http://127.0.0.1:8000"
+    python -m pytest tests/test_live_behaviour.py -v
+
+`GET /health` reports how often the below-floor prohibition had to be enforced
+after the fact — `ungrounded_replies_discarded` over `ungrounded_replies_checked`.
+Measured across one full run of that suite: **10 of 102, or 9.8%**.
+
 The console calls the same `_answer()` the phone calls — it does not
 re-implement the pipeline — and the routes exist only when
 `BHAROSHA_DEV_CONSOLE=on`, which `dev.ps1` sets and nothing else does. A
