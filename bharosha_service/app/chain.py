@@ -389,7 +389,11 @@ APP_NOTES: dict[str, str] = {
         "She wants to report or complain. Below your reply the app will show "
         "{block}, which says clearly that this app cannot take a report and "
         "lists where a report actually reaches a person. Acknowledge her wish to "
-        "act. Remind her gently that whether and when to report is her decision."
+        "act. Remind her gently that whether and when to report is her decision. "
+        "Do NOT describe any reporting channel, form, website, service or "
+        "process yourself, even if the Relevant information mentions one — the "
+        "block below is the only place a route may be named, and material "
+        "written for WaterAid staff is not written for her."
     ),
     "identity": (
         "She is asking who or what you are. Nothing extra will be shown. Tell "

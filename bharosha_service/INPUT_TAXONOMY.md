@@ -1,230 +1,159 @@
-> **OUT OF DATE — read this first.**
->
-> This describes the architecture before the conversational rewrite, when most
-> categories were answered from fixed text and anything that missed the
-> retrieval gate got a hardcoded wall. That is no longer how it works:
->
-> * Only `safety.DEVICE_CATEGORIES` is answered from fixed text on the device —
->   the five emergencies, the six refusals, `personal_disclosure`,
->   `coercive_control`, `reporting_request`, `low_distress`, `identity` and
->   `privacy`. Everything else reaches the model.
-> * The relevance floor no longer decides whether there is a reply. It decides
->   what the model may ASSERT (`GROUNDED` / `UNGROUNDED` in `chain.py`), and the
->   passages are shown to it either way.
-> * Below the floor, the generated reply is scanned by `app/assertions.py` and
->   discarded if it gives advice anyway.
-> * The hardcoded text is now the FALLBACK for every category that has one, used
->   when the model or the network is unavailable.
->
-> The taxonomy of inputs below is still accurate. The "what it returns" and
-> "gaps" columns are not. Rewriting it is outstanding work.
-
 # What a person can type, and what Bharosha does with it
 
-Every previous failure in this chatbot was found the same way: a screenshot, a
-probe, an accident. "kemon acho?" returned an apology, a five-item topic list
-and two emergency helpline numbers, and nobody knew until somebody typed it.
-
-This document is the alternative. It enumerates the kinds of message a user can
-send, states what each one returns today, and names the gaps. Everything marked
-**handled** has test cases in both languages in
-`tools/export_shared.py`, which both `pytest` and `flutter test` run — so the
-table below is checked by the suite, not merely written down.
-
-Counts as of this revision: **154 shared cases**, 191 Python tests, 189 Dart
-tests, all green. Dart and Python agree on every one of the 154.
+Every earlier failure in this chatbot was found the same way: a screenshot, a
+probe, an accident. "kemon acho?" once returned an apology, a five-item topic
+list and two emergency helpline numbers, and nobody knew until somebody typed
+it. This document is the alternative: every kind of message a person can send,
+what happens to it today, and the gaps. Everything marked **handled** has test
+cases in both languages in `tools/export_shared.py`, which both `pytest` and
+`flutter test` run, so the table is checked by the suite rather than merely
+written down.
 
 ---
 
+## The rule
+
+**Safety decides, the AI speaks.** Pattern matching, on the phone and again on
+the server, decides what the situation is. The five emergencies are answered
+on the phone from fixed text. For everything else the model writes the reply,
+and for every recognised safety category code appends a **referral block** —
+the contacts and the one sentence of limit — from `referrals.py`. Numbers never
+come from the model.
+
+The block is **full** the first time a category's contacts appear in a
+conversation and **one line** every time after. The call buttons for 999 and
+109 are on screen throughout.
+
 ## How to read the table
 
-**Where** says which side answers:
-
-| | |
+| Column | Means |
 |---|---|
-| **device** | Answered on the phone from bundled text. No network, no model, no wait, works with the radio off and with the server asleep. |
-| **server** | Goes to the service: rate limit → retrieval → gate → model. The only column where an answer is generated rather than chosen. |
-
-**Kind** is the value `safety.classify()` returns. It decides both the text and
-how the bubble looks: emergency styling (red edge), refusal styling (amber
-edge), or plain conversation.
+| **Decided by** | Who classifies the message. "phone" means the bundled rules, in microseconds, offline. "both" means the phone classifies, sends the category along, and the server classifies again and trusts only itself. |
+| **Written by** | Who writes the words she reads. |
+| **Appended** | What code adds under the model's words. |
+| **If the server can't be reached** | What the phone shows after 8 seconds for a recognised category, or 30 for an ordinary question. |
 
 ---
 
 ## The table
 
-### Danger — answered on the device, before anything else runs
+### Danger — answered on the phone, from fixed text
 
-| # | Input | Example (EN / BN) | Kind | Returns | Status |
+| # | Input | Example (EN / BN) | Category | Written by | If unreachable |
 |---|---|---|---|---|---|
-| 1 | Violence happening now | "he is beating me right now" / "আমাকে মারছে" | `emergency` / `active_violence` | 999 first, then 109, then the safeguarding contacts | **handled** |
-| 2 | In danger, hiding, afraid now | "I am scared right now" / "আমি এখনই বিপদে আছি" | `emergency` / `immediate_danger` | same script | **handled** |
-| 3 | Threat to life | "he said he will kill me" / "সে আমাকে মেরে ফেলবে বলেছে" | `emergency` / `threat_to_life` | same script | **handled** |
-| 4 | Suicide risk | "I want to die" / "আমি আর বাঁচতে চাই না" | `emergency` / `suicide_risk` | 999 first, then Kaan Pete Roi with its 3pm–3am hours | **handled** |
-| 5 | A child at risk | "they want to marry off my daughter" / "একটি শিশুকে ধর্ষণ করা হয়েছে" | `emergency` / `child_disclosure` | 1098 Child Helpline plus 999 | **handled** |
+| 1 | Violence happening now | "he is beating me right now" / "আমাকে মারছে" | `active_violence` | fixed text: 999, 109, safeguarding contacts | same |
+| 2 | In danger, hiding, afraid now | "I am scared right now" / "আমি এখনই বিপদে আছি" | `immediate_danger` | same script | same |
+| 3 | Threat to life | "he said he will kill me" · "will my husband kill me" / "সে আমাকে মেরে ফেলবে বলেছে" | `threat_to_life` | same script | same |
+| 4 | Suicide risk | "I want to die" / "আমি আর বাঁচতে চাই না" | `suicide_risk` | fixed text: 999 first, then Kaan Pete Roi with its 3pm–3am hours | same |
+| 5 | A child at risk | "they want to marry off my daughter" / "একটি শিশুকে ধর্ষণ করা হয়েছে" | `child_disclosure` | fixed text: 1098 plus 999 | same |
 
-These are matched deliberately broadly. A false positive shows someone a number
-she did not need. A false negative is a person in danger reading a paragraph
-about safeguarding principles.
+These never reach the server. A model call for "he is going to kill me" would
+mean seconds instead of milliseconds, a network she may not have, and words
+that drift when the model is updated. After showing the reply the phone sends
+`POST /chat/note` with the **category only** — never her words — so the next
+message does not arrive at a model that has no idea she just said she was in
+danger.
 
-### Her own situation — answered on the device
+### Her own situation — the model writes, code appends the block
 
-| # | Input | Example (EN / BN) | Kind | Returns | Status |
+| # | Input | Example (EN / BN) | Category | Written by | Appended | If unreachable |
+|---|---|---|---|---|---|---|
+| 6 | Describing harm done to her | "my boss touches me at work" / "আমার স্বামী আমাকে গালি দেয়" | `personal_disclosure` | the model: acknowledges, says it is not her fault and she needs no proof; no advice | 109, 999, 1098 if under 18, WaterAid safeguarding; "I can't advise you on what to do next" | full fixed text |
+| 7 | Control of money, phone, movement, work, documents | "he controls my money" · "he does not let me go out" / "সে আমার ফোন চেক করে" | `coercive_control` | the model: acknowledges the specific things she named; may say this is recognised as violence | 109, 999; "I can't advise you on the money, the documents or the restrictions" | full fixed text |
+| 8 | Feeling bad, no cause given | "I feel so alone" · "amar mon ta kharap" / "মন খারাপ" | `low_distress` | the model: brief, gentle, no diagnosis, does not ask what happened | Kaan Pete Roi with its hours | full fixed text |
+| 9 | Asking about someone else | "my friend is being abused by her husband" / "আমার বান্ধবী নির্যাতনের শিকার" | `third_party_concern` | the model: it matters that she noticed; supporting-someone material in prose if retrieved | 109, 999, 1098 if under 18 | full fixed text |
+
+### The forbidden subjects — the model acknowledges, the block refuses
+
+| # | Input | Example (EN / BN) | Category | Written by | Appended | If unreachable |
+|---|---|---|---|---|---|---|
+| 10 | Whether or when to leave | "should I leave my husband?" / "আমি কি স্বামীকে ছেড়ে চলে যাব" | `leave_decision` | the model: how heavy this is; one sentence that this is the one thing it can't advise on | why not, 109 with safety planning, 999 | full fixed text |
+| 11 | How to get a divorce | "how do I get a divorce?" / "তালাক কীভাবে নেব?" | `divorce_process` | the model: a sensible, serious step to ask about | depends on which family law applies; 109 for free legal aid; 999 | full fixed text |
+| 12 | Inheritance and property | "what are my inheritance rights?" | `economic_rights` | the model: acknowledges; states no entitlement | recognised as economic violence; entitlement needs a lawyer; 109; focal points | full fixed text |
+| 13 | Legal advice, case outcomes | "will I win the case?" / "মামলা করলে কি জিতব" | `legal_advice` | the model: acknowledges; one sentence that a guess could cost her | "I can't give legal advice"; 109; focal points | full fixed text |
+| 14 | Medical treatment | "how do I treat a burn on my hand?" / "লক্ষণ কী" | `medical_advice` | the model: acknowledges she is hurt; no treatment information | "I can't tell you how to treat an injury"; 999; hospital; 109 | full fixed text |
+| 15 | Confronting, recording, evidence | "how do I collect evidence against him?" | `confront_or_evidence` | the model: acknowledges why she might want to; no method | "I won't suggest ways to…"; 109; 999 | full fixed text |
+| 16 | How or where to report | "I want to report this" · "can I report anonymously" / "আমি অভিযোগ জানাতে চাই" | `reporting_request` | the model: acknowledges her wish to act; whether and when is her decision | "I can't take a report"; 109; 999; safeguarding email; 1098 | full fixed text |
+
+Row 14 exists because "how do I treat a burn on my hand?" once retrieved
+**acid-attack first aid** at a distance inside the range of genuine questions.
+Row 16 exists because the model once answered "I want to report this" with
+"you can report anonymously", pointing at an in-app form that needs a login
+and does not work. Both stay deterministic in their substance: the model writes
+the opening, never the refusal.
+
+### Conversation — the model writes, nothing appended
+
+| # | Input | Example | Category | Written by | If unreachable |
 |---|---|---|---|---|---|
-| 6 | Describing harm being done to her | "my boss touches me at work" / "আমার স্বামী আমাকে গালি দেয়" | `disclosure` / `personal_disclosure` | names it as gender-based violence, says she needs no proof, hands over 109 | **handled** |
-| 7 | Asking about someone else | "my friend is being abused by her husband" / "আমার বান্ধবী নির্যাতনের শিকার" | `third_party` / `third_party_concern` | how to support without taking over, what not to do, 109 / 999 / 1098 | **handled (new)** |
-| 7b | Feeling bad, no cause given | "amar mon ta kharap" · "I feel so alone" / "মন খারাপ" · "একা লাগে" | `low_distress` / `low_distress` | sits with it, does not diagnose or ask what happened, names Kaan Pete Roi with its hours, and OFFERS the corpus rather than prescribing it | **handled (new)** |
+| 17 | Greeting, and "how are you" | "hi" · "kemon acho?" · "Assalamu alaikum" / "নমস্কার" | `greeting` | the model, mirroring her greeting | a fixed greeting that also mirrors: salam → ওয়ালাইকুম আসসালাম, নমস্কার → নমস্কার, else হ্যালো/Hello |
+| 18 | Thanks | "thank you" / "ধন্যবাদ" | `thanks` | the model, one sentence | fixed text |
+| 19 | Acknowledgement, farewell | "ok" · "hmm" · "bye" / "ঠিক আছে" | `acknowledgement` | the model, one sentence | fixed text |
+| 20 | What are you? | "are you a real person" / "তুমি কে" | `identity` | the model, from a fixed note of facts: automated, not a counsellor/lawyer/doctor, made by WaterAid Bangladesh, no account needed | fixed text |
+| 21 | Will he see this? | "will my husband know I used this" / "এটা কি গোপন থাকবে" | `privacy` | the model, from a fixed note of facts: nothing saved on the phone; the question is sent to be looked up and then forgotten; after an emergency only a topic label is sent; no notifications; Leave now; an unlocked phone can be read | fixed text |
+| 22 | Frustration at the app | "you are useless" / "ফালতু" | `bot_abuse` | the model, not defensive; asks what she was looking for | fixed text |
+| 23 | Too little to act on | "help" · "ki korbo" / "সাহায্য চাই" | `vague` | the model: connects to the conversation if there is one, else one gentle question and a mention of the call buttons | fixed clarifier with one number |
 
-Retrieval is the wrong tool for row 6, and that was measured rather than
-assumed: her phrasings sit *further* from the corpus than a cooking question
-does, because the corpus is written as explanation and she is describing her
-life. See the note above `DISCLOSURE_CATEGORIES` in `app/safety.py`.
+### Questions — the model answers from the corpus
 
-Row 7 is checked *before* row 6, so "my sister's husband hits her" is not read
-as her own account. It is also checked *after* the emergencies, so a friend in
-immediate danger still gets the emergency script.
-
-### The forbidden subjects — answered on the device
-
-| # | Input | Example (EN / BN) | Kind | Returns | Status |
+| # | Input | Example | Route | Written by | Appended |
 |---|---|---|---|---|---|
-| 8 | Whether or when to leave | "should I leave my husband?" / "আমি কি স্বামীকে ছেড়ে চলে যাব" | `refuse` / `leave_decision` | explains why it will not answer, refers to 109 | **handled** |
-| 9 | How to get a divorce | "how do I get a divorce?" / "তালাক কীভাবে নেব?" | `refuse` / `divorce_process` | different tone from row 8 — she has already decided | **handled** |
-| 10 | Confronting, recording, gathering evidence | "how do I collect evidence against him?" | `refuse` / `confront_or_evidence` | refuses; those steps raise the danger | **handled** |
-| 11 | Inheritance and property | "what are a woman's inheritance rights?" | `refuse` / `economic_rights` | names it as economic violence first, then refers | **handled** |
-| 12 | Legal advice, case outcomes | "will I win the case?" / "মামলা করলে কি জিতব" | `refuse` / `legal_advice` | refuses to predict, refers | **handled** |
-| 13 | Medical treatment | "how do I treat a burn?" / "লক্ষণ কী" | `refuse` / `medical_advice` | refuses, refers to 999 and health services | **handled** |
+| 24 | On topic, in the corpus | "what is gender based violence?" | grounded (nearest passage ≤ 0.62) | the model, from the passages, crediting the source | nothing — the call buttons are on screen |
+| 25 | On topic, corpus misses it | "what is stalking" (0.637) | ungrounded | the model, listening only: may reflect, ask one question, point to the buttons; asserts no fact | nothing |
+| 26 | Off topic | "how do I cook rice" (0.810) | ungrounded | the model: one kind sentence that it only covers safeguarding and GBV; no apology, no helpline | nothing |
+| 27 | Server unreachable | anything, no network | — | the phone: the category's fixed text, or "I could not reach the service" for an ordinary question | — |
+| 28 | Corpus still embedding | an ordinary question in the first ~30 s after a restart | — | fixed text: "I am still starting up"; a recognised category gets its own text instead | — |
 
-Row 13 exists because "how do I treat a burn on my hand?" retrieved **acid
-attack first aid** at distance 0.384 — well inside the range of genuine
-questions, so no threshold could have excluded it.
+---
 
-### Conversation — answered on the device
+## Languages
 
-| # | Input | Example (EN / BN) | Kind | Returns | Status |
-|---|---|---|---|---|---|
-| 14 | Greeting, and "how are you" | "hi" · "kemon acho?" / "নমস্কার" · "কেমন আছো?" | `social` / `greeting` | two lines: answers the greeting, says what it is for. No topic list, no numbers | **handled (new)** |
-| 15 | Thanks | "thank you" / "ধন্যবাদ" | `social` / `thanks` | two lines | **handled (new)** |
-| 16 | Acknowledgement, farewell | "ok" · "hmm" · "bye" / "ঠিক আছে" · "বুঝেছি" | `social` / `acknowledgement` | "Understood. Take your time." | **handled (new)** |
-| 17 | What are you? | "are you a real person" / "তুমি কে" | `social` / `identity` | says it is automated, not a counsellor/lawyer/doctor, and where a human is | **handled (new)** |
-| 18 | "Will he see this?" | "will my husband know I used this" / "এটা কি গোপন থাকবে" | `social` / `privacy` | six factual claims about this app, each checked against the code | **handled (new)** |
-| 19 | Frustration at the app | "you are useless" / "ফালতু" | `social` / `bot_abuse` | one flat line, no lecture, door left open | **handled (new)** |
-| 20 | Too little to act on, **as the first message** | "help" · "what should I do" / "কি করবো" · "সাহায্য চাই" | `vague` / `vague` | one question back, plus one number (999) — not the referral block | **handled (new)** |
-| 20b | The same, **mid-conversation** | "ki korbo?" after two turns about her office | `vague` → the conversational path | goes to the model, which can see the transcript. A clarifying question is worthless if the next turn has forgotten what was being clarified | **handled (new)** |
+| She writes | Detected as | Reply in | Search key |
+|---|---|---|---|
+| Bangla script | `bn` | Bangla | translated to English |
+| Bangla in Latin letters — two or more hits from a shared word list | `bn_roman` | **Bangla script** | translated to English |
+| anything else | `en` | English | as typed |
 
-"How are you" is a greeting in Bangla, not a question about the software's
-health, which is why it lives in row 14 and not row 17.
+Romanised Bangla used to get English fixed text. She typed Latin letters
+because that is what her keyboard offered; she reads Bangla.
 
-Row 20's boundary is the one that matters: **"help" is vague, "help me now" is
-an emergency** — in both languages. The Bangla half of that pair
-("আমাকে সাহায্য করুন এখনই") was missing until these cases were written.
+## The output check
 
-Row 18 was added because every one of those questions was reaching the model,
-where the corpus has nothing about this app's own behaviour. In a GBV app,
-"will he see this?" decides whether she types the next sentence.
-
-### Questions — answered by the server
-
-| # | Input | Example | Kind | Returns | Status |
-|---|---|---|---|---|---|
-| 21 | On-topic, in the corpus | "what is safeguarding?" | `proceed` → `answer` | model answer from retrieved passages, with the helpline footer appended | **handled** |
-| 22 | Anything else that misses the gate | "ekta proshno kori tomake?" (0.682) · "how do I cook rice" (0.810) · "asdfgh" (0.838) | `proceed` → `conversation` | **the conversational path.** The model sees the message raw and the rejected passages labelled weak. It may hold a conversation and ask one clarifying question; it may not state a fact it was not given | **handled (new)** |
-| 22b | The same, when the model is unreachable | any of the above, offline | `no_context` or `off_topic` | the tiered hardcoded text, which is exactly what row 22 used to be | **handled** |
-| 24 | Server unreachable | anything, with no network | `unreachable` | says the question was never asked — a claim about the connection, not about her question | **handled** |
-| 25 | Too many messages | anything, past the token bucket | `rate_limited` | asks her to wait, still gives numbers | **handled** |
-
-Rows 22 and 23 used to be the same reply. Tiering them is what stops the app
-handing a crisis leaflet to someone who asked the time. **The gate did not
-change**: retrieval still admits at 0.62 and nothing else. The nearest distance
-is a number the search already computed, and it now picks which refusal she
-reads. Measured with `tools/measure_off_topic.py`; see the note on
-`OFF_TOPIC_DISTANCE` in `app/chain.py`.
+Every model-written reply is scanned. A run of three or more digits or an "@"
+fails, always — the model may never write a contact. Advisory phrasing and
+step lists fail when a safety category matched or the reply is below the
+floor, not on an ordinary grounded answer, because WaterAid's material has
+legitimate numbered steps in it. On a failure the model is asked once to
+rewrite; if that fails too, the fixed text is sent. `/health` reports retries
+and fallbacks separately.
 
 ---
 
 ## Gaps
 
-Everything below reaches the model today. None of it is a retrieval problem and
-none of it is fixed by moving a threshold.
-
 | Input | Example | What happens now | What it should probably do |
 |---|---|---|---|
-| **Coercive control** | "he does not let me go out" (0.594) · "he controls my money" (0.608) | `proceed` → the model answers from the corpus, which does hold economic and psychological violence material. But it is not recognised as a disclosure, so she gets an explanation instead of 109 — and at 0.608 against a 0.62 gate, she is one corpus edit away from getting the no-context reply instead. | Add `control`, `allow`, `let me`, `permission`, `took my`, `locked` to the `personal_disclosure` co-occurrence rule. One-line change, needs sign-off because it widens a category that is already approved. |
-| **Asking for a human** | "I want to talk to someone" (0.430) · "can you connect me to a counsellor" | `proceed` → the model answers from the corpus. It clears the gate comfortably, so the answer is usually about support services in general — a paragraph, where she asked for a person. | A direct referral category. The answer is known and fixed: 109, and Kaan Pete Roi with its hours. |
-| **Wanting to report** | "I want to report this" (0.530) · "আমি অভিযোগ জানাতে চাই" | `proceed` → the model answers from the corpus about reporting routes in general. | Needs a product decision first. The app has a Report screen (`/reportForm`), but Bharosha must never describe *itself* as a reporting channel. Pointing at the app's own form is only safe once someone confirms that form is monitored. |
-| **Follow-ups with no subject** | "and then what" (0.873) · "tell me more" (0.828) | `proceed` → retrieval on the bare phrase, which matches nothing → `off_topic`, i.e. "that's outside what I know about" in answer to a follow-up about safeguarding. There is no coreference: the server keeps conversation history for the model, but the *retrieval key* is the new message alone. | Either fold the previous question into the retrieval key, or treat a bare follow-up as `vague`. The first is better and is a real change to how retrieval is keyed — which is why it is listed here rather than done. |
-| ~~**Gibberish, emoji, punctuation**~~ | "asdfgh" · "😢" · "..." | **Fixed.** Conversational path. "asdfgh" gets "Hello! How can I help you today?" rather than a crisis leaflet. | "😢" on its own is still not gibberish; whether it should be `low_distress` is a judgement call nobody has made. |
-| **Questions about the corpus** | "what is your source" · "who made you" | `proceed` → retrieval. | Belongs in `identity`. Low risk; not added because it was not in scope. |
-| ~~**Emotional states**~~ | "I am depressed" · "I feel anxious all the time" | **Changed.** They were reaching the corpus, which answered a feeling with a technique she had not asked for. They are now `low_distress` (row 7b), which acknowledges first and offers the material second. | The corpus is still one sentence away; she is the one who reaches for it. |
+| **A question the corpus holds only in the excluded legal rows** | "what does the law say about dowry?" | Refused as `legal_advice`, and the 198 legal rows are not indexed. Unreachable twice over. | A product decision: whether recognition questions ("is this a form of violence?") may be answered while entitlement questions ("what am I owed?") stay refused. |
+| **The output check is a pattern list** | a new shape of advice | Passes if it matches none of the patterns. | The retry and fallback counts at `/health` are the measure; the patterns grow from what the live suite finds. |
+| **Streaming** | any long reply | The whole reply arrives at once after the model finishes. | Phase 2 of the brief: stream the model text, then append the block; the output check must run on the complete text before the bubble is final. Not done. |
+| **"😢" on its own** | an emoji | Ungrounded conversation. | Arguably `low_distress`; nobody has decided. |
+| **A follow-up whose subject scrolled out** | the 13th turn | The model has the last 12. | Fine for now; raise `BHAROSHA_MAX_TURNS` if reviewers find otherwise. |
 
----
+## What the tests pin
 
-## The conversational path
-
-Rows 20b and 22 are the only two that reach a model without a corpus answer
-behind them. It is built from Probahini's mechanics, minus the one that lets it
-invent:
-
-**Copied.** The two-mode clause, granting conversation as well as answering —
-the answering prompt has only the second mode, which is why every reply used to
-read as a lookup. The whole capped transcript, every turn. The raw message,
-unmodified and untranslated, so "kemon acho" reaches a model that understands
-romanised Bangla instead of an English translation of it. `(NO PREAMBLE)`. No
-length constraint, so a short message gets a short reply. And the rejected
-passages, labelled as possibly irrelevant — **the gate decides whether the model
-may ANSWER FROM them, not whether it may SEE them.**
-
-**Not copied.** Probahini's prompt says: *"If no relevant information exists,
-refer to the Flow of Chat for context to create an informed and relevant
-response."* That sentence is both why it feels alive and why it can invent. The
-two are separable. Where Probahini has an escape hatch, `CONVERSE_PROMPT` has a
-wall: it may acknowledge, answer a social or procedural turn, and ask one
-clarifying question; it may not state any safeguarding, health, legal or
-procedural fact it was not given, advise, or speculate about her situation. If a
-reply would need information it does not have, it says so and points at the
-helpline buttons.
-
-**No footer on this path.** Appending *"To talk to a person: 109 · 999"* to
-*"Yes, of course — ask"* is the canned wall arriving by another route, and the
-app keeps both numbers on screen as buttons for the whole conversation. The
-prompt points at those buttons instead. This is a judgement call and the one
-place a reviewer should push back if they disagree.
-
-**Nothing about the ordering changed.** The safety layer runs first, on the
-device. Emergencies, disclosures, third-party concerns, refusals and low
-distress cannot reach this path — the shared case corpus asserts it for all 170
-cases, on both sides.
-
-## The rules this table is built on
-
-1. **The model is never the safety layer.** Rows 1–20 are pattern matching in
-   Python and Dart, running before anything is loaded or called. An LLM asked to
-   spot an emergency will sometimes miss one.
-2. **Every social pattern is anchored end to end** (`^…$`). That is why
-   "hi" is a greeting and "hi, he is beating me" is an emergency. The priority
-   order is the second line of defence, not the first.
-3. **Order is evaluation order, not severity.** Emergencies, then refusals, then
-   third party, then her own disclosure, then social, then vague. First match
-   wins, so the outcome never depends on dict ordering.
-4. **Python authors, Dart consumes.** The patterns, the responses and these test
-   cases are generated by `tools/export_shared.py`. A Python test fails while
-   the generated files are stale, and the Dart suite runs the identical cases.
-5. **`\b` next to Bangla is always a bug** and now raises at import. Most Bangla
-   words end in a combining vowel sign, which is not a word character, so there
-   is no boundary after it and the pattern silently never matches. Writing this
-   check turned up a `medical_advice` rule ("লক্ষণ কী") that had never once
-   fired.
-
-## Two emergency misses this document found
-
-Neither was found by a probe or a screenshot. Both were found by writing the
-rows out and testing every cell.
-
-- **"will my husband kill me"** reached the model. Every threat pattern assumed
-  `will` and `kill` were adjacent, so a subject between them walked past all of
-  them. Now matched on bare `kill me`.
-- **"my friend's husband is beating her right now"** was filed as a support
-  question rather than an emergency. The active-violence patterns only
-  recognised violence in progress when the subject was a pronoun and the object
-  was "me". The Bangla side never had this gap, because "মারছে" carries the
-  tense without needing either.
+- **Both sides classify all 195 shared cases identically**, in three languages
+  (`safety_cases.json`).
+- **Exactly five categories are on the device** (`test_startup.py`, the Dart
+  suite).
+- **Every model-answered category has a referral block or is listed as needing
+  none**, and the service refuses to start otherwise (`test_blocks.py`).
+- **Every category has a fixed fallback in both languages**, and 16263 appears
+  in none of the crisis text or blocks.
+- **The prompt still carries all seven limits**, and the reference project's
+  escape hatch is not in it (`test_prompt.py`).
+- **The output check passes gentle sentences and catches instruction, numbers
+  and emails** (`test_output_check.py`).
+- **Against a live server** (`test_live_behaviour.py`): the path, the numbers,
+  the prohibition, and the feel — varied openings, no "Thank you for telling
+  me", Bangla script for romanised Bangla, a salam answered with a salam, and
+  memory across turns including an emergency the phone answered itself.

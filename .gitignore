@@ -92,5 +92,9 @@ Thumbs.db
 Bhorosha_Knowledge_Base_Pack.zip
 knowledge_pack/
 
-# Run artefacts from tools/probe.py — regenerate rather than read an old one.
-bharosha_service/probe_results.md
+# probe_results.md IS committed: it is the measured record the upgrade brief asks for.
+
+# Scratch for the two Edge passes of tools/build_guide.py
+bharosha_service/.guide-build/
+# The answer key for the blind review is handed over separately, never committed.
+bharosha_service/feel_review_key.md

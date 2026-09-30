@@ -394,6 +394,10 @@ function turn(data, t) {
   if (t.matched && t.matched.length > 1) {
     meta.appendChild(el('span', 'tag', 'also: ' + t.matched.slice(1).join(', ')));
   }
+  if (t.block) meta.appendChild(el('span', 'tag', t.block + ' block appended'));
+  if (t.retried) meta.appendChild(el('span', 'tag warn', 'retried: ' + t.retried));
+  if (t.fell_back) meta.appendChild(el('span', 'tag warn', 'fixed text: ' + t.fell_back));
+  if (t.client_disagrees) meta.appendChild(el('span', 'tag warn', 'phone said ' + t.client_category));
   if (t.retrieval_error) meta.appendChild(el('span', 'tag warn', 'retrieval failed'));
   if (t.model_error) meta.appendChild(el('span', 'tag warn', 'model failed'));
   block.appendChild(meta);

@@ -110,7 +110,7 @@ def ask_safely(session: str, query: str) -> dict:
 
 
 def path_of(trace: dict) -> str:
-    """The one-line answer to "which path did this take, and with what licence?"."""
+    """The one-line answer to "which path did this take, and what was appended?"."""
     if trace.get("answered_by") == "device" and not trace.get("fell_back"):
         return f"DEVICE (bundled) / {trace.get('category')}"
     if trace.get("fell_back"):
@@ -118,8 +118,15 @@ def path_of(trace: dict) -> str:
     if trace.get("kind") == "starting":
         return "bundled / still embedding the corpus"
     if "grounded" in trace:
-        licence = "may assert" if trace["grounded"] else "MAY NOT ASSERT"
-        return f"MODEL ({licence})"
+        licence = "may assert" if trace["grounded"] else "listening only"
+        parts = [f"MODEL ({licence})"]
+        if trace.get("category"):
+            parts.append(f"category {trace['category']}")
+        if trace.get("block"):
+            parts.append(f"{trace['block']} block appended")
+        if trace.get("retried"):
+            parts.append(f"retried once: {trace['retried']}")
+        return " · ".join(parts)
     return f"bundled / {trace.get('kind')}"
 
 

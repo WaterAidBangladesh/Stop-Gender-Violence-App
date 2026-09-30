@@ -10,39 +10,75 @@ service can be deployed and rolled back on its own.
 
 ## The design rule
 
-**The model is never the safety layer.** `app/safety.py` runs plain pattern
-matching in both languages before anything else. On a match it returns
-hardcoded text from `app/referrals.py` and the turn ends — no retrieval, no LLM
-call. Only messages that pass it reach the corpus, and only passages that clear
-a relevance floor reach the model.
+**Safety decides, the AI speaks.** `app/safety.py` runs plain pattern
+matching in Bangla, romanised Bangla and English before anything else — on
+the phone first, then again on the server. It decides what the situation is.
+The five emergencies are answered on the phone from fixed text in
+milliseconds, with no network and no model. For every other message the model
+writes the reply, and for every recognised safety category code appends a
+referral block from `app/referrals.py`: the contacts and the one sentence of
+limit. Numbers never come from the model.
 
 ```
 message
    ↓
-safety.classify()  ── emergency ──→ hardcoded referral   (no model)
-   │                └─ refuse ────→ hardcoded refusal    (no model)
-   ↓ proceed
-retrieval.retrieve()  ── nothing above the floor ──→ "I don't know" + referrals
-   ↓ passages
-model, answering only from those passages, citing their source
+safety.classify()  ── one of the 5 emergencies ──→ fixed text, on the phone
+   │                                                 (then POST /chat/note, category only)
+   ↓ everything else, category attached
+rate limit
+   ↓
+retrieval  ── nearest 4 of 418 passages; a Bangla or romanised query is
+              translated to an English search key first
+   ↓
+the gate (0.62): may the model ASSERT from these passages, or only listen?
+   ↓
+one prompt: who you are, how you talk, what you know, what the app will show
+            ({app_note}: the category, and the block that will follow),
+            your limits, the raw message, the last 12 turns
+   ↓
+output check: no digits, no "@"; no advice or step lists when a category
+              matched or the reply is below the floor → one retry → fixed text
+   ↓
+model text  +  referral block (full the first time, one line after)
 ```
+
+Any failure on the way — no key, no network, corpus still embedding, a bad
+retry — lands on the category's complete fixed text. The floor did not move;
+a better ceiling was put above it.
 
 ## Layout
 
 ```
 app/
-  safety.py           deterministic bilingual detection — no model, no I/O
-  referrals.py        contacts + every hardcoded response, hand-written en/bn
-  embeddings.py       the one embedding function, shared by index and query
-  knowledge_source.py parses the app's Dart topic texts (no second copy)
-  retrieval.py        Chroma query + relevance floor
-index/
-  build_index.py      chunk → embed → persist
-  check_retrieval.py  prints real bilingual results for a human to judge
+  safety.py           the deterministic layer: 23 categories, 249 patterns,
+                      6 co-occurrence rules, language detection. The author of
+                      the rules the app bundles.
+  referrals.py        every number, every fixed reply, every referral block,
+                      hand-written en/bn. The single source of numbers.
+  chain.py            retrieval, translation, the prompt and its slots, the
+                      model call, the truncation guard
+  assertions.py       the output check and its counters
+  api.py              the pipeline in the order that is the safety design
+  sessions.py         capped, expiring, in-memory history; block-mode score;
+                      emergency notes
+  ratelimit.py        token buckets keyed from the right of X-Forwarded-For
+  embedding.py        the ONNX embedder
+  knowledge_source.py reads the Knowledge Hub out of the Flutter source
+tools/
+  export_shared.py    Python → JSON for the app; refuses if a case disagrees
+  console.html        the developer console (BHAROSHA_DEV_CONSOLE=on)
+  probe.py            fires every case, writes probe_results.md
+  feel_review.py      old vs new, side by side, for blind review
+  verification_list.py, import_knowledge_pack.py, measure_off_topic.py,
+  translate_corpus.py, build_guide.py
 tests/
-  test_safety.py      the layer that can be tested, in both languages
-corpus/
-  wateraid-global-safeguarding-framework.pdf
+  test_safety, test_blocks, test_prompt, test_memory, test_language,
+  test_output_check, test_referrals, test_startup, test_model_failures,
+  test_shared_export — offline, seconds
+  test_live_behaviour — against a running server, opt-in
+corpus/               418 bilingual passages; see "The corpus is awaiting
+                      WaterAid review" below
+shared/               the generated JSON, mirrored into the Flutter assets
 ```
 
 ## Setup
@@ -78,61 +114,39 @@ confident as one answering from the right ones.
 
 ## Status
 
-**The index is not fit to serve yet, and no model may be connected to it.**
-Measured 2026-09-26 with `index/check_retrieval.py`:
+Working end to end on a developer machine. Not deployed. The app must be
+built with `--dart-define=BHAROSHA_URL=...` to use a server at all.
 
-| Model | Bangla topic match | relevant top-1 | off-topic top-1 | margin |
-|---|---|---|---|---|
-| paraphrase-multilingual-MiniLM-L12-v2 | wrong topic, most questions | en 0.11–0.47 · bn 0.44–0.73 | en 0.83–0.96 · bn 0.71–0.85 | overlaps |
-| sentence-transformers/LaBSE | right topic | 0.47–0.75 | 0.60–0.82 | **inverted** |
-| **intfloat/multilingual-e5-base** | **right topic, matches English twin** | **0.081–0.222** | **0.235–0.296** | **+0.013** |
+What a person gets, by kind of message:
 
-Measured over 14 genuine questions and 14 off-topic controls, half in each
-language. E5 fixed cross-lingual retrieval outright: every Bangla question now
-retrieves the same topic as its English twin, and the ranking is perfect —
-every genuine question scores nearer than every off-topic one.
+| She types | Decided by | Written by | Appended by code |
+|---|---|---|---|
+| one of the 5 emergencies | the phone | fixed text | — |
+| a disclosure, coercive control, a refusal topic, reporting, low distress, a friend in trouble | the phone and the server | the model | the category's referral block — full, then one line |
+| identity, privacy | the phone and the server | the model, from a fixed note of facts | nothing |
+| a greeting, thanks, "hmm", frustration, "ki korbo" | the phone and the server | the model | nothing |
+| an ordinary question | — | the model, from the corpus | nothing |
+| anything, with the server unreachable | the phone | the category's fixed text | — |
 
-What is still unresolved is the **gate**, not the retrieval. E5 compresses
-cosine distances into a narrow band, so the boundary is correctly ordered but
-only 0.013 wide. `RELEVANCE_FLOOR = 0.23` classifies all 28 sample queries
-correctly and is nonetheless a coincidence, not a safety mechanism: an unseen
-question sits anywhere in that gap. Dropping the framework PDF
-(`BHAROSHA_HUB_ONLY=1`) widens it only to 0.019, so the corpus is not the cause.
+Measured behaviour — paths, numbers, the prohibition, and the feel — is
+asserted by `tests/test_live_behaviour.py` and recorded in `probe_results.md`.
 
-Before a model is connected, the no-context decision needs a **cross-encoder
-reranker** (`BAAI/bge-reranker-v2-m3`, multilingual) scoring the retrieved
-passages. A reranker produces a calibrated relevance score with a wide margin,
-which is what requirement 7 — never improvise when nothing relevant was found —
-actually needs. A **human-translated Bangla corpus** remains worth having
-regardless: it removes on-the-fly translation from the answers.
+Still open, and recorded where it bites:
 
-Built:
-
-- Safety layer, referral and refusal text, tests (79 passing).
-- Embedding, chunking, indexing and retrieval with a relevance floor.
-
-Not built yet:
-
-- `app/chain.py` — the Groq call and system prompt.
-- `app/api.py` — FastAPI, ephemeral sessions, rate limiting, counter-only logging.
-- `Dockerfile`, deployment instructions.
-- The Flutter chat screen and the shared Dart referral list.
-
-Open items needing WaterAid's answer, recorded in code comments where they bite:
-
-- **16263** is labelled a GBV hotline in the app but appears to be Shastho
-  Batayan, the national health line. It stays in the contacts list and is
-  excluded from every emergency script until confirmed (`referrals.NOTE_16263`).
-- **Child disclosure** response text is written to be safe in every direction
-  but needs policy and legal sign-off (`referrals.CHILD_DISCLOSURE_EN`).
-- **A mental-health helpline** (e.g. Kaan Pete Roi) is a gap in the suicide-risk
-  response. No number is added without approval.
-- **Three hidden topic texts** exist in the Dart file, including Reporting
-  Mechanisms, commented out of the app's own hub
-  (`knowledge_source.INCLUDE_HIDDEN_TOPICS`).
-- **Bangla corpus.** The corpus is English, so Bangla answers are the model
-  rendering English passages. Referral text is hand-written in both languages
-  and never model-translated; explanatory content is the residual risk.
+- **No referral number has been dialled.** `REFERRAL_VERIFICATION.md`;
+  `referrals.VERIFICATION_STATUS`.
+- **Ten fixed replies and every referral block await WaterAid sign-off**, and
+  no Bangla text — including the prompt's examples — has been read by a native
+  speaker. `feel_review.md` is the blind review.
+- **The prompt changed how disclosures are answered.** WaterAid safeguarding
+  must sign off the prompt, the category notes and the split blocks before
+  launch.
+- **The output check is a pattern list.** It catches the shapes of advice it
+  knows; a new shape could pass it. The retry and fallback counts at `/health`
+  are the measure.
+- **Conversation history is in one process's memory.** A restart or a second
+  instance loses a conversation mid-clarification.
+- **iOS has no screenshot protection.** Whether iOS ships is undecided.
 
 ## Testing it without the app
 
@@ -161,9 +175,13 @@ nothing below the relevance floor gives advice. It is skipped unless
     $env:BHAROSHA_BASE = "http://127.0.0.1:8000"
     python -m pytest tests/test_live_behaviour.py -v
 
-`GET /health` reports how often the below-floor prohibition had to be enforced
-after the fact — `ungrounded_replies_discarded` over `ungrounded_replies_checked`.
-Measured across one full run of that suite: **10 of 102, or 9.8%**.
+`GET /health` reports how often the output check had to act: `output_retries`
+and `output_fallbacks` over `output_checks`. A retry means the model's first
+draft gave advice, a step list or a contact and was asked once to rewrite; a
+fallback means the rewrite failed too and the fixed text was sent instead.
+They are different findings — a retry means the prompt is slightly loose, a
+fallback means the model could not be steered. The measured rates are in
+`probe_results.md`.
 
 The console calls the same `_answer()` the phone calls — it does not
 re-implement the pipeline — and the routes exist only when

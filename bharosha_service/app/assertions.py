@@ -69,14 +69,27 @@ _ADVISORY = (
     r"(প্রথম|পরবর্তী|সবচেয়ে\s*নিরাপদ)\s*(ধাপ|পদক্ষেপ)",
     r"আমি\s*(পরামর্শ|সুপারিশ)\s*দিচ্ছি",
     r"নিশ্চিত\s*করুন",
+    # Bangla imperatives that are instructions to act: "talk to…", "contact…",
+    # "go to…". "কল করুন" is deliberately absent — the vague note asks the
+    # model to say the call buttons are there, and that is the verb it uses.
+    r"(কথা\s*বলুন|যোগাযোগ\s*করুন|চলে\s*যান|জমা\s*দিন|সংগ্রহ\s*করুন)",
 )
 
 _ADVICE_PATTERNS = tuple(re.compile(p, re.IGNORECASE) for p in _LIST_MARKERS + _ADVISORY)
 
-# A phone number, short code or email the model wrote itself. Three digits is
-# the shortest helpline (109), so three is the threshold. Bangla digits count
-# too — ৯৯৯ is 999.
-_CONTACT = re.compile(r"[0-9০-৯]{3,}|@")
+# A phone number, short code, email or web address the model wrote itself.
+# Three digits is the shortest helpline (109), so three is the threshold.
+# Bangla digits count too — ৯৯৯ is 999. URLs were added after a live run: a
+# reporting question in Bangla came back grounded on staff-facing material,
+# naming a UK "Safecall" website and how to file — no digits, no "@", and it
+# would have passed. A web address is a contact.
+_CONTACT = re.compile(
+    r"[0-9০-৯]{3,}"
+    r"|@"
+    r"|https?://|www\."
+    r"|\b[a-z0-9-]+\.(?:com|org|net|gov|edu|bd|uk|co\.uk|info|io)\b",
+    re.IGNORECASE,
+)
 
 
 def contains_contact(text: str) -> str | None:
