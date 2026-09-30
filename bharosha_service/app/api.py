@@ -260,18 +260,38 @@ def _answer(
 
     # ---- 4. Check the output, do not trust the prohibition -----------------
     #
-    # Below the floor the model was told it may converse but may not state a
-    # safeguarding, health, legal or procedural fact. Measured, it obeys that
-    # most of the time and not all of the time — so compliance is verified, not
-    # assumed, in exactly the way emergency detection is. On a match the reply
-    # is DISCARDED and she gets the hardcoded text, which is the same thing a
-    # model outage produces. A reply that broke the rule is not evidence about
-    # what the right reply was.
-    if not grounded:
-        marker = assertions.asserts_anyway(text)
-        assertions.counter.record(discarded=marker is not None)
-        if marker:
-            return fallback(f"asserted anyway: {marker!r}", found.nearest)
+    # Compliance is verified, not assumed, in exactly the way emergency
+    # detection is. Two checks: a number or email in the model's own words is
+    # never allowed; advice, steps and lists are not allowed when a safety
+    # category matched or the reply is below the floor. On a match the model
+    # gets ONE retry, told what it did wrong; if that also fails, she gets the
+    # fixed fallback text, which is what a model outage produces. Retries and
+    # fallbacks are counted separately at /health — a retry means the prompt
+    # is slightly loose, a fallback means the model could not be steered.
+    advisory = decision.category is not None or not grounded
+    problem = assertions.check(text, advisory=advisory)
+    if problem:
+        note(retried=problem)
+        try:
+            text = chain.answer(
+                query,
+                found.passages if grounded else found.candidates,
+                sessions.store.history(session_id),
+                language=decision.language,
+                grounded=grounded,
+                category=decision.category,
+                block_mode=block_mode,
+                retry_note=chain.RETRY_NOTE,
+            )
+        except chain.Unavailable as failure:
+            assertions.counter.record(retried=True, fell_back=True)
+            return fallback(str(failure), found.nearest)
+        second = assertions.check(text, advisory=advisory)
+        assertions.counter.record(retried=True, fell_back=second is not None)
+        if second:
+            return fallback(f"still wrong after retry: {second}", found.nearest)
+    else:
+        assertions.counter.record()
 
     # ---- 5. Append what code owns ------------------------------------------
     #

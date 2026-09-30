@@ -1,26 +1,40 @@
-"""Scans a below-floor reply for the thing it was told not to do.
+"""Checks a model-written reply for the things it was told not to do.
 
 THE SAME PRINCIPLE AS safety.py, APPLIED TO THE OTHER END. Do not trust the
 model — check. There, the rule is that emergency detection never depends on a
 model; here, the rule is that a model's compliance with a prohibition is never
 taken on faith.
 
-WHY THIS EXISTS. Below the relevance floor the prompt tells the model it may
-converse and ask one question but may NOT state any safeguarding, health, legal
-or procedural fact. Measured, it obeys that most of the time and not all of the
-time: "ki korbo?" came back once as a clarifying question and once as a numbered
-list of steps for helping an abused person. Temperature 0 made it repeatable
-rather than compliant, and more prompt text moved the failure around rather than
-removing it. A 20B model will not hold a prohibition perfectly, so the
-prohibition is enforced after the fact.
+TWO CHECKS.
 
-WHAT HAPPENS ON A MATCH. The generated text is DISCARDED — not edited, not
-truncated, not re-asked. The caller returns the hardcoded referral, which is the
-same thing that happens when the model is unreachable. A reply that broke the
-rule is not evidence about what the right reply was.
+  contains_contact  — any run of three or more digits, or any "@". Runs on
+                      EVERY model-written reply, grounded or not, because the
+                      model must never write a phone number or an email: the
+                      numbers arrive from referrals.py, appended by code, so
+                      that a wrong digit in a helpline is structurally
+                      impossible. This one has no exceptions.
 
-This runs ONLY below the floor. Above it the model is licensed to answer from
-WaterAid's material, and that material is full of legitimate numbered steps.
+  gives_advice      — numbered or bulleted step lists, and the clearly
+                      advisory shapes ("you should", "make sure to", "here's
+                      what you can do", and their Bangla). Runs when a safety
+                      category matched, and on any reply below the relevance
+                      floor. NOT on an ordinary grounded answer with no
+                      category: WaterAid's material is full of legitimate
+                      numbered steps, and the model is licensed to relay them.
+
+WHAT WAS REMOVED, AND WHY. The first version of this check also fired on
+"first,", "next,", "it is important to", "আপনি করতে পারেন" and "জানানো
+জরুরি". Measured, those caught gentle sentences that were not advice — "it is
+important to me that you know this isn't your fault" — and swapped in fixed
+text for about one reply in ten. A check that punishes kindness is the old
+problem wearing a new badge. The patterns that remain fire on the shape of
+instruction, not on warmth.
+
+WHAT HAPPENS ON A MATCH. The caller retries ONCE, with a line added above the
+user's message saying what went wrong (chain.RETRY_NOTE). If the retry also
+fails, the fixed fallback text is sent. Retries and fallbacks are counted
+separately at /health, because they are different findings: a retry means the
+prompt is slightly loose, a fallback means the model could not be steered.
 """
 
 from __future__ import annotations
@@ -43,63 +57,96 @@ _ADVISORY = (
     r"\byou\s+should\b",
     r"\byou\s+(must|need\s+to|ought\s+to|have\s+to)\b",
     r"\bmake\s+sure\s+(to|that|you)\b",
-    r"\b(first|firstly|secondly|next|then|finally)\s*,",
     r"\bthe\s+(first|next|safest|best)\s+step\b",
     r"\bhere'?s\s+what\s+you\s+can\s+do\b",
     r"\bi\s+(would\s+)?(recommend|suggest|advise)\b",
-    r"\bit\s+is\s+important\s+to\b",
     r"\btry\s+to\s+(tell|talk|speak|contact|reach|keep|record)\b",
     r"\byou\s+can\s+(report|file|apply|claim|demand|collect)\b",
     r"\bencourage\s+(her|him|them)\s+to\b",
     # Bangla. No \b — see the guard in safety.py for why it never matches here.
     r"আপনার\s*উচিত",
-    r"আপনি\s*(করতে|করা)\s*পারেন",
     r"প্রথমে\s*,?\s*(আপনি|তাকে)",
     r"(প্রথম|পরবর্তী|সবচেয়ে\s*নিরাপদ)\s*(ধাপ|পদক্ষেপ)",
     r"আমি\s*(পরামর্শ|সুপারিশ)\s*দিচ্ছি",
     r"নিশ্চিত\s*করুন",
-    r"(করা|জানানো|যোগাযোগ\s*করা)\s*(খুব\s*)?(জরুরি|গুরুত্বপূর্ণ)",
 )
 
-_PATTERNS = tuple(re.compile(p, re.IGNORECASE) for p in _LIST_MARKERS + _ADVISORY)
+_ADVICE_PATTERNS = tuple(re.compile(p, re.IGNORECASE) for p in _LIST_MARKERS + _ADVISORY)
+
+# A phone number, short code or email the model wrote itself. Three digits is
+# the shortest helpline (109), so three is the threshold. Bangla digits count
+# too — ৯৯৯ is 999.
+_CONTACT = re.compile(r"[0-9০-৯]{3,}|@")
+
+
+def contains_contact(text: str) -> str | None:
+    """The first number or email in a reply, or None. No exceptions."""
+    match = _CONTACT.search(text or "")
+    return match.group(0) if match else None
+
+
+def gives_advice(text: str) -> str | None:
+    """The first advisory or list marker in a reply, or None."""
+    for pattern in _ADVICE_PATTERNS:
+        match = pattern.search(text or "")
+        if match:
+            return match.group(0).strip()[:40]
+    return None
+
+
+def check(text: str, advisory: bool) -> str | None:
+    """Everything wrong with a reply, or None if it may be shown.
+
+    `advisory` says whether the advice check applies — True when a safety
+    category matched or the reply is below the floor. The contact check always
+    applies.
+    """
+    contact = contains_contact(text)
+    if contact:
+        return f"contact {contact!r}"
+    if advisory:
+        marker = gives_advice(text)
+        if marker:
+            return f"advice {marker!r}"
+    return None
+
+
+# The legacy name, kept for the tests and tools that call it.
+asserts_anyway = gives_advice
 
 
 class _Counter:
     """How often the check has fired since the process started.
 
-    A COUNT, and nothing else. No text, no session id, no category, nothing
+    COUNTS, and nothing else. No text, no session id, no category, nothing
     timestamped — the same rule that governs every other number this service
-    keeps. It exists because "the model breaks the rule sometimes" is not a
-    finding until it has a number attached to it.
+    keeps. Retries and fallbacks are separate because they are different
+    findings: a retry means the prompt is slightly loose, a fallback means the
+    model could not be steered.
     """
 
     def __init__(self) -> None:
         self._lock = threading.Lock()
         self.checked = 0
-        self.discarded = 0
+        self.retried = 0
+        self.fell_back = 0
 
-    def record(self, discarded: bool) -> None:
+    def record(self, retried: bool = False, fell_back: bool = False) -> None:
         with self._lock:
             self.checked += 1
-            self.discarded += discarded
+            self.retried += retried
+            self.fell_back += fell_back
 
     def snapshot(self) -> dict[str, int | float]:
         with self._lock:
-            rate = self.discarded / self.checked if self.checked else 0.0
+            n = self.checked or 1
             return {
-                "ungrounded_replies_checked": self.checked,
-                "ungrounded_replies_discarded": self.discarded,
-                "discard_rate": round(rate, 3),
+                "output_checks": self.checked,
+                "output_retries": self.retried,
+                "output_fallbacks": self.fell_back,
+                "retry_rate": round(self.retried / n, 3),
+                "fallback_rate": round(self.fell_back / n, 3),
             }
 
 
 counter = _Counter()
-
-
-def asserts_anyway(text: str) -> str | None:
-    """The first marker found in a below-floor reply, or None if it is clean."""
-    for pattern in _PATTERNS:
-        match = pattern.search(text or "")
-        if match:
-            return match.group(0).strip()[:40]
-    return None
