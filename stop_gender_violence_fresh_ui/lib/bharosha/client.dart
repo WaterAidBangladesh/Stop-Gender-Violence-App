@@ -60,6 +60,8 @@ class BharoshaClient {
   Future<BharoshaReply> ask({
     required String sessionId,
     required String query,
+    String? category,
+    Duration? timeout,
   }) async {
     if (!isConfigured) {
       return const BharoshaReply(text: '', kind: 'unreachable');
@@ -69,9 +71,16 @@ class BharoshaClient {
           .post(
             Uri.parse('$bharoshaBaseUrl/chat'),
             headers: const {'Content-Type': 'application/json; charset=utf-8'},
-            body: jsonEncode({'session_id': sessionId, 'query': query}),
+            body: jsonEncode({
+              'session_id': sessionId,
+              'query': query,
+              // What the phone's safety layer decided. The server re-classifies
+              // and trusts only itself; this is carried so a disagreement is
+              // visible in its console rather than silent.
+              if (category != null) 'category': category,
+            }),
           )
-          .timeout(timeout);
+          .timeout(timeout ?? this.timeout);
 
       if (response.statusCode != 200) {
         return const BharoshaReply(text: '', kind: 'unreachable');

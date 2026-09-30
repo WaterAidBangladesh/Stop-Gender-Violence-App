@@ -204,14 +204,29 @@ _PRIORITY = (
 # third-party concerns, vague messages, frustration, and every ordinary
 # question. Their hardcoded text still exists and is still exactly what they
 # get when the model cannot be reached; it is the floor, not the ceiling.
-DEVICE_CATEGORIES = (
-    EMERGENCY_CATEGORIES
-    + REFUSAL_CATEGORIES
-    + DISCLOSURE_CATEGORIES
-    + REPORTING_CATEGORIES
-    + LOW_DISTRESS_CATEGORIES
-    + ("identity", "privacy")
-)
+DEVICE_CATEGORIES = EMERGENCY_CATEGORIES
+
+# WHY ONLY THE EMERGENCIES, when the six refusals, both disclosures, reporting,
+# low distress, identity and privacy all used to be here too.
+#
+# Because a fixed paragraph, however carefully written, reads as a fixed
+# paragraph. Every emotional category — a woman describing her husband keeping
+# her salary, a woman who feels alone, a woman asking whether anyone can see
+# this — got the same words as the last woman who said something similar, and
+# the model never saw a single one of those messages. Users called it "saved
+# replies", and they were right.
+#
+# So the rule is now: SAFETY DECIDES, THE AI SPEAKS. Pattern matching still
+# decides what the situation is. The category travels to the server, the server
+# re-classifies and trusts only its own result, and the model writes the words
+# around a referral block that code appends from referrals.py. Numbers never
+# come from the model. If the server cannot be reached within eight seconds,
+# the phone shows the same fixed text it always did — the floor did not move.
+#
+# The five emergencies stay here for the reason that has never changed: a
+# model call for "he is going to kill me" means seconds instead of
+# milliseconds, a network she may not have, and words that drift when the
+# model is updated.
 
 # One table instead of an if/elif chain, so adding a category to a group above
 # is the whole change — a new category can no longer silently fall through to

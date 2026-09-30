@@ -33,19 +33,7 @@
     "immediate_danger",
     "threat_to_life",
     "child_disclosure",
-    "active_violence",
-    "leave_decision",
-    "divorce_process",
-    "confront_or_evidence",
-    "economic_rights",
-    "legal_advice",
-    "medical_advice",
-    "personal_disclosure",
-    "coercive_control",
-    "reporting_request",
-    "low_distress",
-    "identity",
-    "privacy"
+    "active_violence"
   ],
   "social_categories": [
     "greeting",

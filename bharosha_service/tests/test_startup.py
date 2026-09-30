@@ -70,7 +70,13 @@ def test_importing_api_does_not_load_any_model() -> None:
 def test_emergency_and_refusal_served_with_no_models_loaded(
     message: str, expected_kind: str
 ) -> None:
-    """No index, no embedder, no reranker, no Groq key — still answered."""
+    """No index, no embedder, no reranker, no Groq key — still answered.
+
+    An emergency never gets as far as the corpus. A refusal now does, and with
+    the corpus not yet embedded it must come back as its own fixed text — not
+    as "I am still starting up", which is the reply for a question that has
+    no text of its own.
+    """
     result = api.chat(
         api.ChatRequest(session_id="test-session-1234", query=message),
         _http(),
@@ -213,10 +219,10 @@ def test_a_question_asked_before_the_corpus_loads_says_so() -> None:
 def test_an_emergency_never_touches_the_model(monkeypatch) -> None:
     """The one rule the whole design rests on.
 
-    Disclosures, third-party concerns and low distress now reach the model, so
-    this test matters more than it did, not less: it pins the line between what
-    was opened up and what was not. Every retrieval and generation entry point
-    is made to explode; an emergency must still return its script.
+    Everything except the five emergencies now reaches the model, so this
+    test matters more than it did, not less: it pins the line between what was
+    opened up and what was not. Every retrieval and generation entry point is
+    made to explode; an emergency must still return its script, untouched.
     """
     import api
     import chain
@@ -236,16 +242,39 @@ def test_an_emergency_never_touches_the_model(monkeypatch) -> None:
         ("he said he will kill me", "threat_to_life"),
         ("they want to marry off my daughter", "child_disclosure"),
         ("আমাকে মারছে, বাঁচান", "immediate_danger"),
-        # And the forbidden subjects, which the brief also keeps off the model.
-        ("should I leave my husband?", "leave_decision"),
-        ("will I win the case?", "legal_advice"),
-        ("how do I treat a burn on my hand?", "medical_advice"),
     ]:
         body = client.post(
             "/chat", json={"session_id": "x" * 10, "query": message}
         ).json()
         language = "bn" if category == "immediate_danger" else "en"
         assert body["response"] == referrals.response_for(category, language), message
+
+
+def test_a_stale_client_category_is_not_trusted() -> None:
+    """The phone sends what it decided. The server decides again.
+
+    A tampered or out-of-date app that labels "he is going to kill me" as a
+    greeting must still get the emergency script, and one that labels "hi" as
+    an emergency must not get 999 for saying hello.
+    """
+    import api
+    import referrals
+    from fastapi.testclient import TestClient
+
+    client = TestClient(api.app)
+    body = client.post(
+        "/chat",
+        json={"session_id": "x" * 10, "query": "he is going to kill me",
+              "category": "greeting"},
+    ).json()
+    assert body["response"] == referrals.response_for("threat_to_life", "en")
+
+    body = client.post(
+        "/chat",
+        json={"session_id": "x" * 10, "query": "hi", "category": "active_violence"},
+    ).json()
+    assert body["kind"] != "emergency"
+    assert "999" not in body["response"].split("\n")[0]
 
 
 def test_every_model_path_falls_back_to_its_own_hardcoded_text(

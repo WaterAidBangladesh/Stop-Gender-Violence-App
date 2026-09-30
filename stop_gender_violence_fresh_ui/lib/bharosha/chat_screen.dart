@@ -185,24 +185,10 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
     });
     _scrollToEnd();
 
-    // THE WHOLE POINT: everything except an ordinary question is answered
-    // here, from bundled text, with no request, no model and no wait. Nothing
-    // about this path can be slow or offline.
-    //
-    // ONE EXCEPTION, and only one. "ki korbo?" as the first thing anyone types
-    // is genuinely vague and gets the bundled clarifier. Said three turns into
-    // a conversation it means "what do I do ABOUT WHAT I JUST TOLD YOU", and
-    // answering that with the same fixed sentence is what makes the app feel
-    // like it is not listening. With history, it goes to the server, which can
-    // see the transcript. The server falls back to this same text if the model
-    // is unreachable, and the first message of any conversation has no history
-    // by definition — so nothing that worked offline stops working offline.
-    // stopsTurn now means exactly one thing: this category is on the bundled
-    // device list. Emergencies, the forbidden subjects, her own disclosure,
-    // low distress, and the two categories that state facts about this app.
-    // Everything else — a greeting, a thank you, "hmm", a friend in trouble, a
-    // vague message, any question at all — goes to the server and reaches the
-    // model. Their bundled text is still what arrives if it cannot be reached.
+    // THE FIVE EMERGENCIES, AND ONLY THOSE, are answered here: bundled text,
+    // no request, no model, no wait. A model call for "he is going to kill
+    // me" would mean seconds instead of milliseconds and a network she may
+    // not have.
     if (decision.stopsTurn) {
       setState(() {
         _messages.add(_Message.bot(
@@ -214,23 +200,34 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
       return;
     }
 
+    // EVERY OTHER CATEGORY — a disclosure, a refusal, low distress, a
+    // greeting — is still recognised here, but the model writes the reply
+    // and the server appends the referral block. SAFETY DECIDES, THE AI
+    // SPEAKS. The category travels with the message; the server re-classifies
+    // and trusts only itself.
+    //
+    // The wait is capped at eight seconds for a recognised category, because
+    // the bundled text is a complete, reviewed reply and she should not sit
+    // watching a spinner for it. An unrecognised question keeps the longer
+    // timeout: there is no bundled text to fall back to, and a real answer
+    // from the corpus is worth waiting for.
+    final recognised = decision.category != null;
     setState(() => _waiting = true);
-    final reply = await _client.ask(sessionId: _sessionId, query: question);
+    final reply = await _client.ask(
+      sessionId: _sessionId,
+      query: question,
+      category: decision.category,
+      timeout: recognised ? const Duration(seconds: 8) : null,
+    );
     if (!mounted) return;
 
     setState(() {
       _waiting = false;
-      if (reply.kind == 'unreachable' && decision.category != null) {
-        // ANY category the device recognised, not only the ones it answers
-        // itself. That distinction was a bug: once greetings, thanks and vague
-        // messages started going to the server, `stopsTurn` was false for all
-        // of them, this branch became unreachable, and "hi" with no network
-        // answered "I could not reach the service just now, so I have not been
-        // able to look your question up."
-        //
-        // The bundled text for a category is not a consolation prize — it is
-        // the complete, reviewed reply, and for the safety categories it is
-        // the full referral with every number in it.
+      if (reply.kind == 'unreachable' && recognised) {
+        // Timed out, offline, or the server is asleep: the bundled text for
+        // the category, exactly as before the model was involved. It is not
+        // a consolation prize — it is the complete, reviewed reply with every
+        // number in it. The floor did not move.
         _messages.add(_Message.bot(
           rules.referrals.responseFor(decision.category!, decision.language),
           _bubbleKindFor(decision.kind),

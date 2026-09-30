@@ -129,7 +129,11 @@ def test_refusals(message: str, category: str) -> None:
     decision = safety.classify(message)
     assert decision.kind == "refuse"
     assert decision.category == category
-    assert decision.stops_turn
+    # Recognised here, written by the model there. The refusal itself — the
+    # contacts and the one sentence of why — is appended by code from
+    # referrals.py, so the model's part is the warmth around it, never the
+    # substance of it.
+    assert not decision.stops_turn
 
 
 # --- Precedence ---------------------------------------------------------

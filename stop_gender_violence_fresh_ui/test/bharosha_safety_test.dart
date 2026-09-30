@@ -200,14 +200,12 @@ void main() {
     // becomes a saved message; if one drifts off it, "he is going to kill me"
     // starts depending on a network she may not have.
     test('exactly these are answered on the device', () {
+      // Five, and only five. Every other category is recognised here but
+      // written by the model there: "safety decides, the AI speaks". The
+      // bundled text for those is the eight-second fallback, not the reply.
       expect(rules.deviceCategories.toSet(), {
         'suicide_risk', 'immediate_danger', 'threat_to_life',
         'child_disclosure', 'active_violence',
-        'leave_decision', 'divorce_process', 'confront_or_evidence',
-        'economic_rights', 'legal_advice', 'medical_advice',
-        'personal_disclosure', 'coercive_control', 'reporting_request',
-        'low_distress',
-        'identity', 'privacy',
       });
     });
 
@@ -217,7 +215,7 @@ void main() {
         'আমাকে মারছে, বাঁচান',
         'I want to die',
         'he said he will kill me',
-        'my husband hits me',
+        'they want to marry off my daughter',
       ]) {
         final decision = rules.classify(message);
         expect(decision.stopsTurn, isTrue, reason: message);
@@ -236,6 +234,16 @@ void main() {
         'my friend is being abused by her husband',
         'what is gender based violence',
         'how do I cook rice',
+        // These used to be answered here. They are still recognised here —
+        // the category travels with the message — but the words are the
+        // model's, and the referral block is appended by the server.
+        'my husband hits me',
+        'he controls my money',
+        'should I leave my husband?',
+        'I feel so alone',
+        'I want to report this',
+        'who are you?',
+        'will my husband see this',
       ]) {
         expect(rules.classify(message).stopsTurn, isFalse, reason: message);
       }

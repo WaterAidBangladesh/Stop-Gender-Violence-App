@@ -78,6 +78,11 @@ class ChatRequest(BaseModel):
 
     session_id: Annotated[str, Field(min_length=8, max_length=64)]
     query: Annotated[str, Field(min_length=1, max_length=2000)]
+    # What the phone's safety layer decided. ADVISORY ONLY: the server runs the
+    # same classifier and trusts its own result, so a tampered or stale client
+    # cannot route a disclosure as small talk. It is carried so that a mismatch
+    # between the two shows up in the dev console instead of going unnoticed.
+    category: Annotated[str | None, Field(max_length=40)] = None
 
 
 class ForgetRequest(BaseModel):
@@ -89,7 +94,11 @@ def _reply(category: str, language: str, kind: str) -> dict[str, str]:
 
 
 def _answer(
-    query: str, session_id: str, caller: str | None, trace: dict | None = None
+    query: str,
+    session_id: str,
+    caller: str | None,
+    trace: dict | None = None,
+    client_category: str | None = None,
 ) -> dict[str, str]:
     """The whole pipeline. One copy, called by /chat and by the dev console.
 
@@ -112,13 +121,17 @@ def _answer(
         matched=list(decision.matched),
         answered_by="device" if decision.stops_turn else "server",
     )
+    if client_category is not None and client_category != decision.category:
+        # Never acted on — the server's own classification is the one that
+        # counts. Surfaced so a phone build whose bundled rules have fallen
+        # behind is visible in the console rather than silently disagreeing.
+        note(client_category=client_category, client_disagrees=True)
 
-    # ANSWERED HERE, FROM FIXED TEXT, IN MICROSECONDS. The list is in
-    # safety.DEVICE_CATEGORIES and it is short on purpose: the five
-    # emergencies, the six forbidden subjects, her own disclosure, low
-    # distress, and the two categories that make factual claims about this app.
-    # Nothing is loaded, nothing is called, and none of it depends on a network
-    # the phone may not have.
+    # ANSWERED HERE, FROM FIXED TEXT, IN MICROSECONDS. The list is
+    # safety.DEVICE_CATEGORIES — the five emergencies and nothing else. Nothing
+    # is loaded, nothing is called, and none of it depends on a network the
+    # phone may not have. Every other category is classified here too, but the
+    # model writes the reply and code appends the referral block.
     if decision.stops_turn:
         return _reply(decision.category, decision.language, decision.kind)
 
@@ -167,10 +180,17 @@ def _answer(
     try:
         found = chain.retrieve_scored(query, decision.language)
     except chain.NotReady as failure:
-        # Not the same claim. "I don't have reliable information about that" is
-        # about her question; while the corpus is embedding, the truth is that
-        # the question was never looked up.
-        note(retrieval_error=str(failure), kind="starting", category="starting")
+        # A category with its own text gets its own text: a disclosure typed
+        # in the half-minute after a restart must not be answered with "I am
+        # still starting up". Only an uncategorised question waits — and it
+        # is told so honestly, because "I don't have reliable information
+        # about that" would be a claim about her question when the truth is
+        # that it was never looked up.
+        note(retrieval_error=str(failure))
+        if decision.category and decision.category in referrals.RESPONSES:
+            note(fell_back="corpus not ready")
+            return _reply(decision.category, decision.language, decision.kind)
+        note(kind="starting", category="starting")
         return _reply("starting", decision.language, "starting")
     except chain.Unavailable as failure:
         return fallback(str(failure))
@@ -238,6 +258,7 @@ def chat(request: ChatRequest, http: Request) -> dict[str, str]:
             http.headers.get("x-forwarded-for"),
             http.client.host if http.client else None,
         ),
+        client_category=request.category,
     )
 
 
@@ -273,6 +294,7 @@ if DEV_CONSOLE:
     class ConsoleRequest(BaseModel):
         session_id: Annotated[str, Field(min_length=8, max_length=64)]
         query: Annotated[str, Field(min_length=1, max_length=2000)]
+        category: Annotated[str | None, Field(max_length=40)] = None
 
     @app.get("/console", response_class=HTMLResponse)
     def console() -> str:
@@ -284,7 +306,10 @@ if DEV_CONSOLE:
         started = time.perf_counter()
         # No rate-limit key: the whole point of this page is to fire forty
         # messages at it in a row. See the guard in _answer.
-        reply = _answer(request.query, request.session_id, None, trace)
+        reply = _answer(
+            request.query, request.session_id, None, trace,
+            client_category=request.category,
+        )
         trace["ms"] = round((time.perf_counter() - started) * 1000)
         return {**reply, "trace": trace}
 
