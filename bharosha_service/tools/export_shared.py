@@ -81,6 +81,10 @@ def safety_rules() -> dict:
         # messages that match more than one category.
         "priority": list(safety._PRIORITY),
         "invisible_characters": ["​", "‌", "‍", "﻿"],
+        # Romanised Bangla: two whole-token hits from this list means the
+        # message is Bangla typed in Latin letters and gets a Bangla reply.
+        # Exported so the phone and the server make the same call.
+        "romanised_bangla_words": sorted(safety.ROMANISED_BANGLA_WORDS),
         "patterns": {
             category: list(patterns)
             for category, patterns in safety._PATTERNS.items()

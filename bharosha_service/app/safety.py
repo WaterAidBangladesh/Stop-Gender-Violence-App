@@ -263,14 +263,64 @@ def normalise(text: str) -> str:
     return _WHITESPACE.sub(" ", text).strip()
 
 
+# Romanised Bangla — Bangla typed in Latin letters, which is how a great deal
+# of it is typed on phones. Common function words and the words this app
+# hears most. Whole-token matches only, and two hits are needed, so an
+# English sentence that happens to contain "ma" or "na" is not misread.
+#
+# Exported to the app so the phone and the server make the same call.
+ROMANISED_BANGLA_WORDS = frozenset({
+    # pronouns and possessives
+    "ami", "amar", "amake", "amay", "amader", "tumi", "tomar", "tomake", "tomay",
+    "apni", "apnar", "apnake", "se", "tar", "take", "tara", "keu", "kew", "ke",
+    "kar", "kake",
+    # question words and particles
+    # No English words here, however common in Banglish. "to", "help" and
+    # "problem" each turned an English sentence into two hits on their own.
+    "ki", "keno", "kemon", "kothay", "kobe", "kivabe", "kibhabe", "na", "nai",
+    "ta", "ar", "aar", "kintu", "ebong", "jodi", "tahole",
+    # verbs people use here
+    "korbo", "korte", "kori", "kore", "korche", "korchi", "korlo", "koren",
+    "ache", "achi", "acho", "achen", "chilo", "hobe", "hoy", "hocche",
+    "hoyeche", "dey", "dei", "dilo", "dibe", "nei", "ney", "nilo", "jai", "jabo",
+    "jete", "bolo", "bolte", "bolche", "bollo", "lage", "lagche", "chai",
+    "chay", "pari", "parbe", "parbo", "parchi", "bujhi", "bujhlam", "bujhte",
+    "mar", "mare", "marche", "marbe", "mere", "felbe", "dekhe", "dekhbe",
+    # people
+    "shami", "swami", "jamai", "bor", "bou", "ma", "baba", "bhai", "apa",
+    "bon", "boro", "chele", "meye", "bacha", "shoshur", "shashuri", "bondhu",
+    "bandhobi",
+    # nouns and adjectives that come up
+    "bhalo", "valo", "kharap", "kosto", "koshto", "bhoy", "voy", "eka", "mon",
+    "kotha", "kaj", "taka", "bari", "ghor", "ghar", "ekta", "ekjon",
+    "kichu", "onek", "khub", "ekhon", "ekhane", "aj", "ajke", "kal", "protidin",
+    "shob", "sob", "jonno", "jonne", "sathe", "shathe", "theke", "dorkar",
+    # social
+    "dhonnobad", "donnobad", "shukriya", "accha", "achha", "thik",
+})
+
+_TOKEN = re.compile(r"[a-z]+")
+
+
+def romanised_hits(text: str) -> int:
+    """How many whole tokens of the message are common romanised Bangla."""
+    return sum(1 for t in _TOKEN.findall(text.lower()) if t in ROMANISED_BANGLA_WORDS)
+
+
 def detect_language(text: str) -> str:
-    """'bn' if the message contains Bangla script, else 'en'.
+    """'bn' for Bangla script, 'bn_roman' for Bangla in Latin letters, else 'en'.
 
     Script presence, not proportion: a sentence with one Bangla clause in it is
-    answered in Bangla. Romanised Bangla is answered in English, which is what
-    someone typing Latin characters can read.
+    answered in Bangla. Romanised Bangla is answered in Bangla script too — a
+    person who types "amar shami amake mare" reads Bangla; she typed it in
+    Latin letters because that is what her keyboard offered. Two hits from the
+    word list are required, so ordinary English is not misread.
     """
-    return "bn" if _BENGALI.search(text) else "en"
+    if _BENGALI.search(text):
+        return "bn"
+    if romanised_hits(text) >= 2:
+        return "bn_roman"
+    return "en"
 
 
 # --- Patterns ------------------------------------------------------------

@@ -102,7 +102,12 @@ class NoteRequest(BaseModel):
     category: Annotated[str, Field(min_length=1, max_length=40)]
 
 
-def _reply(category: str, language: str, kind: str) -> dict[str, str]:
+def _reply(category: str, language: str, kind: str, query: str = "") -> dict[str, str]:
+    # A greeting fallback mirrors what she wrote — "Assalamu alaikum" has one
+    # correct reply and it is not "Hello". The model does this on its own;
+    # the fixed text must not undo it when the model cannot be reached.
+    if category == "greeting" and query:
+        category = referrals.greeting_category(query)
     return {"response": referrals.response_for(category, language), "kind": kind}
 
 
@@ -167,7 +172,7 @@ def _answer(
         # and returning it costs nothing, which is why it was never the thing
         # the limiter was protecting.
         if decision.category and decision.category in referrals.RESPONSES:
-            return _reply(decision.category, decision.language, decision.kind)
+            return _reply(decision.category, decision.language, decision.kind, query)
         return _reply("rate_limited", decision.language, "rate_limited")
 
     import chain  # noqa: PLC0415 - kept off the import path; see module docstring
@@ -184,7 +189,7 @@ def _answer(
         """
         note(fell_back=reason)
         if decision.category and decision.category in referrals.RESPONSES:
-            return _reply(decision.category, decision.language, decision.kind)
+            return _reply(decision.category, decision.language, decision.kind, query)
         far = nearest is not None and nearest > chain.OFF_TOPIC_DISTANCE
         category = "off_topic" if far else "no_context"
         note(kind=category, category=category)
@@ -202,7 +207,7 @@ def _answer(
         note(retrieval_error=str(failure))
         if decision.category and decision.category in referrals.RESPONSES:
             note(fell_back="corpus not ready")
-            return _reply(decision.category, decision.language, decision.kind)
+            return _reply(decision.category, decision.language, decision.kind, query)
         note(kind="starting", category="starting")
         return _reply("starting", decision.language, "starting")
     except chain.Unavailable as failure:

@@ -777,7 +777,9 @@ def retrieve_scored(
     import embedding
 
     key = query
-    if language == "bn" and not embedding.is_multilingual():
+    # Bangla script and romanised Bangla alike: an English-only embedder can
+    # represent neither, so both are translated to an English search key.
+    if language != "en" and not embedding.is_multilingual():
         # An English-only embedder cannot represent Bangla: it would return
         # near-arbitrary passages, and the model would then answer confidently
         # from unrelated material. Either translate first, or refuse and let the
@@ -789,7 +791,7 @@ def retrieve_scored(
                 "passages. Set BHAROSHA_TRANSLATE_QUERIES=on."
             )
         key = to_english(query)
-    elif TRANSLATE_QUERIES and language == "bn":
+    elif TRANSLATE_QUERIES and language != "en":
         key = to_english(query)
     found = search(key, n_results)
     return Retrieval(

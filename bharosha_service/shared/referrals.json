@@ -171,8 +171,16 @@
       "bn": "আপনার এমন লাগছে শুনে খারাপ লাগল। কেন এমন লাগছে, তা আমাকে ব্যাখ্যা করতে হবে না।\n\nকেউ শুধু আপনার কথা শুনুক — এমন চাইলে **09612-119911** নম্বরে কান পেতে রই আছে, বিকাল ৩টা থেকে রাত ৩টা খোলা।\n\nআর যদি কাজে লাগে, মানসিক চাপ বা কঠিন অনুভূতি নিয়ে ওয়াটারএইডের উপকরণ কী বলে তা জিজ্ঞেস করতে পারেন — আমি সেখান থেকে বলব। অথবা এখানেই আরও কিছু বলতে পারেন; আমি শুনছি।"
     },
     "greeting": {
-      "en": "Hello — I'm glad you're here. I'm well, thank you for asking.\n\nI'm here for questions about safeguarding and gender-based violence. Ask me anything, in English or Bangla, and I'll answer from WaterAid's own material.",
-      "bn": "নমস্কার — আপনি এসেছেন, ভালো লাগল। আমি ভালো আছি, জিজ্ঞেস করার জন্য ধন্যবাদ।\n\nসেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে প্রশ্নের জন্য আমি আছি। বাংলা বা ইংরেজি — যেকোনো ভাষায় জিজ্ঞেস করুন, আমি ওয়াটারএইডের নিজস্ব উপকরণ থেকে উত্তর দেব।"
+      "en": "Hello — I'm glad you're here.\n\nI'm here for anything about safeguarding and gender-based violence. Ask or share whatever you like, in English or Bangla.",
+      "bn": "হ্যালো — আপনি এসেছেন, ভালো লাগল।\n\nসেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে যেকোনো কথার জন্য আমি আছি। বাংলা বা ইংরেজি — যেভাবে সুবিধা, বলুন।"
+    },
+    "greeting_salam": {
+      "en": "Walaikum assalam — I'm glad you're here.\n\nI'm here for anything about safeguarding and gender-based violence. Ask or share whatever you like, in English or Bangla.",
+      "bn": "ওয়ালাইকুম আসসালাম — আপনি এসেছেন, ভালো লাগল।\n\nসেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে যেকোনো কথার জন্য আমি আছি। বাংলা বা ইংরেজি — যেভাবে সুবিধা, বলুন।"
+    },
+    "greeting_namaskar": {
+      "en": "Namaskar — I'm glad you're here.\n\nI'm here for anything about safeguarding and gender-based violence. Ask or share whatever you like, in English or Bangla.",
+      "bn": "নমস্কার — আপনি এসেছেন, ভালো লাগল।\n\nসেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে যেকোনো কথার জন্য আমি আছি। বাংলা বা ইংরেজি — যেভাবে সুবিধা, বলুন।"
     },
     "thanks": {
       "en": "You're welcome.\n\nIf anything else comes up — about safeguarding, or about violence and what counts as it — I'm here.",

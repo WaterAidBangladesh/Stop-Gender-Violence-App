@@ -259,6 +259,33 @@ void main() {
     });
   });
 
+  group('language', () {
+    test('romanised Bangla is detected, and reads the Bangla text', () {
+      // She typed Latin letters because that is what her keyboard offered.
+      for (final message in ['amar shami amake mare', 'ki korbo?', 'kemon acho',
+          'tumi ki help korte parbe?', 'achha bujhlam']) {
+        expect(rules.detectLanguage(message), 'bn_roman', reason: message);
+      }
+      for (final message in ['he keeps my salary', 'I want to die', 'hmm',
+          'ma please help', 'What is safeguarding?']) {
+        expect(rules.detectLanguage(message), 'en', reason: message);
+      }
+      expect(rules.detectLanguage('সেফগার্ডিং কী'), 'bn');
+      expect(referrals.responseFor('vague', 'bn_roman'),
+          referrals.responseFor('vague', 'bn'));
+    });
+
+    test('the greeting fallback mirrors hers', () {
+      expect(referrals.greetingCategory('Assalamu alaikum'), 'greeting_salam');
+      expect(referrals.greetingCategory('আসসালামু আলাইকুম'), 'greeting_salam');
+      expect(referrals.greetingCategory('নমস্কার'), 'greeting_namaskar');
+      expect(referrals.greetingCategory('hi'), 'greeting');
+      expect(referrals.responseFor('greeting_salam', 'bn'), contains('ওয়ালাইকুম আসসালাম'));
+      expect(referrals.responseFor('greeting_salam', 'bn'), isNot(contains('নমস্কার')));
+      expect(referrals.responseFor('greeting_namaskar', 'bn'), startsWith('নমস্কার'));
+    });
+  });
+
   group('offline behaviour', () {
     test('every recognised category has bundled text for a dead network', () {
       // The offline fallback is keyed on CATEGORY, not on whether the device

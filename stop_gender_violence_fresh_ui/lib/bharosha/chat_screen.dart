@@ -181,7 +181,8 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
     setState(() {
       _messages.add(_Message.user(question));
       // Answer in the language she wrote in, whatever the toggle says.
-      _language = decision.language;
+      // Romanised Bangla is Bangla for every purpose on this screen.
+      _language = decision.language == 'en' ? 'en' : 'bn';
     });
     _scrollToEnd();
 
@@ -231,9 +232,12 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
         // Timed out, offline, or the server is asleep: the bundled text for
         // the category, exactly as before the model was involved. It is not
         // a consolation prize — it is the complete, reviewed reply with every
-        // number in it. The floor did not move.
+        // number in it. The floor did not move. A greeting mirrors hers.
+        final category = decision.category == 'greeting'
+            ? rules.referrals.greetingCategory(question)
+            : decision.category!;
         _messages.add(_Message.bot(
-          rules.referrals.responseFor(decision.category!, decision.language),
+          rules.referrals.responseFor(category, decision.language),
           _bubbleKindFor(decision.kind),
         ));
       } else if (reply.kind == 'unreachable') {

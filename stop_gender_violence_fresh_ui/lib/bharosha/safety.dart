@@ -81,9 +81,11 @@ class SafetyRules {
     required Map<String, List<RegExp>> patterns,
     required List<_NearRule> nearRules,
     required List<String> invisibleCharacters,
+    required Set<String> romanisedBanglaWords,
   })  : _patterns = patterns,
         _nearRules = nearRules,
-        _invisible = RegExp('[${invisibleCharacters.join()}]');
+        _invisible = RegExp('[${invisibleCharacters.join()}]'),
+        _romanised = romanisedBanglaWords;
 
   final List<String> priority;
 
@@ -108,6 +110,10 @@ class SafetyRules {
   final Map<String, List<RegExp>> _patterns;
   final List<_NearRule> _nearRules;
   final RegExp _invisible;
+
+  /// Common romanised Bangla words, from the generated JSON. Two whole-token
+  /// hits means Bangla typed in Latin letters — see [detectLanguage].
+  final Set<String> _romanised;
 
   /// Every category that resolves to `kind`, in priority order.
   ///
@@ -156,6 +162,8 @@ class SafetyRules {
       ],
       invisibleCharacters:
           (data['invisible_characters'] as List).cast<String>(),
+      romanisedBanglaWords:
+          ((data['romanised_bangla_words'] as List?) ?? const []).cast<String>().toSet(),
     );
   }
 
@@ -165,12 +173,24 @@ class SafetyRules {
     return stripped.replaceAll(_whitespace, ' ').trim();
   }
 
-  /// `bn` when the message contains any Bangla, else `en`.
+  static final RegExp _latinToken = RegExp(r'[a-z]+');
+
+  /// `bn` for Bangla script, `bn_roman` for Bangla typed in Latin letters,
+  /// else `en`.
   ///
   /// Script presence, not proportion: one Bangla clause in a mixed sentence is
   /// answered in Bangla. Romanised Bangla ("amake marche") is answered in
-  /// English, which is what someone typing Latin characters can read.
-  String detectLanguage(String text) => _bengali.hasMatch(text) ? 'bn' : 'en';
+  /// Bangla script too — she typed it in Latin letters because that is what
+  /// her keyboard offered. Two hits from the shared word list are needed, so
+  /// ordinary English is not misread. Identical to the Python side.
+  String detectLanguage(String text) {
+    if (_bengali.hasMatch(text)) return 'bn';
+    final hits = _latinToken
+        .allMatches(text.toLowerCase())
+        .where((m) => _romanised.contains(m.group(0)))
+        .length;
+    return hits >= 2 ? 'bn_roman' : 'en';
+  }
 
   /// Prefix match for Latin terms, substring for Bangla.
   ///

@@ -93,7 +93,10 @@ def test_shared_cases_cover_both_languages_and_all_outcomes() -> None:
     cases = export_shared.test_cases()["cases"]
     assert len(cases) >= 40
     languages = {case["language"] for case in cases}
-    assert languages == {"en", "bn"}
+    # Three, since romanised Bangla became its own language: the cases typed
+    # in Latin letters must classify as bn_roman on BOTH sides, which is the
+    # drift this file exists to catch.
+    assert languages == {"en", "bn", "bn_roman"}
     kinds = {case["kind"] for case in cases}
     assert kinds == {
         "emergency", "refuse", "third_party", "disclosure", "reporting",

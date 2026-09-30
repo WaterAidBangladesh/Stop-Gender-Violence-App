@@ -13,6 +13,8 @@ model must never be in the path between a survivor and a phone number.
 
 from __future__ import annotations
 
+import re
+
 from dataclasses import dataclass, field
 
 
@@ -479,13 +481,49 @@ DISCLOSURE_BN = f"""আপনি বলেছেন, সেজন্য ধন�
 # Line one answers the social turn like a person would. Line two says what this
 # is for, once, without listing anything.
 
-GREETING_EN = """Hello — I'm glad you're here. I'm well, thank you for asking.
+# THREE GREETINGS, NOT ONE, because a greeting is mirrored. "Assalamu alaikum"
+# has one correct reply and it is not "নমস্কার"; "নমস্কার" has one correct reply
+# and it is not "Hello". The model does this on its own from the prompt; these
+# are the fallbacks for when it cannot be reached, and they must not undo it.
+# greeting_category() picks which one from what she wrote.
+_GREETING_BODY_EN = """I'm here for anything about safeguarding and gender-based violence. Ask or share whatever you like, in English or Bangla."""
+_GREETING_BODY_BN = """সেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে যেকোনো কথার জন্য আমি আছি। বাংলা বা ইংরেজি — যেভাবে সুবিধা, বলুন।"""
 
-I'm here for questions about safeguarding and gender-based violence. Ask me anything, in English or Bangla, and I'll answer from WaterAid's own material."""
+GREETING_EN = f"""Hello — I'm glad you're here.
 
-GREETING_BN = """নমস্কার — আপনি এসেছেন, ভালো লাগল। আমি ভালো আছি, জিজ্ঞেস করার জন্য ধন্যবাদ।
+{_GREETING_BODY_EN}"""
 
-সেফগার্ডিং আর জেন্ডারভিত্তিক সহিংসতা নিয়ে প্রশ্নের জন্য আমি আছি। বাংলা বা ইংরেজি — যেকোনো ভাষায় জিজ্ঞেস করুন, আমি ওয়াটারএইডের নিজস্ব উপকরণ থেকে উত্তর দেব।"""
+GREETING_BN = f"""হ্যালো — আপনি এসেছেন, ভালো লাগল।
+
+{_GREETING_BODY_BN}"""
+
+GREETING_SALAM_EN = f"""Walaikum assalam — I'm glad you're here.
+
+{_GREETING_BODY_EN}"""
+
+GREETING_SALAM_BN = f"""ওয়ালাইকুম আসসালাম — আপনি এসেছেন, ভালো লাগল।
+
+{_GREETING_BODY_BN}"""
+
+GREETING_NAMASKAR_EN = f"""Namaskar — I'm glad you're here.
+
+{_GREETING_BODY_EN}"""
+
+GREETING_NAMASKAR_BN = f"""নমস্কার — আপনি এসেছেন, ভালো লাগল।
+
+{_GREETING_BODY_BN}"""
+
+_SALAM = re.compile(r"salam|salaam|সালাম", re.IGNORECASE)
+_NAMASKAR = re.compile(r"namaskar|namoskar|nomoshkar|নমস্কার", re.IGNORECASE)
+
+
+def greeting_category(message: str) -> str:
+    """Which greeting fallback mirrors what she wrote."""
+    if _SALAM.search(message):
+        return "greeting_salam"
+    if _NAMASKAR.search(message):
+        return "greeting_namaskar"
+    return "greeting"
 
 THANKS_EN = """You're welcome.
 
@@ -1089,7 +1127,7 @@ def referral_block(category: str, language: str, mode: str) -> str:
     if mode not in ("full", "compact"):
         raise ValueError(f"block mode must be full or compact, not {mode!r}")
     by_language = BLOCKS[category]
-    return by_language.get(language, by_language["en"])[mode]
+    return by_language.get(text_language(language), by_language["en"])[mode]
 
 
 RESPONSES: dict[str, dict[str, str]] = {
@@ -1112,6 +1150,8 @@ RESPONSES: dict[str, dict[str, str]] = {
     "third_party_concern": {"en": THIRD_PARTY_EN, "bn": THIRD_PARTY_BN},
     "low_distress": {"en": LOW_DISTRESS_EN, "bn": LOW_DISTRESS_BN},
     "greeting": {"en": GREETING_EN, "bn": GREETING_BN},
+    "greeting_salam": {"en": GREETING_SALAM_EN, "bn": GREETING_SALAM_BN},
+    "greeting_namaskar": {"en": GREETING_NAMASKAR_EN, "bn": GREETING_NAMASKAR_BN},
     "thanks": {"en": THANKS_EN, "bn": THANKS_BN},
     "acknowledgement": {"en": ACKNOWLEDGEMENT_EN, "bn": ACKNOWLEDGEMENT_BN},
     "identity": {"en": IDENTITY_EN, "bn": IDENTITY_BN},
@@ -1154,10 +1194,21 @@ def _check_every_category_has_text() -> None:  # pragma: no cover - import guard
 _check_every_category_has_text()
 
 
+def text_language(language: str) -> str:
+    """Which side of a bilingual pair to read.
+
+    Romanised Bangla gets the Bangla text: a person who typed "amar shami
+    amake mare" reads Bangla and typed it in Latin letters because that is
+    what her keyboard offered. Answering her in English was the wrong call
+    for as long as it lasted.
+    """
+    return "en" if language == "en" else "bn"
+
+
 def response_for(category: str, language: str) -> str:
-    """The hardcoded reply for a category, in 'en' or 'bn'."""
+    """The hardcoded reply for a category, in 'en', 'bn' or 'bn_roman'."""
     try:
         by_language = RESPONSES[category]
     except KeyError:  # pragma: no cover - guards a typo at import time
         raise KeyError(f"no hardcoded response for category {category!r}") from None
-    return by_language.get(language, by_language["en"])
+    return by_language.get(text_language(language), by_language["en"])

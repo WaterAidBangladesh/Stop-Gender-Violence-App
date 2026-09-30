@@ -111,16 +111,34 @@ class Referrals {
     );
   }
 
-  /// The hardcoded reply for a safety category, in `en` or `bn`.
+  /// The hardcoded reply for a safety category, in `en`, `bn` or `bn_roman`.
   ///
-  /// Falls back to English rather than throwing: a missing translation must
-  /// still put a phone number in front of someone.
+  /// Romanised Bangla reads the Bangla text: she typed Latin letters because
+  /// that is what her keyboard offered, and she reads Bangla. Falls back to
+  /// English rather than throwing: a missing translation must still put a
+  /// phone number in front of someone.
   String responseFor(String category, String language) {
     final byLanguage = _responses[category];
     if (byLanguage == null) {
       throw ArgumentError('no hardcoded response for category "$category"');
     }
-    return byLanguage[language] ?? byLanguage['en']!;
+    final side = language == 'en' ? 'en' : 'bn';
+    return byLanguage[side] ?? byLanguage['en']!;
+  }
+
+  static final RegExp _salam = RegExp(r'salam|salaam|সালাম', caseSensitive: false);
+  static final RegExp _namaskar =
+      RegExp(r'namaskar|namoskar|nomoshkar|নমস্কার', caseSensitive: false);
+
+  /// Which greeting fallback mirrors what she wrote.
+  ///
+  /// "Assalamu alaikum" has one correct reply and it is not "Hello". The
+  /// model does this on its own; the bundled text must not undo it when the
+  /// server cannot be reached. Same three cases as referrals.py.
+  String greetingCategory(String message) {
+    if (_salam.hasMatch(message)) return 'greeting_salam';
+    if (_namaskar.hasMatch(message)) return 'greeting_namaskar';
+    return 'greeting';
   }
 
   Helpline helpline(String number) => helplines.firstWhere(

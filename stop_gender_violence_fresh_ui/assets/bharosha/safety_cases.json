@@ -143,25 +143,25 @@
       "message": "amake marche help",
       "kind": "emergency",
       "category": "active_violence",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "se amake mere felbe",
       "kind": "emergency",
       "category": "threat_to_life",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "ami morte chai",
       "kind": "emergency",
       "category": "suicide_risk",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "ami bipode achi",
       "kind": "emergency",
       "category": "immediate_danger",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "Should I leave my husband?",
@@ -623,13 +623,13 @@
       "message": "amar mon ta kharap",
       "kind": "low_distress",
       "category": "low_distress",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "mon kharap",
       "kind": "low_distress",
       "category": "low_distress",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "I feel so alone",
@@ -665,13 +665,13 @@
       "message": "bhalo lagche na",
       "kind": "low_distress",
       "category": "low_distress",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "eka lage",
       "kind": "low_distress",
       "category": "low_distress",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "মন খারাপ",
@@ -767,13 +767,13 @@
       "message": "kemon acho?",
       "kind": "social",
       "category": "greeting",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "kemon achen",
       "kind": "social",
       "category": "greeting",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "ki khobor",
@@ -857,7 +857,7 @@
       "message": "thik ache",
       "kind": "social",
       "category": "acknowledgement",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "ঠিক আছে",
@@ -905,7 +905,7 @@
       "message": "tumi ke",
       "kind": "social",
       "category": "identity",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "তুমি কে",
@@ -1067,13 +1067,13 @@
       "message": "ki korbo",
       "kind": "vague",
       "category": "vague",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "kotha bolte chai",
       "kind": "vague",
       "category": "vague",
-      "language": "en"
+      "language": "bn_roman"
     },
     {
       "message": "আমি কি করবো",

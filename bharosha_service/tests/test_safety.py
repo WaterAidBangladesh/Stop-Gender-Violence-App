@@ -92,7 +92,9 @@ def test_romanised_bangla_emergencies(message: str, category: str) -> None:
     assert decision.kind == "emergency"
     assert decision.category == category
     # Latin script gets an English reply, which is what the user can read.
-    assert decision.language == "en"
+    # Romanised Bangla is Bangla: she reads the Bangla script and typed Latin
+    # letters because that is what her keyboard offered.
+    assert decision.language == "bn_roman"
 
 
 # --- The three forbidden subjects ---------------------------------------
