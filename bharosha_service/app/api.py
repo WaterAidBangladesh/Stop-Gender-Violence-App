@@ -1,7 +1,9 @@
 """Bharosha's HTTP surface.
 
-    POST /chat    {session_id, query} -> {response, kind}
-    POST /forget  {session_id}        -> drops that conversation
+    POST /chat       {session_id, query, category?} -> {response, kind}
+    POST /chat/note  {session_id, category}         -> records an emergency the
+                                                       phone answered itself
+    POST /forget     {session_id}                   -> drops that conversation
     GET  /health                      -> cheap, does not touch the model
 
 THE ORDER OF THIS FILE IS THE SAFETY DESIGN. Module-level imports are limited to
@@ -87,6 +89,17 @@ class ChatRequest(BaseModel):
 
 class ForgetRequest(BaseModel):
     session_id: Annotated[str, Field(min_length=8, max_length=64)]
+
+
+class NoteRequest(BaseModel):
+    """The phone answered an emergency itself and is telling the server so.
+
+    A category name only. Validated against the emergency list below, so this
+    endpoint cannot be used to put free text into anyone's history.
+    """
+
+    session_id: Annotated[str, Field(min_length=8, max_length=64)]
+    category: Annotated[str, Field(min_length=1, max_length=40)]
 
 
 def _reply(category: str, language: str, kind: str) -> dict[str, str]:
@@ -285,6 +298,21 @@ def chat(request: ChatRequest, http: Request) -> dict[str, str]:
         ),
         client_category=request.category,
     )
+
+
+@app.post("/chat/note")
+def chat_note(request: NoteRequest) -> dict[str, bool]:
+    """Fire-and-forget from the phone after it showed an emergency reply.
+
+    Fills the hole in the model's memory where the worst moment was — with a
+    category label, never her words. Anything other than a known emergency
+    category is refused, so no client can write text into a history through
+    this door.
+    """
+    if request.category not in safety.EMERGENCY_CATEGORIES:
+        return {"noted": False}
+    sessions.store.note(request.session_id, request.category)
+    return {"noted": True}
 
 
 @app.post("/forget")

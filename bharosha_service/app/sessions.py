@@ -28,7 +28,12 @@ import threading
 import time
 from collections import OrderedDict, deque
 
-MAX_TURNS = int(os.getenv("BHAROSHA_MAX_TURNS", "6"))
+# Twelve, up from six. The conversational rewrite means the model now answers
+# most turns, and a clarifying question is worthless if the turn it was
+# clarifying has already scrolled out of the window. Emergency notes (below)
+# count as turns too, so the cap is what bounds the prompt, not the count of
+# things she typed.
+MAX_TURNS = int(os.getenv("BHAROSHA_MAX_TURNS", "12"))
 TTL_SECONDS = float(os.getenv("BHAROSHA_SESSION_TTL", "1800"))  # 30 minutes
 MAX_SESSIONS = int(os.getenv("BHAROSHA_MAX_SESSIONS", "5000"))
 
@@ -101,6 +106,24 @@ class SessionStore:
                 return "compact"
             session.shown.add(category)
             return "full"
+
+    def note(self, session_id: str, category: str) -> None:
+        """Record that the phone answered an emergency itself.
+
+        The five emergencies never reach this server, so without this the
+        model's history had a hole exactly where the worst moment was: she
+        says "I am scared right now", the phone shows 999, and her next message
+        arrives at a model that has no idea. The phone sends the CATEGORY —
+        never her words, which is the whole point — and one fixed sentence goes
+        into history as a turn with no user text.
+        """
+        line = (
+            f"[She sent a message the app treated as {category}. "
+            "The emergency contacts were shown to her.]"
+        )
+        now = time.monotonic()
+        with self._lock:
+            self._get_or_create(session_id, now).turns.append((line, ""))
 
     def forget(self, session_id: str) -> None:
         """Drop a conversation on request — the app calls this on exit."""

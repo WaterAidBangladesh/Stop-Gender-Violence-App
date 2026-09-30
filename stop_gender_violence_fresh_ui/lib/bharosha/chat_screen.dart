@@ -197,6 +197,10 @@ class _BharoshaChatScreenState extends State<BharoshaChatScreen> {
         ));
       });
       _scrollToEnd();
+      // The server never saw this turn. Tell it what kind of turn it was —
+      // the category, never her words — so her next message does not arrive
+      // at a model that has no idea she just said she was in danger.
+      _client.note(sessionId: _sessionId, category: decision.category!);
       return;
     }
 

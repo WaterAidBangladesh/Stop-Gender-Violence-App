@@ -103,6 +103,27 @@ class BharoshaClient {
     }
   }
 
+  /// Tell the server the phone answered an emergency itself.
+  ///
+  /// The category only — never her words. Without this the model's memory has
+  /// a hole exactly where the worst moment was: she says "I am scared right
+  /// now", the phone shows 999, and her next message arrives at a model that
+  /// has no idea. Fire and forget; a failure changes nothing she sees.
+  Future<void> note({required String sessionId, required String category}) async {
+    if (!isConfigured) return;
+    try {
+      await _http
+          .post(
+            Uri.parse('$bharoshaBaseUrl/chat/note'),
+            headers: const {'Content-Type': 'application/json; charset=utf-8'},
+            body: jsonEncode({'session_id': sessionId, 'category': category}),
+          )
+          .timeout(const Duration(seconds: 5));
+    } catch (_) {
+      // Best effort only.
+    }
+  }
+
   /// Ask the server to forget this conversation. Best effort, never awaited by UI.
   Future<void> forget(String sessionId) async {
     if (!isConfigured) return;

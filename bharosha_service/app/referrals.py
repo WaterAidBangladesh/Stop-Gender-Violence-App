@@ -548,13 +548,13 @@ IDENTITY_BN = f"""আমি ভরসা — ওয়াটারএইড ব�
 #     to an unlocked handset, none of which this app controls.
 #
 # If any of those six facts changes, this text changes with it.
-PRIVACY_EN = """This conversation is not saved on your phone, and you don't need an account to use it. When you ask about something, the question is sent to be looked up, kept only for as long as this conversation is open, and then forgotten. Nothing here sends you notifications.
+PRIVACY_EN = """This conversation is not saved on your phone, and you don't need an account to use it. When you ask about something, the question is sent to be looked up, kept only for as long as this conversation is open, and then forgotten. If the app answers an emergency message itself, it sends only a topic label — not your words. Nothing here sends you notifications.
 
 **Leave now**, at the top of this screen, clears everything and closes the app straight away.
 
 One thing I can't do anything about: if someone else can unlock your phone while this is open, they can read what is on the screen."""
 
-PRIVACY_BN = """এই কথাবার্তা আপনার ফোনে সংরক্ষণ করা হয় না, আর এটি ব্যবহার করতে কোনো অ্যাকাউন্ট লাগে না। আপনি কিছু জিজ্ঞেস করলে প্রশ্নটি খুঁজে দেখার জন্য পাঠানো হয়, কেবল এই কথাবার্তা চলার সময়টুকু রাখা হয়, তারপর মুছে যায়। এখান থেকে কোনো নোটিফিকেশন যায় না।
+PRIVACY_BN = """এই কথাবার্তা আপনার ফোনে সংরক্ষণ করা হয় না, আর এটি ব্যবহার করতে কোনো অ্যাকাউন্ট লাগে না। আপনি কিছু জিজ্ঞেস করলে প্রশ্নটি খুঁজে দেখার জন্য পাঠানো হয়, কেবল এই কথাবার্তা চলার সময়টুকু রাখা হয়, তারপর মুছে যায়। জরুরি কোনো বার্তার উত্তর অ্যাপ নিজে দিলে কেবল একটি বিষয়ের নাম পাঠানো হয় — আপনার কথা নয়। এখান থেকে কোনো নোটিফিকেশন যায় না।
 
 উপরে থাকা **"এখনই বেরিয়ে যান"** বোতামে সবকিছু মুছে গিয়ে অ্যাপ সঙ্গে সঙ্গে বন্ধ হয়ে যায়।
 
