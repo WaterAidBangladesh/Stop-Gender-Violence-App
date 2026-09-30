@@ -256,14 +256,16 @@ def _answer(
             return fallback(f"asserted anyway: {marker!r}", found.nearest)
 
     # ---- 5. Append what code owns ------------------------------------------
+    #
+    # Only when a safety category matched. An ordinary grounded question gets
+    # the model's words and nothing else: the automatic footer that used to
+    # follow every answer is gone, because the call buttons are on screen for
+    # the whole conversation and a helpline paragraph under "what is economic
+    # violence?" was the leaflet-rack feel in miniature.
     if block_mode is not None:
         text = text + "\n\n" + referrals.referral_block(
             decision.category, decision.language, block_mode
         )
-    elif grounded and decision.category is None:
-        # An ordinary grounded question with no category: the numbers still
-        # arrive from here, never from the model.
-        text += referrals.answer_footer(decision.language)
 
     # The whole reply — model text and block — goes into history, so on the
     # next turn the model knows what she has already been shown.

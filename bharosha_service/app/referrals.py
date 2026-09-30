@@ -824,21 +824,6 @@ RATE_LIMITED_BN = f"""অল্প সময়ে অনেক বার্ত�
 
 **{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।"""
 
-# Appended to every model-written answer. The model is forbidden from printing
-# phone numbers itself — a hallucinated digit in a helpline number is one of the
-# worst failures this service could have — so the numbers arrive from here,
-# hardcoded, on every answer.
-ANSWER_FOOTER_EN = (
-    f"\n\n---\nTo talk to a person: **{VAWC.number}** "
-    f"(free, 24 hours, confidential) · **{EMERGENCY.number}** in an emergency."
-)
-
-ANSWER_FOOTER_BN = (
-    f"\n\n---\nকোনো মানুষের সঙ্গে কথা বলতে: **{VAWC.number}** "
-    f"(ফ্রি, ২৪ ঘণ্টা, গোপনীয়) · জরুরি অবস্থায় **{EMERGENCY.number}**।"
-)
-
-
 # --- Referral blocks --------------------------------------------------------
 #
 # SAFETY DECIDES, THE AI SPEAKS. For every category except the five
@@ -1105,10 +1090,6 @@ def referral_block(category: str, language: str, mode: str) -> str:
         raise ValueError(f"block mode must be full or compact, not {mode!r}")
     by_language = BLOCKS[category]
     return by_language.get(language, by_language["en"])[mode]
-
-
-def answer_footer(language: str) -> str:
-    return ANSWER_FOOTER_BN if language == "bn" else ANSWER_FOOTER_EN
 
 
 RESPONSES: dict[str, dict[str, str]] = {

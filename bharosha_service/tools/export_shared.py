@@ -124,10 +124,6 @@ def referral_data() -> dict:
         # — but they are the reviewable text, so they travel with the rest.
         "blocks": referrals.BLOCKS,
         "no_block": sorted(referrals.NO_BLOCK),
-        "answer_footer": {
-            "en": referrals.ANSWER_FOOTER_EN,
-            "bn": referrals.ANSWER_FOOTER_BN,
-        },
     }
 
 

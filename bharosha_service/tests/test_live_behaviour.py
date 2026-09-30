@@ -184,11 +184,12 @@ def test_a_safety_reply_carries_the_numbers_it_should(
 )
 def test_the_model_never_writes_a_number_itself(message: str) -> None:
     """The prompt forbids it so that a wrong digit in a helpline number is
-    structurally impossible. Numbers arrive from referrals.py, appended after."""
+    structurally impossible. These are ordinary questions with no safety
+    category, so nothing is appended: the whole response is the model's own
+    words, and it must contain no number at all."""
     result = ask(message)
-    footer = referrals.answer_footer(result["trace"]["language"])
-    body = result["response"].replace(footer, "")
-    found = [n for n in DIGITS.findall(body) if len(n) <= 5]
+    assert result["trace"].get("block") is None, "an ordinary question got a block"
+    found = [n for n in DIGITS.findall(result["response"]) if len(n) <= 5]
     assert not found, f"the model wrote {found} into its own answer: {message!r}"
 
 

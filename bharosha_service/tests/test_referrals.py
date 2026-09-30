@@ -94,13 +94,6 @@ def test_amic_stays_out_until_confirmed() -> None:
     assert not any("Addiction" in name or "AMIC" in name for name in organisations)
 
 
-@pytest.mark.parametrize("language", ["en", "bn"])
-def test_answer_footer_carries_the_numbers(language: str) -> None:
-    """The model is forbidden from writing numbers, so the footer must have them."""
-    footer = referrals.answer_footer(language)
-    assert "109" in footer and "999" in footer
-
-
 # --- the conversational tier ------------------------------------------------
 #
 # These assert restraint, which is the hard part to keep. Every one of them is a

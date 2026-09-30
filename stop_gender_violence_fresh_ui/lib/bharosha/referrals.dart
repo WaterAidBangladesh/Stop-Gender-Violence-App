@@ -65,9 +65,7 @@ class Referrals {
     required this.safeguardingEmail,
     required this.kaanPeteRoiNumber,
     required Map<String, Map<String, String>> responses,
-    required Map<String, String> footers,
-  })  : _responses = responses,
-        _footers = footers;
+  }) : _responses = responses;
 
   final List<Helpline> helplines;
   final List<FocalPoint> focalPoints;
@@ -79,7 +77,6 @@ class Referrals {
   final String kaanPeteRoiNumber;
 
   final Map<String, Map<String, String>> _responses;
-  final Map<String, String> _footers;
 
   factory Referrals.fromJson(String source) {
     final data = jsonDecode(source) as Map<String, dynamic>;
@@ -111,8 +108,6 @@ class Referrals {
         for (final entry in (data['responses'] as Map<String, dynamic>).entries)
           entry.key: (entry.value as Map<String, dynamic>).cast<String, String>(),
       },
-      footers: (data['answer_footer'] as Map<String, dynamic>)
-          .cast<String, String>(),
     );
   }
 
@@ -127,11 +122,6 @@ class Referrals {
     }
     return byLanguage[language] ?? byLanguage['en']!;
   }
-
-  /// Appended to answers the server generates. The model is forbidden from
-  /// writing phone numbers — a hallucinated digit in a helpline number is one of
-  /// the worst failures this app could have — so they come from here.
-  String answerFooter(String language) => _footers[language] ?? _footers['en']!;
 
   Helpline helpline(String number) => helplines.firstWhere(
         (line) => line.number == number,
