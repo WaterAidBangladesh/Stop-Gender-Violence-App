@@ -119,6 +119,11 @@ def referral_data() -> dict:
         # reads, and it is the thing to review. The numbers are interpolated
         # already; tests on both sides assert each response still carries them.
         "responses": referrals.RESPONSES,
+        # What code appends under a model-written reply, full and compact, per
+        # category. The app never uses these — the server assembles the reply
+        # — but they are the reviewable text, so they travel with the rest.
+        "blocks": referrals.BLOCKS,
+        "no_block": sorted(referrals.NO_BLOCK),
         "answer_footer": {
             "en": referrals.ANSWER_FOOTER_EN,
             "bn": referrals.ANSWER_FOOTER_BN,

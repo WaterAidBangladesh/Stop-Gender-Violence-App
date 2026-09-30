@@ -34,11 +34,16 @@ MAX_SESSIONS = int(os.getenv("BHAROSHA_MAX_SESSIONS", "5000"))
 
 
 class _Session:
-    __slots__ = ("turns", "touched")
+    __slots__ = ("turns", "touched", "shown")
 
     def __init__(self) -> None:
         self.turns: deque[tuple[str, str]] = deque(maxlen=MAX_TURNS)
         self.touched = time.monotonic()
+        # Categories whose FULL referral block this conversation has already
+        # seen. The second time a category comes up she gets one line instead,
+        # because the same helpline paragraph on every turn is the leaflet-rack
+        # feel this redesign exists to remove. Category names only — no text.
+        self.shown: set[str] = set()
 
 
 class SessionStore:
@@ -66,19 +71,36 @@ class SessionStore:
             self._sessions.move_to_end(session_id)
             return list(session.turns)
 
+    def _get_or_create(self, session_id: str, now: float) -> _Session:
+        """Caller holds the lock."""
+        self._purge(now)
+        session = self._sessions.get(session_id)
+        if session is None:
+            if len(self._sessions) >= MAX_SESSIONS:
+                self._sessions.popitem(last=False)
+            session = _Session()
+            self._sessions[session_id] = session
+        session.touched = now
+        self._sessions.move_to_end(session_id)
+        return session
+
     def record(self, session_id: str, question: str, answer: str) -> None:
         now = time.monotonic()
         with self._lock:
-            self._purge(now)
-            session = self._sessions.get(session_id)
-            if session is None:
-                if len(self._sessions) >= MAX_SESSIONS:
-                    self._sessions.popitem(last=False)
-                session = _Session()
-                self._sessions[session_id] = session
-            session.turns.append((question, answer))
-            session.touched = now
-            self._sessions.move_to_end(session_id)
+            self._get_or_create(session_id, now).turns.append((question, answer))
+
+    def block_mode(self, session_id: str, category: str) -> str:
+        """"full" the first time a category's contacts appear in a
+        conversation, "compact" every time after. Marks the category as shown,
+        so call it once per reply — and before the model call, because the
+        prompt tells the model which size of block will follow its words."""
+        now = time.monotonic()
+        with self._lock:
+            session = self._get_or_create(session_id, now)
+            if category in session.shown:
+                return "compact"
+            session.shown.add(category)
+            return "full"
 
     def forget(self, session_id: str) -> None:
         """Drop a conversation on request — the app calls this on exit."""

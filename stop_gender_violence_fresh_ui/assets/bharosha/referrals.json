@@ -211,6 +211,127 @@
       "bn": "অল্প সময়ে অনেক বার্তা এসেছে, আমার একটু সময় দরকার। কিছুক্ষণ পরে আবার চেষ্টা করুন।\n\nজরুরি হলে আমার জন্য অপেক্ষা করবেন না:\n\n**999** — কেউ যদি এখনই বিপদে থাকে।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।"
     }
   },
+  "blocks": {
+    "personal_disclosure": {
+      "en": {
+        "full": "**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. They take complaints of exactly this kind, including harassment at work, and can tell you what your options are.\n\n**999** — if you are ever in immediate danger. If the person being harmed is under 18, 1098 is the Child Helpline.\n\nIf this involves a WaterAid programme, workplace, staff member or partner, you can also contact a safeguarding focal point under Important Numbers in this app, or email safeguardwab@wateraid.org.\n\nI can't advise you on what to do next — the people on those numbers are trained for that, and they will take you seriously.",
+        "compact": "**109** at the top of the screen reaches a trained person, any time."
+      },
+      "bn": {
+        "full": "**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। কর্মক্ষেত্রে হয়রানিসহ ঠিক এ ধরনের অভিযোগই তাঁরা নেন এবং আপনার কী কী উপায় আছে তা বলতে পারেন।\n\n**999** — আপনি যদি কখনো তাৎক্ষণিক বিপদে পড়েন। ক্ষতিগ্রস্ত ব্যক্তির বয়স ১৮ বছরের কম হলে 1098 শিশু হেল্পলাইন।\n\nএটি যদি ওয়াটারএইডের কোনো কার্যক্রম, কর্মক্ষেত্র, কর্মী বা সহযোগী সংস্থার সঙ্গে সম্পর্কিত হয়, তাহলে এই অ্যাপের \"Important Numbers\"-এ দেওয়া সেফগার্ডিং ফোকাল পয়েন্টের সঙ্গে যোগাযোগ করতে পারেন, অথবা ইমেইল করুন safeguardwab@wateraid.org।\n\nএরপর কী করবেন সে পরামর্শ আমি দিতে পারি না — উপরের নম্বরগুলোর মানুষ সেজন্য প্রশিক্ষিত, এবং তাঁরা আপনার কথা গুরুত্ব দিয়ে নেবেন।",
+        "compact": "উপরের **109** বোতামে যেকোনো সময় একজন প্রশিক্ষিত মানুষকে পাওয়া যায়।"
+      }
+    },
+    "coercive_control": {
+      "en": {
+        "full": "**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. They take exactly this, and they can tell you what your options are.\n\n**999** — if you are ever in immediate danger.\n\nI can't advise you on what to do about the money, the documents or the restrictions themselves — those steps can change the risk you are in, and a trained person needs to weigh that with you.",
+        "compact": "**109** at the top of the screen reaches a trained person, any time."
+      },
+      "bn": {
+        "full": "**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। ঠিক এ ধরনের বিষয়ই তাঁরা নেন এবং আপনার কী কী উপায় আছে তা বলতে পারেন।\n\n**999** — আপনি যদি কখনো তাৎক্ষণিক বিপদে পড়েন।\n\nটাকা, কাগজপত্র বা এই নিয়ন্ত্রণগুলো নিয়ে আপনি কী করবেন সে পরামর্শ আমি দিতে পারি না — এই পদক্ষেপগুলো আপনার ঝুঁকি বদলে দিতে পারে, আর একজন প্রশিক্ষিত মানুষকে আপনার সঙ্গে বসে সেটা বিবেচনা করতে হবে।",
+        "compact": "উপরের **109** বোতামে যেকোনো সময় একজন প্রশিক্ষিত মানুষকে পাওয়া যায়।"
+      }
+    },
+    "low_distress": {
+      "en": {
+        "full": "If you'd like to talk to someone who will just listen, **09612-119911** is Kaan Pete Roi, open 3pm to 3am.",
+        "compact": "Kaan Pete Roi, **09612-119911**, listens from 3pm to 3am."
+      },
+      "bn": {
+        "full": "কেউ শুধু আপনার কথা শুনুক — এমন চাইলে **09612-119911** নম্বরে কান পেতে রই আছে, বিকাল ৩টা থেকে রাত ৩টা খোলা।",
+        "compact": "কান পেতে রই, **09612-119911** — বিকাল ৩টা থেকে রাত ৩টা।"
+      }
+    },
+    "third_party_concern": {
+      "en": {
+        "full": "**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. You can call for advice on supporting her, and so can she.\n\n**999** — if she is in danger right now.\n\nIf she is under 18, 1098 is the Child Helpline, and this should not wait.",
+        "compact": "**109** at the top of the screen reaches a trained person — for you or for her, any time."
+      },
+      "bn": {
+        "full": "**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। তাঁকে কীভাবে পাশে থাকবেন সে বিষয়ে আপনি নিজেও পরামর্শ নিতে পারেন, তিনিও কল করতে পারেন।\n\n**999** — তিনি যদি এখনই বিপদে থাকেন।\n\nতাঁর বয়স ১৮ বছরের কম হলে 1098 শিশু হেল্পলাইন, এবং এটি ফেলে রাখার বিষয় নয়।",
+        "compact": "উপরের **109** বোতামে যেকোনো সময় একজন প্রশিক্ষিত মানুষকে পাওয়া যায় — আপনার জন্য, তাঁর জন্যও।"
+      }
+    },
+    "leave_decision": {
+      "en": {
+        "full": "Leaving is the most dangerous moment in an abusive situation, and the timing depends on details of your life that only a trained person talking with you can weigh — so whether or when to leave is the one thing I can't advise on.\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. This is exactly what they are there to talk through, including safety planning.\n\n**999** — if you are in danger right now.",
+        "compact": "**109** at the top of the screen can think this through with you safely, any time."
+      },
+      "bn": {
+        "full": "নির্যাতনের পরিস্থিতিতে চলে যাওয়ার সময়টাই সবচেয়ে বিপজ্জনক, এবং সঠিক সময় নির্ভর করে আপনার জীবনের এমন বিষয়গুলোর ওপর, যা কেবল আপনার সঙ্গে কথা বলে একজন প্রশিক্ষিত মানুষ বিবেচনা করতে পারেন — তাই চলে যাবেন কি না, কখন যাবেন, এই একটি বিষয়ে আমি পরামর্শ দিতে পারি না।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। নিরাপত্তা পরিকল্পনাসহ ঠিক এই বিষয়েই তাঁরা কথা বলেন।\n\n**999** — আপনি যদি এখনই বিপদে থাকেন।",
+        "compact": "উপরের **109** বোতামে যেকোনো সময় একজন প্রশিক্ষিত মানুষ আপনার সঙ্গে নিরাপদে বিষয়টি ভাবতে পারেন।"
+      }
+    },
+    "divorce_process": {
+      "en": {
+        "full": "In Bangladesh the process depends on which family law applies to you, and getting that wrong costs time and money you may not be able to spare — a lawyer can tell you in one conversation, which is why I won't guess at it.\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. They can refer you to free legal aid, and they can talk through your safety while it is happening.\n\n**999** — if you are in danger at any point.",
+        "compact": "**109** at the top of the screen can refer you to free legal aid, any time."
+      },
+      "bn": {
+        "full": "বাংলাদেশে এই প্রক্রিয়া নির্ভর করে আপনার ক্ষেত্রে কোন পারিবারিক আইন প্রযোজ্য তার ওপর, আর সেটি ভুল হলে আপনার সময় ও অর্থ দুটোই নষ্ট হয় — একজন আইনজীবী এক বসাতেই তা বলে দিতে পারবেন, তাই আমি অনুমান করব না।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। তাঁরা বিনামূল্যে আইনি সহায়তায় রেফার করতে পারেন, এবং এই সময়টায় আপনার নিরাপত্তা নিয়েও কথা বলতে পারেন।\n\n**999** — যেকোনো সময় বিপদে পড়লে।",
+        "compact": "উপরের **109** বোতামে যেকোনো সময় বিনামূল্যে আইনি সহায়তার জন্য রেফার পাওয়া যায়।"
+      }
+    },
+    "economic_rights": {
+      "en": {
+        "full": "Denying a woman her inheritance or her property is recognised as **economic violence** — WaterAid's safeguarding material treats it as violence, not a private family dispute. What you are specifically entitled to depends on which family law applies to you, and a wrong answer could cost you a claim, so that part needs a lawyer.\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential, and they can refer you to free legal aid.\n\nYou can also reach a safeguarding focal point through the Important Numbers page in this app.",
+        "compact": "**109** at the top of the screen can refer you to free legal aid, any time."
+      },
+      "bn": {
+        "full": "একজন নারীকে তাঁর উত্তরাধিকার বা সম্পত্তি থেকে বঞ্চিত করা **অর্থনৈতিক সহিংসতা** হিসেবে স্বীকৃত — ওয়াটারএইডের সেফগার্ডিং উপকরণে এটিকে সহিংসতা হিসেবেই দেখা হয়, পারিবারিক ব্যক্তিগত বিষয় হিসেবে নয়। ঠিক কতটা আপনার প্রাপ্য, তা নির্ভর করে আপনার ক্ষেত্রে কোন পারিবারিক আইন প্রযোজ্য তার ওপর, আর ভুল উত্তর আপনার দাবি নষ্ট করতে পারে — সেই অংশের জন্য একজন আইনজীবী দরকার।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়; তাঁরা বিনামূল্যে আইনি সহায়তায় রেফার করতে পারেন।\n\nএই অ্যাপের \"Important Numbers\" পাতা থেকে সেফগার্ডিং ফোকাল পয়েন্টের সঙ্গেও যোগাযোগ করতে পারেন।",
+        "compact": "উপরের **109** বোতামে যেকোনো সময় বিনামূল্যে আইনি সহায়তার জন্য রেফার পাওয়া যায়।"
+      }
+    },
+    "legal_advice": {
+      "en": {
+        "full": "I can't give legal advice or tell you how a case would turn out — I would only be guessing, and a wrong answer here costs you time you may not have.\n\n**109** — National Helpline for Violence Against Women and Children. They take complaints on domestic violence, child marriage, sexual harassment and dowry, and can refer you to legal aid.\n\nA safeguarding focal point, listed under Important Numbers in this app, can also point you to legal support.",
+        "compact": "**109** at the top of the screen can refer you to free legal aid, any time."
+      },
+      "bn": {
+        "full": "আমি আইনি পরামর্শ দিতে পারি না, বা কোনো মামলার ফলাফল কী হবে তা বলতে পারি না — সেটা কেবল অনুমান হবে, আর এখানে ভুল উত্তর আপনার মূল্যবান সময় নষ্ট করবে।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। তাঁরা পারিবারিক সহিংসতা, বাল্যবিবাহ, যৌন হয়রানি ও যৌতুকের অভিযোগ নেন এবং আইনি সহায়তায় রেফার করতে পারেন।\n\nসেফগার্ডিং ফোকাল পয়েন্ট (এই অ্যাপের \"Important Numbers\"-এ তালিকা আছে) আপনাকে আইনি সহায়তার দিকেও পথ দেখাতে পারেন।",
+        "compact": "উপরের **109** বোতামে যেকোনো সময় বিনামূল্যে আইনি সহায়তার জন্য রেফার পাওয়া যায়।"
+      }
+    },
+    "medical_advice": {
+      "en": {
+        "full": "I can't tell you how to treat an injury — getting that wrong causes real harm, and I am not able to see or assess it.\n\n**999** — for an ambulance, or if the injury is serious. Free, any hour. For anything that needs looking at, the emergency department of your nearest hospital is the right place, and treatment there does not depend on explaining how it happened.\n\n**109** — National Helpline for Violence Against Women and Children. If the injury came from someone hurting you, they can arrange medical care through a One-Stop Crisis Centre and talk through what happens next. Free, 24 hours, confidential.",
+        "compact": "**999** at the top of the screen for an ambulance; **109** if someone hurt you."
+      },
+      "bn": {
+        "full": "কোনো আঘাতের চিকিৎসা কীভাবে করবেন তা আমি বলতে পারি না — এতে ভুল হলে প্রকৃত ক্ষতি হয়, আর আমি আঘাতটি দেখতে বা বুঝতে পারি না।\n\n**999** — অ্যাম্বুলেন্সের জন্য, বা আঘাত গুরুতর হলে। ফ্রি, যেকোনো সময়। যা দেখানো দরকার, তার জন্য নিকটস্থ হাসপাতালের জরুরি বিভাগই সঠিক জায়গা; সেখানে চিকিৎসা পেতে কীভাবে আঘাত পেয়েছেন তা ব্যাখ্যা করা বাধ্যতামূলক নয়।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। আঘাতটি যদি কেউ আপনাকে আঘাত করার কারণে হয়ে থাকে, তাঁরা ওয়ান-স্টপ ক্রাইসিস সেন্টারের মাধ্যমে চিকিৎসার ব্যবস্থা করতে এবং পরবর্তী করণীয় নিয়ে কথা বলতে পারেন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।",
+        "compact": "অ্যাম্বুলেন্সের জন্য উপরের **999**; কেউ আঘাত করে থাকলে **109**।"
+      }
+    },
+    "confront_or_evidence": {
+      "en": {
+        "full": "I won't suggest ways to confront, reason with, record, or collect evidence against someone who is harming you — those steps often raise the danger, and if they are ever the right move, a trained person should plan them with you.\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential.\n\n**999** — if you are in danger right now.",
+        "compact": "**109** at the top of the screen can plan any next step with you safely, any time."
+      },
+      "bn": {
+        "full": "যে মানুষটি আপনার ক্ষতি করছে, তার মুখোমুখি হওয়া, তাকে বোঝানো, তার কথা রেকর্ড করা বা তার বিরুদ্ধে প্রমাণ সংগ্রহ করার কোনো উপায় আমি বলব না — এই পদক্ষেপগুলো প্রায়ই বিপদ বাড়ায়; আর কখনো যদি তা প্রয়োজন হয়, একজন প্রশিক্ষিত মানুষ আপনার সঙ্গে পরিকল্পনা করে সেটা ঠিক করবেন।\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।\n\n**999** — আপনি যদি এখনই বিপদে থাকেন।",
+        "compact": "উপরের **109** বোতামে একজন প্রশিক্ষিত মানুষ যেকোনো পরবর্তী পদক্ষেপ আপনার সঙ্গে নিরাপদে পরিকল্পনা করতে পারেন।"
+      }
+    },
+    "reporting_request": {
+      "en": {
+        "full": "I can't take a report — nothing typed here is passed on to anyone. Where a report actually reaches a person:\n\n**109** — National Helpline for Violence Against Women and Children. Free, 24 hours, confidential. They take complaints of violence, abuse and harassment directly, and can refer you on.\n\n**999** — the police, if a crime has been committed or anyone is in danger now.\n\nIf this concerns a WaterAid programme, workplace, staff member or partner, it goes to safeguarding: email safeguardwab@wateraid.org, or use the contacts under Important Numbers in this app. If the person harmed is under 18, 1098 is the Child Helpline.\n\nWhether to report, and when, is your decision.",
+        "compact": "To report to a person: **109** at the top of the screen, any time; **999** for the police."
+      },
+      "bn": {
+        "full": "আমি কোনো অভিযোগ গ্রহণ করতে পারি না — এখানে যা লেখা হয় তা কারও কাছে পাঠানো হয় না। অভিযোগ আসলে যেখানে একজন মানুষের কাছে পৌঁছায়:\n\n**109** — নারী ও শিশু নির্যাতন প্রতিরোধে জাতীয় হেল্পলাইন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। সহিংসতা, নির্যাতন ও হয়রানির অভিযোগ তাঁরা সরাসরি নেন এবং প্রয়োজনে অন্যত্র পাঠাতে পারেন।\n\n**999** — পুলিশ, যদি কোনো অপরাধ ঘটে থাকে বা কেউ এখনই বিপদে থাকেন।\n\nবিষয়টি যদি ওয়াটারএইডের কোনো কার্যক্রম, কর্মক্ষেত্র, কর্মী বা সহযোগী সংস্থার সঙ্গে সম্পর্কিত হয়, তাহলে সেটি সেফগার্ডিংয়ের বিষয়: ইমেইল করুন safeguardwab@wateraid.org, অথবা এই অ্যাপের \"Important Numbers\"-এ দেওয়া যোগাযোগ ব্যবহার করুন। ক্ষতিগ্রস্ত ব্যক্তির বয়স ১৮ বছরের কম হলে 1098 শিশু হেল্পলাইন।\n\nঅভিযোগ করবেন কি না, আর কখন করবেন — সিদ্ধান্তটি আপনার।",
+        "compact": "একজন মানুষের কাছে অভিযোগ জানাতে: উপরের **109**, যেকোনো সময়; পুলিশের জন্য **999**।"
+      }
+    }
+  },
+  "no_block": [
+    "acknowledgement",
+    "bot_abuse",
+    "greeting",
+    "identity",
+    "privacy",
+    "thanks",
+    "vague"
+  ],
   "answer_footer": {
     "en": "\n\n---\nTo talk to a person: **109** (free, 24 hours, confidential) · **999** in an emergency.",
     "bn": "\n\n---\nকোনো মানুষের সঙ্গে কথা বলতে: **109** (ফ্রি, ২৪ ঘণ্টা, গোপনীয়) · জরুরি অবস্থায় **999**।"

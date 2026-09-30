@@ -839,73 +839,272 @@ ANSWER_FOOTER_BN = (
 )
 
 
-# --- Referral tails ---------------------------------------------------------
+# --- Referral blocks --------------------------------------------------------
 #
-# What goes AFTER a grounded reply on the situation paths, in place of the full
-# hardcoded script.
+# SAFETY DECIDES, THE AI SPEAKS. For every category except the five
+# emergencies the model now writes the reply, and code appends one of these
+# underneath. The fixed replies above are untouched and remain the fallback
+# for a dead network, a missing key or a model failure — but they are no longer
+# what a person reads when things are working.
 #
-# The scripts above are still exactly right when they are all she gets — no
-# network, no key, nothing retrieved. But once the model has written two
-# paragraphs that actually speak to her situation, printing the whole script
-# underneath produces the wall of text this app was criticised for. So the
-# script becomes the fallback and these become the normal ending: the same
-# numbers, the same boundary, a quarter of the length.
+# Each block is the fixed reply with the opening taken off: the contact lines,
+# and the ONE sentence that states the limit ("this is the one thing I cannot
+# advise on, and why"). No pleasantries, because the model has just written
+# them, in her words, about her message.
 #
-# Every number here is interpolated from the one shared list. The model is
+# Two sizes. The FULL block is shown the first time a category's contacts
+# appear in a conversation; the COMPACT block — one line — every time after,
+# because the same helpline paragraph on every turn is the wall of text that
+# made the app feel like a leaflet rack. The call buttons at the top of the
+# screen are there the whole time regardless.
+#
+# Every number is interpolated from the one shared list. The model is
 # forbidden from writing numbers precisely so that these are the only source.
-DISCLOSURE_TAIL_EN = f"""
 
----
-**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. They take complaints of exactly this kind, including harassment at work.
+_WATERAID_LINE_EN = (
+    "If this involves a WaterAid programme, workplace, staff member or partner, "
+    "you can also contact a safeguarding focal point under Important Numbers in "
+    f"this app, or email {SAFEGUARDING_EMAIL}."
+)
+_WATERAID_LINE_BN = (
+    "এটি যদি ওয়াটারএইডের কোনো কার্যক্রম, কর্মক্ষেত্র, কর্মী বা সহযোগী সংস্থার সঙ্গে "
+    "সম্পর্কিত হয়, তাহলে এই অ্যাপের \"Important Numbers\"-এ দেওয়া সেফগার্ডিং ফোকাল "
+    f"পয়েন্টের সঙ্গে যোগাযোগ করতে পারেন, অথবা ইমেইল করুন {SAFEGUARDING_EMAIL}।"
+)
+_VAWC_TOP_EN = f"**{VAWC.number}** at the top of the screen reaches a trained person, any time."
+_VAWC_TOP_BN = f"উপরের **{VAWC.number}** বোতামে যেকোনো সময় একজন প্রশিক্ষিত মানুষকে পাওয়া যায়।"
+_LEGAL_TOP_EN = f"**{VAWC.number}** at the top of the screen can refer you to free legal aid, any time."
+_LEGAL_TOP_BN = f"উপরের **{VAWC.number}** বোতামে যেকোনো সময় বিনামূল্যে আইনি সহায়তার জন্য রেফার পাওয়া যায়।"
+
+BLOCKS: dict[str, dict[str, dict[str, str]]] = {
+    "personal_disclosure": {
+        "en": {
+            "full": f"""**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. They take complaints of exactly this kind, including harassment at work, and can tell you what your options are.
 
 **{EMERGENCY.number}** — if you are ever in immediate danger. If the person being harmed is under 18, {CHILD.number} is the Child Helpline.
 
-I can explain what WaterAid's material says, but I am not able to advise you on what to do next — the people on those numbers are trained for that."""
+{_WATERAID_LINE_EN}
 
-DISCLOSURE_TAIL_BN = f"""
-
----
-**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। কর্মক্ষেত্রে হয়রানিসহ ঠিক এ ধরনের অভিযোগই তাঁরা নেন।
+I can't advise you on what to do next — the people on those numbers are trained for that, and they will take you seriously.""",
+            "compact": _VAWC_TOP_EN,
+        },
+        "bn": {
+            "full": f"""**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। কর্মক্ষেত্রে হয়রানিসহ ঠিক এ ধরনের অভিযোগই তাঁরা নেন এবং আপনার কী কী উপায় আছে তা বলতে পারেন।
 
 **{EMERGENCY.number}** — আপনি যদি কখনো তাৎক্ষণিক বিপদে পড়েন। ক্ষতিগ্রস্ত ব্যক্তির বয়স ১৮ বছরের কম হলে {CHILD.number} শিশু হেল্পলাইন।
 
-ওয়াটারএইডের উপকরণ কী বলে তা আমি ব্যাখ্যা করতে পারি, কিন্তু এরপর কী করবেন সে পরামর্শ আমি দিতে পারি না — উপরের নম্বরগুলোর মানুষ সেজন্য প্রশিক্ষিত।"""
+{_WATERAID_LINE_BN}
 
-THIRD_PARTY_TAIL_EN = f"""
+এরপর কী করবেন সে পরামর্শ আমি দিতে পারি না — উপরের নম্বরগুলোর মানুষ সেজন্য প্রশিক্ষিত, এবং তাঁরা আপনার কথা গুরুত্ব দিয়ে নেবেন।""",
+            "compact": _VAWC_TOP_BN,
+        },
+    },
+    "coercive_control": {
+        "en": {
+            "full": f"""**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. They take exactly this, and they can tell you what your options are.
 
----
-**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. You can call for advice on supporting her, and so can she.
+**{EMERGENCY.number}** — if you are ever in immediate danger.
 
-**{EMERGENCY.number}** — if she is in danger right now. If she is under 18, {CHILD.number} is the Child Helpline, and this should not wait."""
+I can't advise you on what to do about the money, the documents or the restrictions themselves — those steps can change the risk you are in, and a trained person needs to weigh that with you.""",
+            "compact": _VAWC_TOP_EN,
+        },
+        "bn": {
+            "full": f"""**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। ঠিক এ ধরনের বিষয়ই তাঁরা নেন এবং আপনার কী কী উপায় আছে তা বলতে পারেন।
 
-THIRD_PARTY_TAIL_BN = f"""
+**{EMERGENCY.number}** — আপনি যদি কখনো তাৎক্ষণিক বিপদে পড়েন।
 
----
-**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। তাঁকে কীভাবে পাশে থাকবেন সে বিষয়ে আপনি নিজেও পরামর্শ নিতে পারেন, তিনিও কল করতে পারেন।
+টাকা, কাগজপত্র বা এই নিয়ন্ত্রণগুলো নিয়ে আপনি কী করবেন সে পরামর্শ আমি দিতে পারি না — এই পদক্ষেপগুলো আপনার ঝুঁকি বদলে দিতে পারে, আর একজন প্রশিক্ষিত মানুষকে আপনার সঙ্গে বসে সেটা বিবেচনা করতে হবে।""",
+            "compact": _VAWC_TOP_BN,
+        },
+    },
+    "low_distress": {
+        "en": {
+            "full": f"If you'd like to talk to someone who will just listen, **{KAAN_PETE_ROI_NUMBER}** is Kaan Pete Roi, open {KAAN_PETE_ROI_HOURS_EN}.",
+            "compact": f"Kaan Pete Roi, **{KAAN_PETE_ROI_NUMBER}**, listens from {KAAN_PETE_ROI_HOURS_EN}.",
+        },
+        "bn": {
+            "full": f"কেউ শুধু আপনার কথা শুনুক — এমন চাইলে **{KAAN_PETE_ROI_NUMBER}** নম্বরে কান পেতে রই আছে, {KAAN_PETE_ROI_HOURS_BN} খোলা।",
+            "compact": f"কান পেতে রই, **{KAAN_PETE_ROI_NUMBER}** — {KAAN_PETE_ROI_HOURS_BN}।",
+        },
+    },
+    "third_party_concern": {
+        "en": {
+            "full": f"""**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. You can call for advice on supporting her, and so can she.
 
-**{EMERGENCY.number}** — তিনি যদি এখনই বিপদে থাকেন। তাঁর বয়স ১৮ বছরের কম হলে {CHILD.number} শিশু হেল্পলাইন, এবং এটি ফেলে রাখার বিষয় নয়।"""
+**{EMERGENCY.number}** — if she is in danger right now.
 
-LOW_DISTRESS_TAIL_EN = f"""
+If she is under 18, {CHILD.number} is the Child Helpline, and this should not wait.""",
+            "compact": f"**{VAWC.number}** at the top of the screen reaches a trained person — for you or for her, any time.",
+        },
+        "bn": {
+            "full": f"""**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। তাঁকে কীভাবে পাশে থাকবেন সে বিষয়ে আপনি নিজেও পরামর্শ নিতে পারেন, তিনিও কল করতে পারেন।
 
----
-If you'd like to talk to someone who will just listen, **{KAAN_PETE_ROI_NUMBER}** is Kaan Pete Roi, open {KAAN_PETE_ROI_HOURS_EN}."""
+**{EMERGENCY.number}** — তিনি যদি এখনই বিপদে থাকেন।
 
-LOW_DISTRESS_TAIL_BN = f"""
+তাঁর বয়স ১৮ বছরের কম হলে {CHILD.number} শিশু হেল্পলাইন, এবং এটি ফেলে রাখার বিষয় নয়।""",
+            "compact": f"উপরের **{VAWC.number}** বোতামে যেকোনো সময় একজন প্রশিক্ষিত মানুষকে পাওয়া যায় — আপনার জন্য, তাঁর জন্যও।",
+        },
+    },
+    "leave_decision": {
+        "en": {
+            "full": f"""Leaving is the most dangerous moment in an abusive situation, and the timing depends on details of your life that only a trained person talking with you can weigh — so whether or when to leave is the one thing I can't advise on.
 
----
-কেউ শুধু আপনার কথা শুনুক — এমন চাইলে **{KAAN_PETE_ROI_NUMBER}** নম্বরে কান পেতে রই আছে, {KAAN_PETE_ROI_HOURS_BN} খোলা।"""
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. This is exactly what they are there to talk through, including safety planning.
 
-SITUATION_TAILS: dict[str, dict[str, str]] = {
-    "personal_disclosure": {"en": DISCLOSURE_TAIL_EN, "bn": DISCLOSURE_TAIL_BN},
-    "third_party_concern": {"en": THIRD_PARTY_TAIL_EN, "bn": THIRD_PARTY_TAIL_BN},
-    "low_distress": {"en": LOW_DISTRESS_TAIL_EN, "bn": LOW_DISTRESS_TAIL_BN},
+**{EMERGENCY.number}** — if you are in danger right now.""",
+            "compact": f"**{VAWC.number}** at the top of the screen can think this through with you safely, any time.",
+        },
+        "bn": {
+            "full": f"""নির্যাতনের পরিস্থিতিতে চলে যাওয়ার সময়টাই সবচেয়ে বিপজ্জনক, এবং সঠিক সময় নির্ভর করে আপনার জীবনের এমন বিষয়গুলোর ওপর, যা কেবল আপনার সঙ্গে কথা বলে একজন প্রশিক্ষিত মানুষ বিবেচনা করতে পারেন — তাই চলে যাবেন কি না, কখন যাবেন, এই একটি বিষয়ে আমি পরামর্শ দিতে পারি না।
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। নিরাপত্তা পরিকল্পনাসহ ঠিক এই বিষয়েই তাঁরা কথা বলেন।
+
+**{EMERGENCY.number}** — আপনি যদি এখনই বিপদে থাকেন।""",
+            "compact": f"উপরের **{VAWC.number}** বোতামে যেকোনো সময় একজন প্রশিক্ষিত মানুষ আপনার সঙ্গে নিরাপদে বিষয়টি ভাবতে পারেন।",
+        },
+    },
+    "divorce_process": {
+        "en": {
+            "full": f"""In Bangladesh the process depends on which family law applies to you, and getting that wrong costs time and money you may not be able to spare — a lawyer can tell you in one conversation, which is why I won't guess at it.
+
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. They can refer you to free legal aid, and they can talk through your safety while it is happening.
+
+**{EMERGENCY.number}** — if you are in danger at any point.""",
+            "compact": _LEGAL_TOP_EN,
+        },
+        "bn": {
+            "full": f"""বাংলাদেশে এই প্রক্রিয়া নির্ভর করে আপনার ক্ষেত্রে কোন পারিবারিক আইন প্রযোজ্য তার ওপর, আর সেটি ভুল হলে আপনার সময় ও অর্থ দুটোই নষ্ট হয় — একজন আইনজীবী এক বসাতেই তা বলে দিতে পারবেন, তাই আমি অনুমান করব না।
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। তাঁরা বিনামূল্যে আইনি সহায়তায় রেফার করতে পারেন, এবং এই সময়টায় আপনার নিরাপত্তা নিয়েও কথা বলতে পারেন।
+
+**{EMERGENCY.number}** — যেকোনো সময় বিপদে পড়লে।""",
+            "compact": _LEGAL_TOP_BN,
+        },
+    },
+    "economic_rights": {
+        "en": {
+            "full": f"""Denying a woman her inheritance or her property is recognised as **economic violence** — WaterAid's safeguarding material treats it as violence, not a private family dispute. What you are specifically entitled to depends on which family law applies to you, and a wrong answer could cost you a claim, so that part needs a lawyer.
+
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential, and they can refer you to free legal aid.
+
+You can also reach a safeguarding focal point through the Important Numbers page in this app.""",
+            "compact": _LEGAL_TOP_EN,
+        },
+        "bn": {
+            "full": f"""একজন নারীকে তাঁর উত্তরাধিকার বা সম্পত্তি থেকে বঞ্চিত করা **অর্থনৈতিক সহিংসতা** হিসেবে স্বীকৃত — ওয়াটারএইডের সেফগার্ডিং উপকরণে এটিকে সহিংসতা হিসেবেই দেখা হয়, পারিবারিক ব্যক্তিগত বিষয় হিসেবে নয়। ঠিক কতটা আপনার প্রাপ্য, তা নির্ভর করে আপনার ক্ষেত্রে কোন পারিবারিক আইন প্রযোজ্য তার ওপর, আর ভুল উত্তর আপনার দাবি নষ্ট করতে পারে — সেই অংশের জন্য একজন আইনজীবী দরকার।
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়; তাঁরা বিনামূল্যে আইনি সহায়তায় রেফার করতে পারেন।
+
+এই অ্যাপের "Important Numbers" পাতা থেকে সেফগার্ডিং ফোকাল পয়েন্টের সঙ্গেও যোগাযোগ করতে পারেন।""",
+            "compact": _LEGAL_TOP_BN,
+        },
+    },
+    "legal_advice": {
+        "en": {
+            "full": f"""I can't give legal advice or tell you how a case would turn out — I would only be guessing, and a wrong answer here costs you time you may not have.
+
+**{VAWC.number}** — {VAWC.name_en}. They take complaints on domestic violence, child marriage, sexual harassment and dowry, and can refer you to legal aid.
+
+A safeguarding focal point, listed under Important Numbers in this app, can also point you to legal support.""",
+            "compact": _LEGAL_TOP_EN,
+        },
+        "bn": {
+            "full": f"""আমি আইনি পরামর্শ দিতে পারি না, বা কোনো মামলার ফলাফল কী হবে তা বলতে পারি না — সেটা কেবল অনুমান হবে, আর এখানে ভুল উত্তর আপনার মূল্যবান সময় নষ্ট করবে।
+
+**{VAWC.number}** — {VAWC.name_bn}। তাঁরা পারিবারিক সহিংসতা, বাল্যবিবাহ, যৌন হয়রানি ও যৌতুকের অভিযোগ নেন এবং আইনি সহায়তায় রেফার করতে পারেন।
+
+সেফগার্ডিং ফোকাল পয়েন্ট (এই অ্যাপের "Important Numbers"-এ তালিকা আছে) আপনাকে আইনি সহায়তার দিকেও পথ দেখাতে পারেন।""",
+            "compact": _LEGAL_TOP_BN,
+        },
+    },
+    "medical_advice": {
+        "en": {
+            "full": f"""I can't tell you how to treat an injury — getting that wrong causes real harm, and I am not able to see or assess it.
+
+**{EMERGENCY.number}** — for an ambulance, or if the injury is serious. Free, any hour. For anything that needs looking at, the emergency department of your nearest hospital is the right place, and treatment there does not depend on explaining how it happened.
+
+**{VAWC.number}** — {VAWC.name_en}. If the injury came from someone hurting you, they can arrange medical care through a One-Stop Crisis Centre and talk through what happens next. Free, 24 hours, confidential.""",
+            "compact": f"**{EMERGENCY.number}** at the top of the screen for an ambulance; **{VAWC.number}** if someone hurt you.",
+        },
+        "bn": {
+            "full": f"""কোনো আঘাতের চিকিৎসা কীভাবে করবেন তা আমি বলতে পারি না — এতে ভুল হলে প্রকৃত ক্ষতি হয়, আর আমি আঘাতটি দেখতে বা বুঝতে পারি না।
+
+**{EMERGENCY.number}** — অ্যাম্বুলেন্সের জন্য, বা আঘাত গুরুতর হলে। ফ্রি, যেকোনো সময়। যা দেখানো দরকার, তার জন্য নিকটস্থ হাসপাতালের জরুরি বিভাগই সঠিক জায়গা; সেখানে চিকিৎসা পেতে কীভাবে আঘাত পেয়েছেন তা ব্যাখ্যা করা বাধ্যতামূলক নয়।
+
+**{VAWC.number}** — {VAWC.name_bn}। আঘাতটি যদি কেউ আপনাকে আঘাত করার কারণে হয়ে থাকে, তাঁরা ওয়ান-স্টপ ক্রাইসিস সেন্টারের মাধ্যমে চিকিৎসার ব্যবস্থা করতে এবং পরবর্তী করণীয় নিয়ে কথা বলতে পারেন। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।""",
+            "compact": f"অ্যাম্বুলেন্সের জন্য উপরের **{EMERGENCY.number}**; কেউ আঘাত করে থাকলে **{VAWC.number}**।",
+        },
+    },
+    "confront_or_evidence": {
+        "en": {
+            "full": f"""I won't suggest ways to confront, reason with, record, or collect evidence against someone who is harming you — those steps often raise the danger, and if they are ever the right move, a trained person should plan them with you.
+
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential.
+
+**{EMERGENCY.number}** — if you are in danger right now.""",
+            "compact": f"**{VAWC.number}** at the top of the screen can plan any next step with you safely, any time.",
+        },
+        "bn": {
+            "full": f"""যে মানুষটি আপনার ক্ষতি করছে, তার মুখোমুখি হওয়া, তাকে বোঝানো, তার কথা রেকর্ড করা বা তার বিরুদ্ধে প্রমাণ সংগ্রহ করার কোনো উপায় আমি বলব না — এই পদক্ষেপগুলো প্রায়ই বিপদ বাড়ায়; আর কখনো যদি তা প্রয়োজন হয়, একজন প্রশিক্ষিত মানুষ আপনার সঙ্গে পরিকল্পনা করে সেটা ঠিক করবেন।
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়।
+
+**{EMERGENCY.number}** — আপনি যদি এখনই বিপদে থাকেন।""",
+            "compact": f"উপরের **{VAWC.number}** বোতামে একজন প্রশিক্ষিত মানুষ যেকোনো পরবর্তী পদক্ষেপ আপনার সঙ্গে নিরাপদে পরিকল্পনা করতে পারেন।",
+        },
+    },
+    "reporting_request": {
+        "en": {
+            "full": f"""I can't take a report — nothing typed here is passed on to anyone. Where a report actually reaches a person:
+
+**{VAWC.number}** — {VAWC.name_en}. Free, 24 hours, confidential. They take complaints of violence, abuse and harassment directly, and can refer you on.
+
+**{EMERGENCY.number}** — the police, if a crime has been committed or anyone is in danger now.
+
+If this concerns a WaterAid programme, workplace, staff member or partner, it goes to safeguarding: email {SAFEGUARDING_EMAIL}, or use the contacts under Important Numbers in this app. If the person harmed is under 18, {CHILD.number} is the Child Helpline.
+
+Whether to report, and when, is your decision.""",
+            "compact": f"To report to a person: **{VAWC.number}** at the top of the screen, any time; **{EMERGENCY.number}** for the police.",
+        },
+        "bn": {
+            "full": f"""আমি কোনো অভিযোগ গ্রহণ করতে পারি না — এখানে যা লেখা হয় তা কারও কাছে পাঠানো হয় না। অভিযোগ আসলে যেখানে একজন মানুষের কাছে পৌঁছায়:
+
+**{VAWC.number}** — {VAWC.name_bn}। ফ্রি, ২৪ ঘণ্টা, গোপনীয়। সহিংসতা, নির্যাতন ও হয়রানির অভিযোগ তাঁরা সরাসরি নেন এবং প্রয়োজনে অন্যত্র পাঠাতে পারেন।
+
+**{EMERGENCY.number}** — পুলিশ, যদি কোনো অপরাধ ঘটে থাকে বা কেউ এখনই বিপদে থাকেন।
+
+বিষয়টি যদি ওয়াটারএইডের কোনো কার্যক্রম, কর্মক্ষেত্র, কর্মী বা সহযোগী সংস্থার সঙ্গে সম্পর্কিত হয়, তাহলে সেটি সেফগার্ডিংয়ের বিষয়: ইমেইল করুন {SAFEGUARDING_EMAIL}, অথবা এই অ্যাপের "Important Numbers"-এ দেওয়া যোগাযোগ ব্যবহার করুন। ক্ষতিগ্রস্ত ব্যক্তির বয়স ১৮ বছরের কম হলে {CHILD.number} শিশু হেল্পলাইন।
+
+অভিযোগ করবেন কি না, আর কখন করবেন — সিদ্ধান্তটি আপনার।""",
+            "compact": f"একজন মানুষের কাছে অভিযোগ জানাতে: উপরের **{VAWC.number}**, যেকোনো সময়; পুলিশের জন্য **{EMERGENCY.number}**।",
+        },
+    },
 }
 
+# Categories that get NO block: the model's words stand alone. Social turns,
+# because "You're welcome" followed by a helpline paragraph is the old problem
+# in miniature; identity and privacy, because their facts are stated in the
+# model's own reply from a fixed note and there is nothing to append; the
+# emergencies, because they never reach the model at all.
+NO_BLOCK = frozenset(
+    {"greeting", "thanks", "acknowledgement", "bot_abuse", "vague", "identity", "privacy"}
+)
 
-def situation_tail(category: str, language: str) -> str:
-    """The referral that follows a grounded reply on a situation path."""
-    by_language = SITUATION_TAILS[category]
-    return by_language.get(language, by_language["en"])
+
+def has_block(category: str | None) -> bool:
+    return category is not None and category in BLOCKS
+
+
+def referral_block(category: str, language: str, mode: str) -> str:
+    """The block appended under a model-written reply.
+
+    `mode` is "full" the first time this category's contacts appear in a
+    conversation and "compact" after that — sessions.py keeps the score.
+    """
+    if mode not in ("full", "compact"):
+        raise ValueError(f"block mode must be full or compact, not {mode!r}")
+    by_language = BLOCKS[category]
+    return by_language.get(language, by_language["en"])[mode]
 
 
 def answer_footer(language: str) -> str:
@@ -953,6 +1152,22 @@ def _check_every_category_has_text() -> None:  # pragma: no cover - import guard
     missing = [c for c in safety._PRIORITY if c not in RESPONSES]
     if missing:
         raise RuntimeError(f"safety categories with no referral text: {missing}")
+
+    # Every category the model answers must either have a block or be
+    # explicitly listed as needing none. A category that is neither is one
+    # somebody added without deciding what goes under the reply — and the
+    # default of "nothing" is the wrong default for a safety category.
+    undecided = [
+        c for c in safety._PRIORITY
+        if c not in safety.DEVICE_CATEGORIES and c not in BLOCKS and c not in NO_BLOCK
+    ]
+    if undecided:
+        raise RuntimeError(
+            f"categories with neither a referral block nor a NO_BLOCK entry: {undecided}"
+        )
+    unknown = [c for c in BLOCKS if c not in safety._PRIORITY]
+    if unknown:
+        raise RuntimeError(f"referral blocks for categories that do not exist: {unknown}")
 
 
 _check_every_category_has_text()

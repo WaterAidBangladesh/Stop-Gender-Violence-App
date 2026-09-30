@@ -555,6 +555,8 @@ def answer(
     history: list[tuple[str, str]] | None = None,
     language: str = "en",
     grounded: bool = True,
+    category: str | None = None,
+    block_mode: str | None = None,
 ) -> str:
     """One reply. The only generation path there is.
 

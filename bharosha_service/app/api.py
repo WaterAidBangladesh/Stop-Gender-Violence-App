@@ -211,6 +211,22 @@ def _answer(
         ],
     )
 
+    # ---- 3b. Decide what code will append, BEFORE the model writes --------
+    #
+    # SAFETY DECIDES, THE AI SPEAKS. For a recognised category the model
+    # writes the words and code appends the referral block from referrals.py
+    # — the contacts and the one sentence of limit — so the numbers never
+    # come from the model and the limit is never softened by it. The block is
+    # full the first time this category's contacts appear in the conversation
+    # and one line after that. Decided here rather than after, because the
+    # model is told which size will follow its reply.
+    block_mode = (
+        sessions.store.block_mode(session_id, decision.category)
+        if referrals.has_block(decision.category)
+        else None
+    )
+    note(block=block_mode)
+
     try:
         text = chain.answer(
             query,
@@ -218,6 +234,8 @@ def _answer(
             sessions.store.history(session_id),
             language=decision.language,
             grounded=grounded,
+            category=decision.category,
+            block_mode=block_mode,
         )
     except chain.Unavailable as failure:
         return fallback(str(failure), found.nearest)
@@ -237,16 +255,21 @@ def _answer(
         if marker:
             return fallback(f"asserted anyway: {marker!r}", found.nearest)
 
+    # ---- 5. Append what code owns ------------------------------------------
+    if block_mode is not None:
+        text = text + "\n\n" + referrals.referral_block(
+            decision.category, decision.language, block_mode
+        )
+    elif grounded and decision.category is None:
+        # An ordinary grounded question with no category: the numbers still
+        # arrive from here, never from the model.
+        text += referrals.answer_footer(decision.language)
+
+    # The whole reply — model text and block — goes into history, so on the
+    # next turn the model knows what she has already been shown.
     sessions.store.record(session_id, query, text)
     note(kind="answer", model=chain.MODEL)
-    # The footer only when the reply was grounded. The model may not write
-    # numbers, so a substantive answer about violence needs them appended — but
-    # appending "To talk to a person: 109 · 999" to "Yes, of course, ask away"
-    # is the wall of text arriving by another door. Below the floor the prompt
-    # tells the model to point at the helpline buttons instead.
-    if grounded:
-        text += referrals.answer_footer(decision.language)
-    return {"response": text, "kind": "answer"}
+    return {"response": text, "kind": decision.kind if decision.category else "answer"}
 
 
 @app.post("/chat")
