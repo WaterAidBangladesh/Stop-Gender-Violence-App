@@ -124,6 +124,15 @@ N_RESULTS = int(os.getenv("BHAROSHA_N_RESULTS", "4"))
 
 MODEL = os.getenv("BHAROSHA_MODEL", "openai/gpt-oss-20b")
 
+# One temperature, grounded or not. It used to be 0.0 below the floor, on the
+# argument that a model under a prohibition should be deterministic and
+# therefore testable. That made "hello" return the identical sentence every
+# time, which is a saved message by another name — and the prohibition is now
+# enforced by the output check in assertions.py, not by the temperature. Small
+# variety, so openings do not repeat; the check, not the sampling, keeps it
+# safe.
+TEMPERATURE = float(os.getenv("BHAROSHA_TEMPERATURE", "0.3"))
+
 # gpt-oss-20b is a REASONING model: it writes a chain of thought into a separate
 # channel before answering. Measured on this corpus with default settings, that
 # reasoning ran to 5,800–7,400 characters and consumed the entire completion
@@ -860,16 +869,7 @@ def answer(
     # English question.
     named = "English" if language == "en" else "Bangla"
     chain = PromptTemplate.from_template(PROMPT) | ChatGroq(
-        # Warm when it may assert, cold when it may not.
-        #
-        # 0.3 keeps greetings from becoming a saved message by another name —
-        # "hi" should not return the identical sentence every time. But below
-        # the floor the model is under a PROHIBITION, and measured across runs
-        # it obeyed it inconsistently: "ki korbo?" came back as a clarifying
-        # question on one run and as a numbered list of procedural steps on the
-        # next. A rule that holds four times in five is not a rule, so the path
-        # where the rule matters is deterministic and therefore testable.
-        temperature=0.3 if grounded else 0.0,
+        temperature=TEMPERATURE,
         model=MODEL,
         api_key=os.environ["GROQ_API_KEY"],
         max_tokens=ANSWER_MAX_TOKENS,

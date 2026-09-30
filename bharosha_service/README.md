@@ -172,6 +172,29 @@ deployed instance does not serve them at all. `tests/test_startup.py` asserts
 both: that the routes are absent by default, and that `/chat` still returns
 exactly `{response, kind}`.
 
+## Choosing the model
+
+The default is `openai/gpt-oss-20b` on Groq, with `reasoning_effort="low"` and
+the truncation guard in `chain.reject_if_unusable` — both of which fixed real
+failures (empty and cut-off replies) and must stay whatever the model.
+
+`openai/gpt-oss-120b` is worth trying if it is available on the account. Do
+**not** switch the default on impression. Run the comparison:
+
+1. Start the service with `BHAROSHA_MODEL=openai/gpt-oss-120b`.
+2. Run `python tools/probe.py` and the live suite
+   (`python -m pytest tests/test_live_behaviour.py`) against it.
+3. Read `/health` after the live suite: `output_retries` and
+   `output_fallbacks` over `output_checks`. The 20B baseline is recorded in
+   `probe_results.md`.
+4. Regenerate `feel_review.md` (`python tools/feel_review.py`) and put both
+   versions in front of the same blind reviewers.
+
+Switch only if the larger model retries less, falls back less, and reads
+better to the reviewers — all three. Cost and latency go up with it, and a
+recognised category on the phone waits eight seconds before showing the
+fixed text.
+
 ## Known dependencies outside this service
 
 Things Bharosha's text depends on that are not in this repository. Each one has

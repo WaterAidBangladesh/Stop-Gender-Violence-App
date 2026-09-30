@@ -174,3 +174,6 @@ def test_reasoning_effort_is_configured() -> None:
     """
     assert chain.REASONING_EFFORT == "low"
     assert chain.ANSWER_MAX_TOKENS >= 1000
+    # One temperature for every reply. Safety is enforced by the output check,
+    # not by sampling, so the ungrounded path no longer has to be frozen at 0.
+    assert chain.TEMPERATURE == 0.3
